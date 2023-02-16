@@ -1,20 +1,14 @@
 const express = require('express')
 const router = require('./routes/mainRouter')
-const pool = require('./database')
+const app = express()
+const cors = require('cors')
+const corsOptions = require('./config/corsOptions')
 const PORT = process.env.PORT || 5000
 
-const app = express()
 app.use(express.json())
-
 app.use('/api', router)
+app.use(cors(corsOptions))
 
-pool.connect((err)=>{
-    if(err){
-        console.log(err)
-        return err
-    }
-    console.log('db connected')
-})
 
 app.listen(PORT,()=> console.log('Server started on PORT'+ ' ' + PORT ))
 
