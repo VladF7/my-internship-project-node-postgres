@@ -5,9 +5,10 @@ const cors = require('cors')
 const corsOptions = require('./config/corsOption')
 const PORT = process.env.PORT || 5000
 
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use('/api', router)
-app.use(cors(corsOptions))
+
 
 
 app.listen(PORT,()=> console.log('Server started on PORT'+ ' ' + PORT ))
