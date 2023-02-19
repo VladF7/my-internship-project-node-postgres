@@ -1,18 +1,12 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
-    host: 'dpg-cfmkgf9a6gdmb5qdbemg-a',
-    user: 'root',     
-    password: '17YcxdNScEdOdnRgepGstO6ddwBwhdSF',
-    database: 'internshipdb',
-    port: 5432,
+    host: process.env.PG_HOST,
+    user: process.env.PG_USER,
+    password: process.env.PG_PASSWORD,
+    database: process.env.PG_DATABASE,
+    port: process.env.PG_PORT,
 })
 
-pool.connect((err)=>{
-    if(err){
-        console.log(err)
-        return err
-    }
-    console.log('db connected')
-})
+
 
 module.exports = pool
