@@ -31,11 +31,10 @@ module.exports = {
     delCustomer: async (req,res)=>{
         try {
             const id = req.params.id
-            await customersModel.delCustomer(id)
-            return res.json(id)
+            const delCustomerId = await customersModel.delCustomer(id)
+            return res.json(delCustomerId)
         } catch (error) {
             console.log(error);
-            return res.json(error.severity)
         }
     },
 }

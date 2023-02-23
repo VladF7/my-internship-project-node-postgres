@@ -20,31 +20,30 @@ module.exports = {
     },
     addMaster: async (req,res)=>{
         try {
-            const {name,rating,city} = req.body
-            const newMaster = await mastersModel.addMaster(name,rating,city)
+            const {name,rating,cities} = req.body
+            const newMaster = await mastersModel.addMaster(name,rating,cities)
             return res.json(newMaster)
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
     },
     editMaster: async (req,res)=>{
         try {
             const id = req.params.id
-            const {name,rating,city} = req.body
-            const editedMaster = await mastersModel.editMaster(id,name,rating,city)
+            const {name,rating,cities} = req.body
+            const editedMaster = await mastersModel.editMaster(id,name,rating,cities)
             return res.json(editedMaster)
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
     },
     delMaster: async (req,res)=>{
         try {
             const id = req.params.id
-            await mastersModel.delMaster(id)
-            return res.json(id)
+            const delMasterId = await mastersModel.delMaster(id)
+            return res.json(delMasterId)
         } catch (error) {
             console.log(error);
-            return res.json(error.severity)
         }
     },
 }

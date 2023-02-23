@@ -7,13 +7,12 @@ const clocksModel = require('./clocks.model')
 const dateString = require('../date')
 
 module.exports = {
-    getFreeMasters: async(city,start,end)=>{
+    async getFreeMasters (city,start,end) {
         try {
             let freeMasters;
 
             const cities_id = await citiesModel.getCitiesId(city)
-            let orders = await ordersModel.getOrdersByCitiesId(cities_id)
-            
+            let orders = await ordersModel.getOrdersList()
             if(!orders.length){
                 freeMasters = await mastersModel.getMastersByCitiesId(cities_id)
             } else {
@@ -22,23 +21,24 @@ module.exports = {
                     ((start < dateString(order.end)) && (end > dateString(order.end))) || 
                     ((start >= dateString(order.start)) && (end <= dateString(order.end)))
                 ))
-
-                const busyMastersId = orders.map(order => order.masterid)
-                const mastersList = await mastersModel.getMastersByCitiesId(cities_id)
-
+                const busyMastersId = orders.map(order => order.masters_id)           
+                const mastersList = await mastersModel.getMastersByCitiesId(cities_id)  
                 freeMasters = mastersList.filter((master) => !busyMastersId.includes(master.id))
             }
             return freeMasters
-
         } catch (error) {
             console.log(error);
         }
     },
-    addOrder: async(masterId, name,email,size,city,start,end)=>{
-
-            const customers = await customersModel.addCustomer(name,email)
-
-            const customers_id = await customersModel.getCustomerId(email)
+    async addOrder (masterId, name,email,size,city,start,end) {
+            
+            let customers_id
+            customers_id = await customersModel.getCustomerId(email)
+            if(!customers_id){
+                const customers = await customersModel.addCustomer(name,email)
+                customers_id = await customersModel.getCustomerId(email)
+            }
+            
             const clocks_id = await clocksModel.getClocksId(size)
             const cities_id = await citiesModel.getCitiesId(city)
             const masters_id = masterId

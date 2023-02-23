@@ -5,19 +5,15 @@ const mastersModel = require('./masters.model')
 const citiesModel = require('./cities.model')
 
 module.exports = {
-    getEndOrderDate: async(start, size) => {;
+    async getEndOrderDate (start, size) {;
         let timeToFix = await clocksModel.getTimeToFix(size)
-
+            timeToFix = timeToFix.time
         let end = new Date(start)
         end = end.setHours(end.getHours() + timeToFix)
         end = dateString(end)
         return end
     },
-    getOrdersByCitiesId: async(cities_id) => {
-        const orders = await database.query('SELECT masters_id AS masterid, order_start_time AS start, order_end_time AS end FROM orders WHERE cities_id =$1',[cities_id])
-        return orders.rows
-    },
-    getOrders: async() => {
+    async getOrders () {
         const orders = await database.query(`
             SELECT orders.id, customers.name, customers.email, clocks.size, 
             clocks.time_to_fix AS time, masters.name AS master, cities.name AS city,
@@ -30,10 +26,16 @@ module.exports = {
             ORDER BY id DESC`)
         return orders.rows
     },
-    getOrderById: async(id) => {
+    async getOrdersList () {
+        let orders = await database.query(`SELECT masters_id, cities_id,
+            order_start_time AS start, order_end_time AS end
+            FROM orders `)
+        return orders.rows
+    },
+    async getOrderById (id) {
         const orders = await database.query(`
-            SELECT orders.id, customers.name, customers.email, clocks.size, 
-            clocks.time_to_fix AS time, masters.name AS master, cities.name AS city,
+            SELECT orders.id, clocks.size AS size, 
+            clocks.time_to_fix AS time, masters.name AS master, masters.id AS master_id, masters.rating AS rating, cities.name AS city,
             order_start_time AS start, order_end_time AS end 
             FROM orders 
             INNER JOIN customers ON customers_id = customers.id 
@@ -43,18 +45,17 @@ module.exports = {
             WHERE orders.id = $1`,[id])
         return orders.rows[0]
     },
-    editOrder: async(id,size,master,city,start) => {
+    async editOrder (id,size,master,city,start,end) {
         const cities_id = await citiesModel.getCitiesId(city)
-        const masters_id = await mastersModel.getMasterById(master)
-        const sizes_id = await clocksModel.getClocksId(size)
-
-
+        const masters = await mastersModel.getMasterById(master)
+        const masters_id = masters.master.id
+        const clocks_id = await clocksModel.getClocksId(size)
+        const start_order_date = dateString(start)
+        const end_order_date = dateString(end)
+        const editedMaster = await database.query('UPDATE orders set cities_id=$1, masters_id=$2, clocks_id=$3, order_start_time=$4, order_end_time = $5  where id = $6 RETURNING *', [cities_id,masters_id,clocks_id,start_order_date,end_order_date,id])
+        return editedMaster.rows
     },
-    // const cities_id = await citiesModel.getCitiesId(city)
-    // const editedMaster = await database.query('UPDATE masters set name=$1, rating=$2, cities_id=$3 where id = $4 RETURNING *', [name,rating,cities_id,id])
-    // return editedMaster.rows
-
-    delOrder: async(id) => {
+    async delOrder (id) {
         return await database.query("DELETE FROM orders WHERE id=$1",[id])
     }
 }

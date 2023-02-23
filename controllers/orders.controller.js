@@ -30,8 +30,8 @@ module.exports = {
     editOrder: async (req,res)=>{
         try {
             const id = req.params.id
-            const {size,master,city,start} = req.body
-            const editedOrder = await ordersModel.editOrder(id,size,master,city,start)
+            const {size,master,city,start,end} = req.body
+            const editedOrder = await ordersModel.editOrder(id,size,master,city,start,end)
             return res.json(editedOrder)
         } catch (error) {
             console.log(error);

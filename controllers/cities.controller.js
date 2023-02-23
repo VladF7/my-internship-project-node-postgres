@@ -15,17 +15,16 @@ module.exports = {
             const newCity = await citiesModel.addCity(name)
             return res.json(newCity)
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
     },
     delCity: async (req,res)=>{
         try {
             const id = req.params.id
-            await citiesModel.delCity(id)
-            return res.json(id)
+            const delCityId = await citiesModel.delCity(id)
+            return res.json(delCityId)
         } catch (error) {
             console.log(error);
-            return res.json(error.severity)
         }
     },
 }
