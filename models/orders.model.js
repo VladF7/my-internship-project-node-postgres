@@ -24,19 +24,8 @@ module.exports = {
             INNER JOIN masters ON masters_id = masters.id 
             INNER JOIN cities ON orders.cities_id = cities.id
             ORDER BY id DESC`)
-        const ordersEdit = orders.rows.map(order => {
-            return {id: order.id, 
-                name: order.name, 
-                email: order.email, 
-                size: order.size, 
-                time: order.time,
-                master: order.master,
-                city: order.city,
-                start: dateString(order.start),
-                end: dateString(order.end)
-            }
-        })
-        return ordersEdit
+
+        return orders.rows
     },
     async getOrdersList () {
         let orders = await database.query(`SELECT masters_id, cities_id,
