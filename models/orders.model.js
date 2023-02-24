@@ -14,7 +14,7 @@ module.exports = {
         return end
     },
     async getOrders () {
-        const orders = await database.query(`
+        let orders = await database.query(`
             SELECT orders.id, customers.name, customers.email, clocks.size, 
             clocks.time_to_fix AS time, masters.name AS master, cities.name AS city,
             order_start_time AS start, order_end_time AS end
@@ -24,8 +24,9 @@ module.exports = {
             INNER JOIN masters ON masters_id = masters.id 
             INNER JOIN cities ON orders.cities_id = cities.id
             ORDER BY id DESC`)
-
-        return orders.rows
+        
+        orders = orders.rows.map(order => {return  {...order, start: dateString(order.start), end: dateString(order.end)}})
+        return orders
     },
     async getOrdersList () {
         let orders = await database.query(`SELECT masters_id, cities_id,
@@ -34,7 +35,7 @@ module.exports = {
         return orders.rows
     },
     async getOrderById (id) {
-        const orders = await database.query(`
+        let order = await database.query(`
             SELECT orders.id, clocks.size AS size, 
             clocks.time_to_fix AS time, masters.name AS master, masters.id AS master_id, masters.rating AS rating, cities.name AS city,
             order_start_time AS start, order_end_time AS end 
@@ -44,7 +45,9 @@ module.exports = {
             INNER JOIN masters ON masters_id = masters.id 
             INNER JOIN cities ON orders.cities_id = cities.id 
             WHERE orders.id = $1`,[id])
-        return orders.rows[0]
+            
+        order = {...order.rows[0], start: dateString(order.start), end: dateString(order.end)}
+        return order
     },
     async editOrder (id,size,master,city,start,end) {
         const cities_id = await citiesModel.getCitiesId(city)
