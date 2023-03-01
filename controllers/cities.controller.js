@@ -1,9 +1,9 @@
-const citiesModel = require('../models/cities.model')
+const citiesService = require('../services/cities.service')
 
 module.exports = {
     getCities: async (req,res)=>{
         try {
-            const cities = await citiesModel.getCities()
+            const cities = await citiesService.getCities()
             return res.json(cities)
         } catch (error) {
             console.log(error);
@@ -12,7 +12,7 @@ module.exports = {
     addCity: async (req,res)=>{
         try {
             const {name} = req.body
-            const newCity = await citiesModel.addCity(name)
+            const newCity = await citiesService.addCity(name)
             return res.json(newCity)
         } catch (error) {
             console.log(error.message);
@@ -21,7 +21,7 @@ module.exports = {
     delCity: async (req,res)=>{
         try {
             const id = req.params.id
-            const delCityId = await citiesModel.delCity(id)
+            const delCityId = await citiesService.delCity(id)
             return res.json(delCityId)
         } catch (error) {
             console.log(error);

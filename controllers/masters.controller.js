@@ -1,9 +1,18 @@
-const mastersModel = require('../models/masters.model')
+const mastersService = require('../services/masters.service')
 
 module.exports = {
+    getFreeMasters: async(req,res)=>{
+        try {
+            const {id,city,start,end} = req.body
+            const mastersListForOrder = await mastersService.getFreeMasters(id,city,start,end)
+            return res.json(mastersListForOrder)
+        } catch (error) {
+            console.log(error);
+        }
+    },
     getMasters: async (req,res)=>{
         try {
-            const masters = await mastersModel.getMasters()
+            const masters = await mastersService.getMasters()
             return res.json(masters)
         } catch (error) {
             console.log(error);
@@ -12,7 +21,7 @@ module.exports = {
     getMasterById: async (req,res)=>{
         try {
             const id = req.params.id
-            const master = await mastersModel.getMasterById(id)
+            const master = await mastersService.getMasterById(id)
             return res.json(master)
         } catch (error) {
             console.log(error);
@@ -21,7 +30,7 @@ module.exports = {
     addMaster: async (req,res)=>{
         try {
             const {name,rating,cities} = req.body
-            const newMaster = await mastersModel.addMaster(name,rating,cities)
+            const newMaster = await mastersService.addMaster(name,rating,cities)
             return res.json(newMaster)
         } catch (error) {
             console.log(error.message);
@@ -31,7 +40,7 @@ module.exports = {
         try {
             const id = req.params.id
             const {name,rating,cities} = req.body
-            const editedMaster = await mastersModel.editMaster(id,name,rating,cities)
+            const editedMaster = await mastersService.editMaster(id,name,rating,cities)
             return res.json(editedMaster)
         } catch (error) {
             console.log(error.message);
@@ -40,7 +49,7 @@ module.exports = {
     delMaster: async (req,res)=>{
         try {
             const id = req.params.id
-            const delMasterId = await mastersModel.delMaster(id)
+            const delMasterId = await mastersService.delMaster(id)
             return res.json(delMasterId)
         } catch (error) {
             console.log(error);

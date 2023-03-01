@@ -2,17 +2,13 @@ const database = require('../database')
 
 module.exports = {
     async addCustomer(name,email) {
-                const newCustomer = await database.query('INSERT INTO customers (name,email) VALUES ($1,$2) RETURNING *',[name,email])
-                return newCustomer.rows
+        const newCustomer = await database.query('INSERT INTO customers (name,email) VALUES ($1,$2) RETURNING *',[name,email])
+        return newCustomer.rows
     },  
     async getCustomerId (email) {
-            try {
-                const customerId = await database.query('SELECT id FROM customers WHERE email = $1',[email])
-                return customerId.rows[0].id
-            } catch (error) {
-                return undefined
-            }
-    },
+        const customerId = await database.query('SELECT id FROM customers WHERE email = $1',[email])
+        return customerId.rows[0].id
+},
     async getCustomers (){
         const masters = await database.query("SELECT * FROM customers ORDER BY id DESC") 
         return masters.rows
@@ -26,10 +22,6 @@ module.exports = {
         return editedCustomer.rows
     },
     async delCustomer (id){
-        try {
-            return await database.query('DELETE FROM customers WHERE id = $1',[id])
-        } catch (error) {
-            return undefined
-        }
+        return await database.query('DELETE FROM customers WHERE id = $1',[id])
     }, 
 }

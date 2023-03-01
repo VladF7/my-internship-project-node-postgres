@@ -1,9 +1,9 @@
-const customersModel = require('../models/customers.model')
+const customersService = require('../services/customers.service')
 
 module.exports = {
     getCustomers: async (req,res)=>{
         try {
-            const customers = await customersModel.getCustomers()
+            const customers = await customersService.getCustomers()
             return res.json(customers)
         } catch (error) {
             console.log(error);
@@ -12,7 +12,7 @@ module.exports = {
     getCustomerById: async (req,res)=>{
         try {
             const id = req.params.id
-        const customer = await customersModel.getCustomerById(id)
+        const customer = await customersService.getCustomerById(id)
         return res.json(customer)
         } catch (error) {
             console.log(error);
@@ -22,7 +22,7 @@ module.exports = {
         try {
             const id = req.params.id
             const {name,email} = req.body
-            const editedCustomer = await customersModel.editCustomer(id,name,email)
+            const editedCustomer = await customersService.editCustomer(id,name,email)
             return res.json(editedCustomer)
         } catch (error) {
             console.log(error);
@@ -31,7 +31,7 @@ module.exports = {
     delCustomer: async (req,res)=>{
         try {
             const id = req.params.id
-            const delCustomerId = await customersModel.delCustomer(id)
+            const delCustomerId = await customersService.delCustomer(id)
             return res.json(delCustomerId)
         } catch (error) {
             console.log(error);

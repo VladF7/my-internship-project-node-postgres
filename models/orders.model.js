@@ -1,20 +1,14 @@
 const database = require('../database')
-const clocksModel = require('./clocks.model')
-const dateString = require('../date')
-const mastersModel = require('./masters.model')
-const citiesModel = require('./cities.model')
 
 module.exports = {
-    async getEndOrderDate (start, size) {;
-        let timeToFix = await clocksModel.getTimeToFix(size)
-            timeToFix = timeToFix.time
-        let end = new Date(start)
-        end = end.setHours(end.getHours() + timeToFix)
-        end = dateString(end)
-        return end
+    async addOrder(customers_id,clocks_id,masters_id,cities_id,start,end){
+        await database.query(`
+            INSERT INTO orders (customers_id,clocks_id,masters_id,cities_id,order_start_time,order_end_time) 
+            VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,[customers_id,clocks_id,masters_id,cities_id,start,end]
+        )
     },
     async getOrders () {
-        let orders = await database.query(`
+        const orders = await database.query(`
             SELECT orders.id, customers.name, customers.email, clocks.size, 
             clocks.time_to_fix AS time, masters.name AS master, cities.name AS city,
             order_start_time AS start, order_end_time AS end
@@ -24,12 +18,10 @@ module.exports = {
             INNER JOIN masters ON masters_id = masters.id 
             INNER JOIN cities ON orders.cities_id = cities.id
             ORDER BY id DESC`)
-        
-        orders = orders.rows.map(order => {return  {...order, start: dateString(order.start), end: dateString(order.end)}})
-        return orders
+        return orders.rows
     },
     async getOrdersList () {
-        let orders = await database.query(`SELECT masters_id, cities_id,
+        let orders = await database.query(`SELECT id, masters_id, cities_id,
             order_start_time AS start, order_end_time AS end
             FROM orders `)
         return orders.rows
@@ -45,17 +37,9 @@ module.exports = {
             INNER JOIN masters ON masters_id = masters.id 
             INNER JOIN cities ON orders.cities_id = cities.id 
             WHERE orders.id = $1`,[id])
-            
-        order = {...order.rows[0], start: dateString(order.start), end: dateString(order.end)}
-        return order
+        return order.rows[0]
     },
-    async editOrder (id,size,master,city,start,end) {
-        const cities_id = await citiesModel.getCitiesId(city)
-        const masters = await mastersModel.getMasterById(master)
-        const masters_id = masters.master.id
-        const clocks_id = await clocksModel.getClocksId(size)
-        const start_order_date = dateString(start)
-        const end_order_date = dateString(end)
+    async editOrder (cities_id,masters_id,clocks_id,start_order_date,end_order_date,id) {
         const editedMaster = await database.query('UPDATE orders set cities_id=$1, masters_id=$2, clocks_id=$3, order_start_time=$4, order_end_time = $5  where id = $6 RETURNING *', [cities_id,masters_id,clocks_id,start_order_date,end_order_date,id])
         return editedMaster.rows
     },

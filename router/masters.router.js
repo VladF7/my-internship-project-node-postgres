@@ -4,8 +4,10 @@ const mastersController = require('../controllers/masters.controller')
 
 router.get('/', mastersController.getMasters)
 router.get('/:id',mastersController.getMasterById)
+router.post('/getMastersList', mastersController.getFreeMasters)
 router.post('/', mastersController.addMaster)
 router.put('/:id',mastersController.editMaster)
 router.delete('/:id', mastersController.delMaster)
+
 
 module.exports = router
