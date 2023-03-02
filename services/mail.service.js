@@ -40,7 +40,7 @@ module.exports = {
                             Здравствуйте, ${name}, вы оформили заказ на ремонт часов, в городе ${city} на ${date}.
                         </div>
                         <div>
-                            Размер часов ${size}, время ремонта ${time_to_fix} час/а.
+                            Размер часов - ${size}, время ремонта займет ${time_to_fix} час/а.
                         </div>
                         <div>
                             Мастер ${master_name}, будет у вас с ${start_to_fix} до ${end_to_fix}.
