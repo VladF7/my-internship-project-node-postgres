@@ -2,10 +2,11 @@ const database = require('../database')
 
 module.exports = {
     async addOrder(customers_id,clocks_id,masters_id,cities_id,start,end){
-        await database.query(`
+        const order = await database.query(`
             INSERT INTO orders (customers_id,clocks_id,masters_id,cities_id,order_start_time,order_end_time) 
             VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,[customers_id,clocks_id,masters_id,cities_id,start,end]
         )
+        return order.rows[0]
     },
     async getOrders () {
         const orders = await database.query(`

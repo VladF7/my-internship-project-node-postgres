@@ -14,9 +14,9 @@ module.exports = {
         } else {
             orders = orders.filter(order => order.id != id)
             orders = orders.filter((order)=> ( 
-                ((start < formDate.getFormDate(order.end)) && (end > formDate.getFormDate(order.end))) ||
-                ((start < formDate.getFormDate(order.start)) && (end > formDate.getFormDate(order.start))) || 
-                ((start >= formDate.getFormDate(order.start)) && (end <= formDate.getFormDate(order.end)))
+                ((formDate.getFormDate(start) < formDate.getFormDate(order.end)) && (formDate.getFormDate(end) > formDate.getFormDate(order.end))) ||
+                ((formDate.getFormDate(start) < formDate.getFormDate(order.start)) && (formDate.getFormDate(end) > formDate.getFormDate(order.start))) || 
+                ((formDate.getFormDate(start) >= formDate.getFormDate(order.start)) && (formDate.getFormDate(end) <= formDate.getFormDate(order.end)))
             ))
             const busyMastersId = orders.map(order => order.masters_id)           
             const mastersList = await mastersModel.getMastersByCitiesId(cities_id)  

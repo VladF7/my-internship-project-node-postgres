@@ -42,7 +42,6 @@ module.exports = {
         try {
             const id = req.params.id
             const {size,master,city,start,end} = req.body
-            console.log(req.body);
             const editedOrder = await ordersService.editOrder(id,size,master,city,start,end)
             return res.json(editedOrder)
         } catch (error) {
