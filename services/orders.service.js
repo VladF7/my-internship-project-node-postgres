@@ -22,7 +22,7 @@ module.exports = {
             await sendMailService.sendSuccessOrderMail (email, name, city, size, masters_id, start, end)
         return newOrder
     },
-    async getEndOrderDate (start, size) {;
+    async getEndOrderDate (start, size) {
         let timeToFix = await clocksService.getTimeToFix(size)
             timeToFix = timeToFix.time
         let end = new Date(start)

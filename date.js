@@ -8,7 +8,7 @@ module.exports = {
     if(dd < 10) dd = '0' + dd;
     if(MM < 10) MM = '0' + MM;
     if(hours < 10) hours = '0' + hours;
-    return date = MM + '.' + dd + '.' + yyyy + ', ' + hours + ':' + '00';    
+    return date = yyyy + '.' + MM + '.' + dd + ', ' + hours + ':' + '00';    
    },
    getDate (d) {
     let date = new Date(d)
