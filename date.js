@@ -17,7 +17,7 @@ module.exports = {
     let yyyy = date.getFullYear();
     if(dd < 10) dd = '0' + dd;
     if(mm < 10) mm = '0' + mm;
-    return date = dd + '.' + mm + '.' + yyyy;    
+    return date = yyyy + '.' + mm + '.' + dd;    
    },
    getTime (d) {
     let date = new Date(d)
