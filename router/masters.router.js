@@ -1,13 +1,14 @@
 const Router = require('express')
 const router = new Router()
 const mastersController = require('../controllers/masters.controller')
+const authMiddleware = require('../middleware/authMiddleware')
 
-router.get('/', mastersController.getMasters)
-router.get('/:id',mastersController.getMasterById)
+router.get('/', authMiddleware, mastersController.getMasters)
+router.get('/:id', authMiddleware, mastersController.getMasterById)
 router.post('/getMastersList', mastersController.getFreeMasters)
-router.post('/', mastersController.addMaster)
-router.put('/:id',mastersController.editMaster)
-router.delete('/:id', mastersController.delMaster)
+router.post('/',authMiddleware, mastersController.addMaster)
+router.put('/:id', authMiddleware, mastersController.editMaster)
+router.delete('/:id', authMiddleware, mastersController.delMaster)
 
 
 module.exports = router
