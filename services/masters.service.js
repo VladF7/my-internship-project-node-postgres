@@ -22,6 +22,7 @@ module.exports = {
             const mastersList = await mastersModel.getMastersByCitiesId(cities_id)  
             freeMasters = mastersList.filter((master) => !busyMastersId.includes(master.id))
             freeMasters = freeMasters.sort((a,b) => a.rating > b.rating)
+            console.log(freeMasters);
         }
         return freeMasters
     },
