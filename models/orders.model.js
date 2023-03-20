@@ -19,6 +19,7 @@ module.exports = {
             INNER JOIN masters ON masters_id = masters.id 
             INNER JOIN cities ON orders.cities_id = cities.id
             ORDER BY id DESC`)
+            console.log('hello');
         return orders.rows
     },
     async getOrdersList () {
