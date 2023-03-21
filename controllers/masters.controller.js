@@ -3,8 +3,8 @@ const mastersService = require('../services/masters.service')
 module.exports = {
     getFreeMasters: async(req,res)=>{
         try {
-            const {id,city,start,end} = req.body
-            const mastersListForOrder = await mastersService.getFreeMasters(id,city,start,end)
+            const {id,city,startTime,endTime} = req.body
+            const mastersListForOrder = await mastersService.getFreeMasters(id,city,startTime,endTime)
             return res.json(mastersListForOrder)
         } catch (error) {
             console.log(error);

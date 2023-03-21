@@ -5,21 +5,21 @@ const citiesService = require('../services/cities.service')
 const ordersService = require('../services/orders.service')
 
 module.exports = {
-    async getFreeMasters (id,city,start,end) {
+    async getFreeMasters (id,city,startTime,endTime) {
         let freeMasters;
-        const cities_id = await citiesService.getCitiesId(city)
+        const cityId = await citiesService.getCitiesId(city)
         let orders = await ordersService.getOrdersList()
         if(!orders.length){
-            freeMasters = await mastersModel.getMastersByCitiesId(cities_id)
+            freeMasters = await mastersModel.getMastersByCitiesId(cityId)
         } else {
             orders = orders.filter(order => order.id != id)
             orders = orders.filter((order)=> ( 
-                ((formDate.getFormDate(start) < formDate.getFormDate(order.end)) && (formDate.getFormDate(end) > formDate.getFormDate(order.end))) ||
-                ((formDate.getFormDate(start) < formDate.getFormDate(order.start)) && (formDate.getFormDate(end) > formDate.getFormDate(order.start))) || 
-                ((formDate.getFormDate(start) >= formDate.getFormDate(order.start)) && (formDate.getFormDate(end) <= formDate.getFormDate(order.end)))
+                ((formDate.getFormDate(startTime) < formDate.getFormDate(order.endTime)) && (formDate.getFormDate(endTime) > formDate.getFormDate(order.endTime))) ||
+                ((formDate.getFormDate(startTime) < formDate.getFormDate(order.startTime)) && (formDate.getFormDate(endTime) > formDate.getFormDate(order.startTime))) || 
+                ((formDate.getFormDate(startTime) >= formDate.getFormDate(order.startTime)) && (formDate.getFormDate(endTime) <= formDate.getFormDate(order.endTime)))
             ))
-            const busyMastersId = orders.map(order => order.masters_id)           
-            const mastersList = await mastersModel.getMastersByCitiesId(cities_id)  
+            const busyMastersId = orders.map(order => order.masterId)           
+            const mastersList = await mastersModel.getMastersByCitiesId(cityId)  
             freeMasters = mastersList.filter((master) => !busyMastersId.includes(master.id))
         }
         return freeMasters.sort((a,b) => a.rating < b.rating ? 1 : -1)
@@ -40,9 +40,9 @@ module.exports = {
         return res
     },
     async addMaster (name,rating,cities) {
-        const new_master_id = await mastersModel.addMaster(name,rating)
-            await mastersModel.addCitiesForMaster(cities, new_master_id)
-        return new_master_id
+        const newMasterId = await mastersModel.addMaster(name,rating)
+            await mastersModel.addCitiesForMaster(cities, newMasterId)
+        return newMasterId
      }, 
      async editMaster (id,name,rating,cities) {
         const editedMaster = await mastersModel.editMaster(id,name,rating)

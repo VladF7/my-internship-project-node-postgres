@@ -10,12 +10,12 @@ module.exports = {
         return customerId.rows[0].id
 },
     async getCustomers (){
-        const masters = await database.query("SELECT * FROM customers ORDER BY id DESC") 
-        return masters.rows
+        const customers = await database.query("SELECT * FROM customers ORDER BY id DESC") 
+        return customers.rows
     },
     async getCustomerById (id){
-        const master = await database.query('SELECT * FROM customers WHERE id = $1',[id])
-        return master.rows[0]
+        const customer = await database.query('SELECT * FROM customers WHERE id = $1',[id])
+        return customer.rows[0]
     }, 
     async editCustomer (id,name,email){
         const editedCustomer = await database.query('UPDATE customers SET name=$1, email=$2 WHERE id = $3 RETURNING *', [name,email,id])

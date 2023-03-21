@@ -6,8 +6,8 @@ module.exports = {
         return cities
     },
     async addCity (name){
-        const cities_id = await citiesModel.getCitiesId(name)
-        if(cities_id){
+        const cityId = await citiesModel.getCitiesId(name)
+        if(cityId){
             return undefined
         } else {
             const newCity = await citiesModel.addCity(name)

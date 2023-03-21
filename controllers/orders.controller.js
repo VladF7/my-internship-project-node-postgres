@@ -5,8 +5,8 @@ module.exports = {
     addOrder: async (req,res)=>{
         try {
             const id = req.params.id
-            const {name,email,size,city,start,end} = req.body
-            const newOrder = await ordersService.addOrder(id,name,email,size,city,start,end)
+            const {name,email,size,city,startTime,endTime} = req.body
+            const newOrder = await ordersService.addOrder(id,name,email,size,city,startTime,endTime)
             return res.json(newOrder)
         } catch (error) {
             console.log(error);
@@ -22,8 +22,8 @@ module.exports = {
     },
     getEndOrderDate: async (req,res)=>{
         try {
-             const {size,start} = req.body  
-             const end = await ordersService.getEndOrderDate(start, size)
+             const {size,startTime} = req.body  
+             const end = await ordersService.getEndOrderDate(startTime, size)
              return res.json(end)
         } catch (error) {
              console.log(error);
