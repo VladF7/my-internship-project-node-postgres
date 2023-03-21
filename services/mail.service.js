@@ -17,15 +17,14 @@ const transporter = nodemailer.createTransport(
 )
 
 module.exports = {
-    async sendSuccessOrderMail (email, name, city, size, master_id, start, end) {
-        let master_name = await mastersModel.getMasterById(master_id)
-            master_name = master_name.name
-        let time_to_fix = await clocksService.getTimeToFix(size)
-            time_to_fix = time_to_fix.time
+    async sendSuccessOrderMail (email, name, city, size, masterId, start, end) {
+        let masterName = await mastersModel.getMasterById(masterId)
+            masterName = masterName.name
+        const timeToFix = await clocksService.getTimeToFix(size)
         
-        let date = formDate.getDate(start)
-        let start_to_fix = formDate.getTime(start)
-        let end_to_fix = formDate.getTime(end)
+        const date = formDate.getDate(start)
+        const startTime = formDate.getTime(start)
+        const endTime = formDate.getTime(end)
 
         await transporter.sendMail({
             from: process.env.SMTP_USER,
@@ -40,10 +39,10 @@ module.exports = {
                             Здравствуйте, ${name}, вы оформили заказ на ремонт часов, в городе ${city} на ${date}.
                         </div>
                         <div>
-                            Размер часов - ${size}, время ремонта займет ${time_to_fix} час/а.
+                            Размер часов - ${size}, время ремонта займет ${timeToFix} час/а.
                         </div>
                         <div>
-                            Мастер ${master_name}, будет у вас с ${start_to_fix} до ${end_to_fix}.
+                            Мастер ${masterName}, будет у вас с ${startTime} до ${endTime}.
                         </div>     
                     </div>
                 `

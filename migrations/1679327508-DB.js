@@ -7,7 +7,7 @@ class DB1679327508 {
                 (
                     id SERIAL PRIMARY KEY, 
                     size VARCHAR(255) NOT NULL, 
-                    timeToFix VARCHAR(255) NOT NULL
+                    "timeToFix" INT NOT NULL
                 )`
         )
         await database.query(
@@ -34,33 +34,33 @@ class DB1679327508 {
                 )`
         )
         await database.query(
-            `CREATE TABLE citiesMasters 
+            `CREATE TABLE "citiesMasters" 
                 (
-                    cityId INT REFERENCES cities (id), 
-                    masterId INT REFERENCES masters (id), 
-                    CONSTRAINT cityMasterPK PRIMARY KEY (cityId, masterId)
+                    "cityId" INT REFERENCES cities (id), 
+                    "masterId" INT REFERENCES masters (id), 
+                    CONSTRAINT cityMasterPK PRIMARY KEY ("cityId", "masterId")
                 )`
         ) 
         await database.query(
             `CREATE TABLE orders 
                 (
                     id SERIAL PRIMARY KEY, 
-                    customerId INT REFERENCES customers (id), 
-                    clockId INT REFERENCES clocks (id), 
-                    masterId INT REFERENCES masters (id), 
-                    cityId INT REFERENCES cities (id), 
-                    startTime TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
-                    endTime TIMESTAMP WITHOUT TIME ZONE NOT NULL
+                    "customerId" INT REFERENCES customers (id), 
+                    "clockId" INT REFERENCES clocks (id), 
+                    "masterId" INT REFERENCES masters (id), 
+                    "cityId" INT REFERENCES cities (id), 
+                    "startTime" TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+                    "endTime" TIMESTAMP WITHOUT TIME ZONE NOT NULL
                 )`
         )
     }
     async down(){
-        await database.query("DROP TABLE orders")
-        await database.query("DROP TABLE citiesMasters") 
-        await database.query("DROP TABLE masters")
-        await database.query("DROP TABLE cities")
-        await database.query("DROP TABLE customers")
-        await database.query("DROP TABLE clocks")
+        await database.query(`DROP TABLE orders`)
+        await database.query(`DROP TABLE "citiesMasters"`) 
+        await database.query(`DROP TABLE masters`)
+        await database.query(`DROP TABLE cities`)
+        await database.query(`DROP TABLE customers`)
+        await database.query(`DROP TABLE clocks`)
     }
 }
 

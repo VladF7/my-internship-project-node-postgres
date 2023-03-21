@@ -5,6 +5,7 @@ const app = express()
 const cors = require('cors')
 const corsOptions = require('./config/corsOption')
 const connectDB = require('./config/dbConfig')
+const migration = require('./migrations/1679327508-DB')
 const PORT = process.env.PORT || 5000
 
 app.use(cors(corsOptions))
