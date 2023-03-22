@@ -1,7 +1,7 @@
 import database from '../database.js'
 
 class DB1679327508 {
-    async up(){
+    up = async () =>{
         await database.query(
             `CREATE TABLE clocks 
                 (
@@ -54,7 +54,7 @@ class DB1679327508 {
                 )`
         )
     }
-    async down(){
+    down = async () => {
         await database.query(`DROP TABLE orders`)
         await database.query(`DROP TABLE "citiesMasters"`) 
         await database.query(`DROP TABLE masters`)

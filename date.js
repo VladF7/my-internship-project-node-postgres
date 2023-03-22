@@ -1,4 +1,4 @@
-export function getFormDate (d) {
+export const getFormDate = (d) => {
     let date = new Date(d)
     let dd = date.getDate();
     let MM = date.getMonth() + 1; 
@@ -9,7 +9,7 @@ export function getFormDate (d) {
     if(hours < 10) hours = '0' + hours;
     return date = yyyy + '.' + MM + '.' + dd + ', ' + hours + ':' + '00';    
    }
-export function getDate (d) {
+export const getDate = (d) => {
     let date = new Date(d)
     let dd = date.getDate();
     let mm = date.getMonth() + 1; 
@@ -18,7 +18,7 @@ export function getDate (d) {
     if(mm < 10) mm = '0' + mm;
     return date = yyyy + '.' + mm + '.' + dd;    
    }
-export function getTime (d) {
+export const getTime = (d) => {
     let date = new Date(d)
     let hours = date.getHours()
     if(hours < 10) hours = '0' + hours;

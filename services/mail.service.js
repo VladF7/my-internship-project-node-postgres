@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport(
 )
 
 export default {
-    async sendSuccessOrderMail (email, name, city, size, masterId, start, end) {
+    sendSuccessOrderMail: async (email, name, city, size, masterId, start, end) => {
         let masterName = await mastersModel.getMasterById(masterId)
             masterName = masterName.name
         const timeToFix = await clocksService.getTimeToFix(size)

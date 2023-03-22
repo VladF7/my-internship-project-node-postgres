@@ -1,10 +1,10 @@
 import clocksModel from '../models/clocks.model.js'
 
 export default {
-    async getClocksId(size) {
+    getClocksId: async (size) => {
         return await clocksModel.getClocksId(size)
     },
-    async getTimeToFix(size) {
+    getTimeToFix: async (size) => {
         return await clocksModel.getTimeToFix(size)
     },
 }

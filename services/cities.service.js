@@ -1,11 +1,11 @@
 import citiesModel from '../models/cities.model.js'
 
 export default {
-    async getCities () {
+    getCities: async () => {
         const cities = await citiesModel.getCities() 
         return cities
     },
-    async addCity (name){
+    addCity: async (name) => {
         const cityId = await citiesModel.getCitiesId(name)
         if(cityId){
             return undefined
@@ -14,14 +14,14 @@ export default {
             return newCity
         }   
     },
-    async delCity (id) {
+    delCity: async (id) => {
         try {
             return await citiesModel.delCity(id)
         } catch (error) {
             return undefined
         }
     },
-    async getCitiesId (name) {
+    getCitiesId: async (name) => {
         try {
             const city = await citiesModel.getCitiesId(name) 
             return city.id
@@ -29,7 +29,7 @@ export default {
             return undefined
         }  
     },
-    async getCityById (id){
+    getCityById: async (id) => {
         return await citiesModel.getCityById(id)
     }
 }

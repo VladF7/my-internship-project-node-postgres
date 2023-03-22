@@ -6,7 +6,7 @@ import customersService from '../services/customers.service.js'
 import sendMailService from '../services/mail.service.js'
 
 export default {
-    async addOrder (masterId, name,email,size,city,startTime,endTime) {  
+    addOrder: async (masterId, name,email,size,city,startTime,endTime) => {  
         let customerId = await customersService.getCustomerId(email)
 
         if(!customerId){
@@ -20,25 +20,25 @@ export default {
             await sendMailService.sendSuccessOrderMail (email, name, city, size, masterId, startTime, endTime)
         return newOrder
     },
-    async getEndOrderDate (startTime, size) {
+    getEndOrderDate: async (startTime, size) => {
         let timeToFix = await clocksService.getTimeToFix(size)
         let endTime = new Date(startTime)
             endTime = endTime.setHours(endTime.getHours() + timeToFix)
             endTime = getFormDate(endTime)
         return endTime
     },
-    async getOrders () {
+    getOrders: async () => {
         const orders = await ordersModel.getOrders()
         return orders.map(order => {return  {...order, startTime: getFormDate(order.startTime), endTime: getFormDate(order.endTime)}})
     },
-    async getOrdersList () {
+    getOrdersList: async () => {
         return await ordersModel.getOrdersList()
     },
-    async getOrderById (id) {
+    getOrderById: async (id) => {
         const order = await ordersModel.getOrderById(id)
         return {...order, startTime: getFormDate(order.startTime), endTime: getFormDate(order.endTime)}
     },
-    async editOrder (id,size,masterId,city,start,end) {
+    editOrder: async (id,size,masterId,city,start,end) => {
         const cityId = await citiesService.getCitiesId(city)
         const clockId = await clocksService.getClocksId(size)
         const startTime = getFormDate(start)
@@ -46,7 +46,7 @@ export default {
         const editedOrder = await ordersModel.editOrder(cityId,masterId,clockId,startTime,endTime,id)
         return editedOrder
     },
-    async delOrder (id) {
+    delOrder: async (id) => {
         return await ordersModel.delOrder(id)
     }
 }

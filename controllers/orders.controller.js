@@ -1,7 +1,7 @@
 import ordersService from '../services/orders.service.js'
 
 export default {
-    addOrder: async (req,res)=>{
+    addOrder: async (req,res) => {
         try {
             const id = req.params.id
             const {name,email,size,city,startTime,endTime} = req.body
@@ -11,7 +11,7 @@ export default {
             console.log(error);
         }
     },
-    getOrders: async (req,res)=>{
+    getOrders: async (req,res) => {
         try {
             const orders = await ordersService.getOrders()
             return res.json(orders)
@@ -19,7 +19,7 @@ export default {
             console.log(error);   
         }
     },
-    getEndOrderDate: async (req,res)=>{
+    getEndOrderDate: async (req,res) => {
         try {
              const {size,startTime} = req.body  
              const end = await ordersService.getEndOrderDate(startTime, size)
@@ -28,7 +28,7 @@ export default {
              console.log(error);
         }
      },
-    getOrderById: async(req,res) => {
+    getOrderById: async (req,res) => {
         try {
             const id = req.params.id
             const order = await ordersService.getOrderById(id)
@@ -37,7 +37,7 @@ export default {
             console.log(error);
         }
     },
-    editOrder: async (req,res)=>{
+    editOrder: async (req,res) => {
         try {
             const id = req.params.id
             const {size,master,city,start,end} = req.body
@@ -47,7 +47,7 @@ export default {
             console.log(error);
         }
     },
-    delOrder: async (req,res)=>{
+    delOrder: async (req,res) => {
         try {
             const id = req.params.id
             await ordersService.delOrder(id)
