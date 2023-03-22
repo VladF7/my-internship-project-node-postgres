@@ -1,10 +1,11 @@
-const Router = require('express')
-const router = new Router()
-const citiesRouter = require('./citises.router')
-const mastersRouter = require('./masters.router')
-const customersRouter = require('./customers.router')
-const ordersRouter = require('./orders.router')
-const authRouter = require('./auth.router')
+import { Router } from 'express'
+import citiesRouter from './cities.router.js'
+import mastersRouter from './masters.router.js'
+import ordersRouter from './orders.router.js'
+import customersRouter from './customers.router.js'
+import authRouter from './auth.router.js'
+
+const router = Router();
 
 router.use('/cities', citiesRouter)
 router.use('/masters', mastersRouter)
@@ -12,5 +13,4 @@ router.use('/customers', customersRouter)
 router.use('/orders', ordersRouter)
 router.use('/auth', authRouter)
 
-module.exports = router
-
+export default router

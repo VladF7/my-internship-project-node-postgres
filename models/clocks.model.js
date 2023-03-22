@@ -1,6 +1,6 @@
-const database = require('../database')
+import database from '../database.js'
 
-module.exports = {
+export default {
     async getClocksId(size) {
         const clockId = await database.query('SELECT id FROM clocks WHERE size = $1',[size])
         return clockId.rows[0].id

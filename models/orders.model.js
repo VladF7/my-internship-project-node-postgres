@@ -1,6 +1,6 @@
-const database = require('../database')
+import database from '../database.js'
 
-module.exports = {
+export default {
     async addOrder(customerId,clockId,masterId,cityId,startTime,endTime){
         const order = await database.query(`
             INSERT INTO orders ("customerId","clockId","masterId","cityId","startTime","endTime") 

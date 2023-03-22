@@ -1,7 +1,8 @@
-const Router = require('express')
-const router = new Router()
-const mastersController = require('../controllers/masters.controller')
-const authMiddleware = require('../middleware/authMiddleware')
+import { Router } from 'express'
+import mastersController from '../controllers/masters.controller.js'
+import authMiddleware from '../middleware/authMiddleware.js'
+
+const router = Router()
 
 router.post('/getMastersList', mastersController.getFreeMasters)
 router.get('/', authMiddleware, mastersController.getMasters)
@@ -11,4 +12,4 @@ router.put('/:id', authMiddleware, mastersController.editMaster)
 router.delete('/:id', authMiddleware, mastersController.delMaster)
 
 
-module.exports = router
+export default router

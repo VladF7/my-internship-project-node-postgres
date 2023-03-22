@@ -1,6 +1,6 @@
-const citiesModel = require('../models/cities.model')
+import citiesModel from '../models/cities.model.js'
 
-module.exports = {
+export default {
     async getCities () {
         const cities = await citiesModel.getCities() 
         return cities
@@ -33,3 +33,4 @@ module.exports = {
         return await citiesModel.getCityById(id)
     }
 }
+

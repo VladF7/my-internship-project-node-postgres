@@ -1,4 +1,4 @@
-module.exports = {
+export default {
    getFormDate (d) {
     let date = new Date(d)
     let dd = date.getDate();

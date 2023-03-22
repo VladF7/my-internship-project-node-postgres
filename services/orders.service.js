@@ -1,12 +1,11 @@
-const ordersModel = require('../models/orders.model')
-const formDate = require('../date')
+import formDate from '../date.js'
+import ordersModel from '../models/orders.model.js'
+import citiesService from '../services/cities.service.js'
+import clocksService from '../services/clocks.service.js'
+import customersService from '../services/customers.service.js'
+import sendMailService from '../services/mail.service.js'
 
-const citiesService = require('../services/cities.service')
-const clocksService = require('../services/clocks.service')
-const customersService = require('../services/customers.service')
-const sendMailService = require('../services/mail.service')
-
-module.exports = {
+export default {
     async addOrder (masterId, name,email,size,city,startTime,endTime) {  
         let customerId = await customersService.getCustomerId(email)
 

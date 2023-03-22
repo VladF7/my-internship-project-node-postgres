@@ -1,6 +1,6 @@
-const clocksModel = require('../models/clocks.model')
+import clocksModel from '../models/clocks.model.js'
 
-module.exports = {
+export default {
     async getClocksId(size) {
         return await clocksModel.getClocksId(size)
     },

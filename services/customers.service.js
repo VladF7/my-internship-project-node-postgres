@@ -1,6 +1,6 @@
-const customersModel = require('../models/customers.model')
+import customersModel from '../models/customers.model.js'
 
-module.exports = {
+export default {
     async addCustomer(name,email) {
         return await customersModel.addCustomer(name,email)
     },  
