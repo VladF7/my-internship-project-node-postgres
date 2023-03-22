@@ -1,4 +1,4 @@
-const database = require('../database')
+import database from '../database.js'
 
 class DB1679327508 {
     async up(){
@@ -64,4 +64,4 @@ class DB1679327508 {
     }
 }
 
-module.exports = new DB1679327508()
+export default new DB1679327508()

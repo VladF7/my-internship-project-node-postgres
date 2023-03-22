@@ -1,6 +1,6 @@
-const customersService = require('../services/customers.service')
+import customersService from '../services/customers.service.js'
 
-module.exports = {
+export default {
     getCustomers: async (req,res)=>{
         try {
             const customers = await customersService.getCustomers()

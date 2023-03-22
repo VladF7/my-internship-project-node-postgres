@@ -1,6 +1,6 @@
-const database = require('../database')
+import database from '../database.js'
 
-module.exports = {
+export default {
     async getMasters () {
         const masters = await database.query("SELECT id, name, rating FROM masters") 
         return masters.rows

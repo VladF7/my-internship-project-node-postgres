@@ -1,6 +1,6 @@
-const database = require('../database')
+import database from '../database.js'
 
-module.exports = {
+export default {    
     async getCities () {
         const cities = await database.query("SELECT * FROM cities")      
         return cities.rows
@@ -20,4 +20,6 @@ module.exports = {
         return await database.query('SELECT * FROM cities WHERE id = $1',[id])
     }
 }
+
+
 

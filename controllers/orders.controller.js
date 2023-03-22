@@ -1,7 +1,6 @@
-const ordersService = require('../services/orders.service')
+import ordersService from '../services/orders.service.js'
 
-
-module.exports = {
+export default {
     addOrder: async (req,res)=>{
         try {
             const id = req.params.id

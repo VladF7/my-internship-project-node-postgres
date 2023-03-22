@@ -1,11 +1,12 @@
-const Router = require('express')
-const router = new Router()
-const customersController = require('../controllers/customers.controller')
-const authMiddleware = require('../middleware/authMiddleware')
+import { Router } from 'express'
+import customersController from '../controllers/customers.controller.js'
+import {authMiddleWare} from '../middleware/authMiddleware.js'
 
-router.get('/', authMiddleware, customersController.getCustomers)
-router.get('/:id', authMiddleware, customersController.getCustomerById)
-router.put('/:id', authMiddleware, customersController.editCustomer)
-router.delete('/:id', authMiddleware, customersController.delCustomer)
+const router = Router()
 
-module.exports = router
+router.get('/', authMiddleWare, customersController.getCustomers)
+router.get('/:id', authMiddleWare, customersController.getCustomerById)
+router.put('/:id', authMiddleWare, customersController.editCustomer)
+router.delete('/:id', authMiddleWare, customersController.delCustomer)
+
+export default router

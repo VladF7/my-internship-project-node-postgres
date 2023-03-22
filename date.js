@@ -1,5 +1,4 @@
-module.exports = {
-   getFormDate (d) {
+export function getFormDate (d) {
     let date = new Date(d)
     let dd = date.getDate();
     let MM = date.getMonth() + 1; 
@@ -9,8 +8,8 @@ module.exports = {
     if(MM < 10) MM = '0' + MM;
     if(hours < 10) hours = '0' + hours;
     return date = yyyy + '.' + MM + '.' + dd + ', ' + hours + ':' + '00';    
-   },
-   getDate (d) {
+   }
+export function getDate (d) {
     let date = new Date(d)
     let dd = date.getDate();
     let mm = date.getMonth() + 1; 
@@ -18,12 +17,10 @@ module.exports = {
     if(dd < 10) dd = '0' + dd;
     if(mm < 10) mm = '0' + mm;
     return date = yyyy + '.' + mm + '.' + dd;    
-   },
-   getTime (d) {
+   }
+export function getTime (d) {
     let date = new Date(d)
     let hours = date.getHours()
     if(hours < 10) hours = '0' + hours;
     return date = hours + ':' + '00';    
    }
-}
-

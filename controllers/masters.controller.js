@@ -1,6 +1,6 @@
-const mastersService = require('../services/masters.service')
+import mastersService from '../services/masters.service.js'
 
-module.exports = {
+export default {
     getFreeMasters: async(req,res)=>{
         try {
             const {id,city,startTime,endTime} = req.body

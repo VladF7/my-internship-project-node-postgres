@@ -1,8 +1,7 @@
-const nodemailer = require('nodemailer')
-const formDate = require('../date')
-const mastersModel = require('../models/masters.model')
-
-const clocksService = require('../services/clocks.service')
+import nodemailer from 'nodemailer'
+import {getDate, getTime} from '../date.js'
+import mastersModel from '../models/masters.model.js'
+import clocksService from '../services/clocks.service.js'
 
 const transporter = nodemailer.createTransport(
     {
@@ -16,15 +15,15 @@ const transporter = nodemailer.createTransport(
     }
 )
 
-module.exports = {
+export default {
     async sendSuccessOrderMail (email, name, city, size, masterId, start, end) {
         let masterName = await mastersModel.getMasterById(masterId)
             masterName = masterName.name
         const timeToFix = await clocksService.getTimeToFix(size)
         
-        const date = formDate.getDate(start)
-        const startTime = formDate.getTime(start)
-        const endTime = formDate.getTime(end)
+        const date = getDate(start)
+        const startTime = getTime(start)
+        const endTime = getTime(end)
 
         await transporter.sendMail({
             from: process.env.SMTP_USER,

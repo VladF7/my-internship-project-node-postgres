@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
 
 const generateAccessToken = (email) => {
     const payload = {
@@ -7,7 +7,7 @@ const generateAccessToken = (email) => {
     return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '24h'})
 }
 
-module.exports = {
+export default {
     async login(req,res){
         try {
             const {email,password} = req.body
@@ -25,13 +25,13 @@ module.exports = {
             console.log(error);
         }
     },
-   async auth (req,res){
-    try {
-        const {email} = req.user
-        const token = generateAccessToken(email)
-        return res.json({token, user: email})    
-    } catch (error) {
-        console.log(error);
+    async auth (req,res){
+        try {
+            const {email} = req.user
+            const token = generateAccessToken(email)
+            return res.json({token, user: email})    
+        } catch (error) {
+            console.log(error);
+        }
     }
-   }
 }

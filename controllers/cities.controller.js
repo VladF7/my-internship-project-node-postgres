@@ -1,6 +1,6 @@
-const citiesService = require('../services/cities.service')
+import citiesService from '../services/cities.service.js'
 
-module.exports = {
+export default {
     getCities: async (req,res)=>{
         try {
             const cities = await citiesService.getCities()

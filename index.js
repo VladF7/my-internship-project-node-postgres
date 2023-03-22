@@ -1,16 +1,16 @@
-require('dotenv').config()
-const express = require('express')
-const router = require('./router/mainRouter')
+import 'dotenv/config'
+import express from 'express'
+import routes from './router/mainRouter.js'
+import cors from 'cors'
+import corsOptions from './config/corsOption.js'
+import connectDB from './config/dbConfig.js'
+
 const app = express()
-const cors = require('cors')
-const corsOptions = require('./config/corsOption')
-const connectDB = require('./config/dbConfig')
-const migration = require('./migrations/1679327508-DB')
 const PORT = process.env.PORT || 5000
 
 app.use(cors(corsOptions))
 app.use(express.json())
-app.use('/api', router)
+app.use('/api', routes)
 
 const start = async () => {
     try {

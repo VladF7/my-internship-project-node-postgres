@@ -1,10 +1,9 @@
-const mastersModel = require('../models/masters.model')
-const formDate = require('../date')
+import {getFormDate} from '../date.js'
+import mastersModel from '../models/masters.model.js'
+import citiesService from '../services/cities.service.js'
+import ordersService from '../services/orders.service.js'
 
-const citiesService = require('../services/cities.service')
-const ordersService = require('../services/orders.service')
-
-module.exports = {
+export default {
     async getFreeMasters (id,city,startTime,endTime) {
         let freeMasters;
         const cityId = await citiesService.getCitiesId(city)
@@ -14,9 +13,9 @@ module.exports = {
         } else {
             orders = orders.filter(order => order.id != id)
             orders = orders.filter((order)=> ( 
-                ((formDate.getFormDate(startTime) < formDate.getFormDate(order.endTime)) && (formDate.getFormDate(endTime) > formDate.getFormDate(order.endTime))) ||
-                ((formDate.getFormDate(startTime) < formDate.getFormDate(order.startTime)) && (formDate.getFormDate(endTime) > formDate.getFormDate(order.startTime))) || 
-                ((formDate.getFormDate(startTime) >= formDate.getFormDate(order.startTime)) && (formDate.getFormDate(endTime) <= formDate.getFormDate(order.endTime)))
+                ((getFormDate(startTime) < getFormDate(order.endTime)) && (getFormDate(endTime) > getFormDate(order.endTime))) ||
+                ((getFormDate(startTime) < getFormDate(order.startTime)) && (getFormDate(endTime) > getFormDate(order.startTime))) || 
+                ((getFormDate(startTime) >= getFormDate(order.startTime)) && (getFormDate(endTime) <= getFormDate(order.endTime)))
             ))
             const busyMastersId = orders.map(order => order.masterId)           
             const mastersList = await mastersModel.getMastersByCitiesId(cityId)  

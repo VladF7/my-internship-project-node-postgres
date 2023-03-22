@@ -1,6 +1,6 @@
-const database = require('../database')
+import database from '../database.js'
 
-module.exports = {
+export default {
     async addCustomer(name,email) {
         const newCustomer = await database.query('INSERT INTO customers (name,email) VALUES ($1,$2) RETURNING *',[name,email])
         return newCustomer.rows
