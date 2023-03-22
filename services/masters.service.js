@@ -4,7 +4,7 @@ import citiesService from '../services/cities.service.js'
 import ordersService from '../services/orders.service.js'
 
 export default {
-    async getFreeMasters (id,city,startTime,endTime) {
+    getFreeMasters: async (id,city,startTime,endTime) => {
         let freeMasters;
         const cityId = await citiesService.getCitiesId(city)
         let orders = await ordersService.getOrdersList()
@@ -23,33 +23,33 @@ export default {
         }
         return freeMasters.sort((a,b) => a.rating < b.rating ? 1 : -1)
     },
-    async getMasters () {
+    getMasters: async () => {
         const res = {}
             res.masters = await mastersModel.getMasters()
             res.cities = await mastersModel.getCitiesForMaster()
         return res
     },
-    async getMastersByCitiesId (id) {
+    getMastersByCitiesId: async (id) => {
         return await mastersModel.getMastersByCitiesId(id)
     },
-    async getMasterById (id) {
+    getMasterById: async (id) => {
         const res = {}
             res.master = await mastersModel.getMasterById(id)
             res.master.cities = await mastersModel.getCitiesByMasterId(id)
         return res
     },
-    async addMaster (name,rating,cities) {
+    addMaster: async (name,rating,cities) => {
         const newMasterId = await mastersModel.addMaster(name,rating)
             await mastersModel.addCitiesForMaster(cities, newMasterId)
         return newMasterId
-     }, 
-     async editMaster (id,name,rating,cities) {
+    }, 
+    editMaster: async (id,name,rating,cities) => {
         const editedMaster = await mastersModel.editMaster(id,name,rating)
             await mastersModel.delCitiesForMaster(id)
             await mastersModel.addCitiesForMaster(cities,id)
         return editedMaster
     },
-    async delMaster (id) {
+    delMaster: async (id) => {
         const isMasterBusy = await mastersModel.isMasterBusy(id)
         if(isMasterBusy){
             return undefined

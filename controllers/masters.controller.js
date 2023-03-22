@@ -1,7 +1,7 @@
 import mastersService from '../services/masters.service.js'
 
 export default {
-    getFreeMasters: async(req,res)=>{
+    getFreeMasters: async(req,res) => {
         try {
             const {id,city,startTime,endTime} = req.body
             const mastersListForOrder = await mastersService.getFreeMasters(id,city,startTime,endTime)
@@ -10,7 +10,7 @@ export default {
             console.log(error);
         }
     },
-    getMasters: async (req,res)=>{
+    getMasters: async (req,res) => {
         try {
             const masters = await mastersService.getMasters()
             return res.json(masters)
@@ -18,7 +18,7 @@ export default {
             console.log(error);
         }
     },
-    getMasterById: async (req,res)=>{
+    getMasterById: async (req,res) => {
         try {
             const id = req.params.id
             const master = await mastersService.getMasterById(id)
@@ -27,7 +27,7 @@ export default {
             console.log(error);
         }
     },
-    addMaster: async (req,res)=>{
+    addMaster: async (req,res) => {
         try {
             const {name,rating,cities} = req.body
             const newMaster = await mastersService.addMaster(name,rating,cities)
@@ -36,7 +36,7 @@ export default {
             console.log(error.message);
         }
     },
-    editMaster: async (req,res)=>{
+    editMaster: async (req,res) => {
         try {
             const id = req.params.id
             const {name,rating,cities} = req.body
@@ -46,7 +46,7 @@ export default {
             console.log(error.message);
         }
     },
-    delMaster: async (req,res)=>{
+    delMaster: async (req,res) => {
         try {
             const id = req.params.id
             const delMasterId = await mastersService.delMaster(id)

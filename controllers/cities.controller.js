@@ -1,7 +1,7 @@
 import citiesService from '../services/cities.service.js'
 
 export default {
-    getCities: async (req,res)=>{
+    getCities: async (req,res) => {
         try {
             const cities = await citiesService.getCities()
             return res.json(cities)
@@ -9,7 +9,7 @@ export default {
             console.log(error);
         }
     },
-    addCity: async (req,res)=>{
+    addCity: async (req,res) => {
         try {
             const {name} = req.body
             const newCity = await citiesService.addCity(name)
@@ -18,7 +18,7 @@ export default {
             console.log(error.message);
         }
     },
-    delCity: async (req,res)=>{
+    delCity: async (req,res) => {
         try {
             const id = req.params.id
             const delCityId = await citiesService.delCity(id)

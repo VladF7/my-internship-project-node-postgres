@@ -8,7 +8,7 @@ const generateAccessToken = (email) => {
 }
 
 export default {
-    async login(req,res){
+    login: async(req,res) => {
         try {
             const {email,password} = req.body
             const validEmail = email === process.env.ADMIN_EMAIL
@@ -25,7 +25,7 @@ export default {
             console.log(error);
         }
     },
-    async auth (req,res){
+    auth: async(req,res) => {
         try {
             const {email} = req.user
             const token = generateAccessToken(email)
