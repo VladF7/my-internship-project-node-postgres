@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import citiesController from '../controllers/cities.controller.js'
-import authMiddleware from '../middleware/authMiddleware.js'
+import {authMiddleWare} from '../middleware/authMiddleware.js'
 
 const router = Router()
 
 router.get('/', citiesController.getCities)
-router.post('/', authMiddleware, citiesController.addCity)
-router.delete('/:id', authMiddleware, citiesController.delCity)
+router.post('/', authMiddleWare, citiesController.addCity)
+router.delete('/:id', authMiddleWare, citiesController.delCity)
 
 export default router

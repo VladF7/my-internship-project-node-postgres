@@ -1,4 +1,4 @@
-import formDate from '../date.js'
+import {getFormDate} from '../date.js'
 import ordersModel from '../models/orders.model.js'
 import citiesService from '../services/cities.service.js'
 import clocksService from '../services/clocks.service.js'
@@ -24,25 +24,25 @@ export default {
         let timeToFix = await clocksService.getTimeToFix(size)
         let endTime = new Date(startTime)
             endTime = endTime.setHours(endTime.getHours() + timeToFix)
-            endTime = formDate.getFormDate(endTime)
+            endTime = getFormDate(endTime)
         return endTime
     },
     async getOrders () {
         const orders = await ordersModel.getOrders()
-        return orders.map(order => {return  {...order, startTime: formDate.getFormDate(order.startTime), endTime: formDate.getFormDate(order.endTime)}})
+        return orders.map(order => {return  {...order, startTime: getFormDate(order.startTime), endTime: getFormDate(order.endTime)}})
     },
     async getOrdersList () {
         return await ordersModel.getOrdersList()
     },
     async getOrderById (id) {
         const order = await ordersModel.getOrderById(id)
-        return {...order, startTime: formDate.getFormDate(order.startTime), endTime: formDate.getFormDate(order.endTime)}
+        return {...order, startTime: getFormDate(order.startTime), endTime: getFormDate(order.endTime)}
     },
     async editOrder (id,size,masterId,city,start,end) {
         const cityId = await citiesService.getCitiesId(city)
         const clockId = await clocksService.getClocksId(size)
-        const startTime = formDate.getFormDate(start)
-        const endTime = formDate.getFormDate(end)
+        const startTime = getFormDate(start)
+        const endTime = getFormDate(end)
         const editedOrder = await ordersModel.editOrder(cityId,masterId,clockId,startTime,endTime,id)
         return editedOrder
     },

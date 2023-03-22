@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer'
-import formDate from '../date.js'
+import {getDate, getTime} from '../date.js'
 import mastersModel from '../models/masters.model.js'
 import clocksService from '../services/clocks.service.js'
 
@@ -21,9 +21,9 @@ export default {
             masterName = masterName.name
         const timeToFix = await clocksService.getTimeToFix(size)
         
-        const date = formDate.getDate(start)
-        const startTime = formDate.getTime(start)
-        const endTime = formDate.getTime(end)
+        const date = getDate(start)
+        const startTime = getTime(start)
+        const endTime = getTime(end)
 
         await transporter.sendMail({
             from: process.env.SMTP_USER,
