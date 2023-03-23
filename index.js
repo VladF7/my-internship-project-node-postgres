@@ -13,13 +13,13 @@ app.use(express.json())
 app.use('/api', routes)
 
 const start = async () => {
-    try {
-        connectDB()
-        app.listen(PORT,()=> console.log('Server started on PORT'+ ' ' + PORT ))
-    } catch (error) {
-        console.log(error);
-    }
+  try {
+    connectDB()
+    app.listen(PORT, () => console.log('Server started on PORT' + ' ' + PORT))
+  } catch (error) {
+    console.log(error)
+  }
 }
-console.log(process.env.NODE_ENV);
+console.log(process.env.NODE_ENV)
 
 start()
