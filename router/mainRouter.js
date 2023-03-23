@@ -5,7 +5,7 @@ import ordersRouter from './orders.router.js'
 import customersRouter from './customers.router.js'
 import authRouter from './auth.router.js'
 
-const router = Router();
+const router = Router()
 
 router.use('/cities', citiesRouter)
 router.use('/masters', mastersRouter)
