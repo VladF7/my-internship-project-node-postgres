@@ -1,24 +1,28 @@
-import database from '../database.js'
+import { City } from '../db/models/models.js'
 
 export default {
   getCities: async () => {
-    const cities = await database.query('SELECT * FROM cities')
-    return cities.rows
+    const cities = await City.findAll()
+    return cities
   },
   addCity: async (name) => {
-    const newCity = await database.query('INSERT INTO cities (name) VALUES ($1) RETURNING *', [
-      name
-    ])
-    return newCity.rows
+    const newCity = await City.create({ name })
+    return newCity
   },
   delCity: async (id) => {
-    return await database.query('DELETE FROM cities WHERE id = $1', [id])
+    return await City.destroy({
+      where: { id }
+    })
   },
-  getCitiesId: async (name) => {
-    const citiesId = await database.query('SELECT id FROM cities WHERE name = $1', [name])
-    return citiesId.rows[0]
+  getCityId: async (name) => {
+    const cityId = await City.findOne({
+      attributes: ['id'],
+      where: { name }
+    })
+    return cityId.dataValues.id
   },
   getCityById: async (id) => {
-    return await database.query('SELECT * FROM cities WHERE id = $1', [id])
+    const city = await City.findByPk(id)
+    return city
   }
 }

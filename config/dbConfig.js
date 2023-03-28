@@ -1,15 +1,14 @@
-import pg from 'pg'
-
-const client = new pg.Client(process.env.DB_URL)
+import sequelize from '../db/database.js'
+/* eslint-disable */
+import * as models from '../db/models/models.js'
 
 const connectDB = async () => {
-  client.connect((err) => {
-    if (err) {
-      console.log(err)
-      return err
-    }
-    console.log('db connected')
-  })
+  try {
+    await sequelize.authenticate()
+    console.log('Connection has been established successfully.')
+  } catch (error) {
+    console.error('Unable to connect to the database:', error)
+  }
 }
 
 export default connectDB

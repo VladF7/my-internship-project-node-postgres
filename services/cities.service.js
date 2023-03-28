@@ -6,25 +6,25 @@ export default {
     return cities
   },
   addCity: async (name) => {
-    const cityId = await citiesModel.getCitiesId(name)
-    if (cityId) {
-      return undefined
-    } else {
+    try {
       const newCity = await citiesModel.addCity(name)
       return newCity
-    }
-  },
-  delCity: async (id) => {
-    try {
-      return await citiesModel.delCity(id)
     } catch (error) {
       return undefined
     }
   },
-  getCitiesId: async (name) => {
+  delCity: async (cityId) => {
     try {
-      const city = await citiesModel.getCitiesId(name)
-      return city.id
+      const delCity = await citiesModel.delCity(cityId)
+      return delCity
+    } catch (error) {
+      return undefined
+    }
+  },
+  getCityId: async (name) => {
+    try {
+      const city = await citiesModel.getCityId(name)
+      return city
     } catch (error) {
       return undefined
     }

@@ -6,7 +6,8 @@ export default {
   },
   getCustomerId: async (email) => {
     try {
-      return await customersModel.getCustomerId(email)
+      const customerId = await customersModel.getCustomerId(email)
+      return customerId
     } catch (error) {
       return undefined
     }
