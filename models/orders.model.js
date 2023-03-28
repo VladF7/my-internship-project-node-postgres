@@ -1,4 +1,8 @@
 import { Order } from '../db/models/Order.js'
+import { City } from '../db/models/Сity.js'
+import { Master } from '../db/models/Master.js'
+import { Customer } from '../db/models/Сustomer.js'
+import { Clock } from '../db/models/Clock.js'
 
 export default {
   addOrder: async (customerId, clockId, masterId, cityId, startTime, endTime) => {
@@ -8,20 +12,17 @@ export default {
   getOrders: async () => {
     const orders = await Order.findAll({
       order: [['id', 'DESC']],
-      include: ['city', 'master', 'customer', 'clock']
+      include: [City, Master, Customer, Clock]
     })
     return orders
   },
-
   getOrderById: async (id) => {
-    const order = await Order.findOne({
-      where: { id },
-      include: ['city', 'master', 'customer', 'clock']
+    const order = await Order.findByPk(id, {
+      include: [City, Master, Customer, Clock]
     })
     return order
   },
   editOrder: async (cityId, masterId, clockId, startTime, endTime, id) => {
-    console.log(cityId, masterId, clockId, startTime, endTime, id)
     const editedOrder = await Order.update(
       { cityId, masterId, clockId, startTime, endTime },
       { where: { id } }

@@ -10,14 +10,14 @@ export default {
       attributes: ['id'],
       where: { email }
     })
-    return customerId
+    return customerId.dataValues.id
   },
   getCustomers: async () => {
     const customers = await Customer.findAll({ order: [['id', 'DESC']] })
     return customers
   },
   getCustomerById: async (id) => {
-    const customer = await Customer.findOne({ where: { id } })
+    const customer = await Customer.findByPk(id)
     return customer
   },
   editCustomer: async (id, name, email) => {

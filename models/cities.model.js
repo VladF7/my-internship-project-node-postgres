@@ -19,12 +19,10 @@ export default {
       attributes: ['id'],
       where: { name }
     })
-    return cityId
+    return cityId.dataValues.id
   },
   getCityById: async (id) => {
-    const city = await City.findOne({
-      where: { id }
-    })
+    const city = await City.findByPk(id)
     return city
   }
 }

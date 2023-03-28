@@ -24,7 +24,7 @@ export default {
   getCityId: async (name) => {
     try {
       const city = await citiesModel.getCityId(name)
-      return city.id
+      return city
     } catch (error) {
       return undefined
     }

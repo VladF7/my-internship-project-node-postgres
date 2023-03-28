@@ -6,13 +6,13 @@ export default {
       attributes: ['id'],
       where: { size }
     })
-    return clockId
+    return clockId.dataValues.id
   },
   getTimeToFix: async (size) => {
     const timeToFix = await Clock.findOne({
       attributes: ['timeToFix'],
       where: { size }
     })
-    return timeToFix
+    return timeToFix.dataValues.timeToFix
   }
 }

@@ -26,8 +26,7 @@ export default {
     return masters
   },
   getMasterById: async (id) => {
-    const master = await Master.findOne({
-      where: { id },
+    const master = await Master.findByPk(id, {
       include: [
         {
           model: City,
