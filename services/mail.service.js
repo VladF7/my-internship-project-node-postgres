@@ -29,19 +29,19 @@ export default {
       subject: `${process.env.COMPANY_NAME}`,
       text: '',
       html: `
-                    <h1>Вы успешно оформили заказ на сайте ${process.env.API_URL}</h1>
-                    <div>
-                        <div>
-                            Здравствуйте, ${name}, вы оформили заказ на ремонт часов, в городе ${city} на ${date}.
-                        </div>
-                        <div>
-                            Размер часов - ${size}, время ремонта займет ${timeToFix} час/а.
-                        </div>
-                        <div>
-                            Мастер ${masterName}, будет у вас с ${startTime} до ${endTime}.
-                        </div>     
-                    </div>
-                `
+              <h1>Вы успешно оформили заказ на сайте ${process.env.API_URL}</h1>
+              <div>
+                  <div>
+                      Здравствуйте, ${name}, вы оформили заказ на ремонт часов, в городе ${city} на ${date}.
+                  </div>
+                  <div>
+                      Размер часов - ${size}, время ремонта займет ${timeToFix} час/а.
+                  </div>
+                  <div>
+                      Мастер ${masterName}, будет у вас с ${startTime} до ${endTime}.
+                  </div>
+              </div>
+            `
     })
   }
 }

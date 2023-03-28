@@ -1,12 +1,18 @@
-import database from '../database.js'
+import { Clock } from '../db/models/Clock.js'
 
 export default {
-  getClocksId: async (size) => {
-    const clockId = await database.query('SELECT id FROM clocks WHERE size = $1', [size])
-    return clockId.rows[0].id
+  getClockId: async (size) => {
+    const clockId = await Clock.findOne({
+      attributes: ['id'],
+      where: { size }
+    })
+    return clockId
   },
   getTimeToFix: async (size) => {
-    const timeToFix = await database.query('SELECT "timeToFix" FROM clocks WHERE size = $1', [size])
-    return timeToFix.rows[0].timeToFix
+    const timeToFix = await Clock.findOne({
+      attributes: ['timeToFix'],
+      where: { size }
+    })
+    return timeToFix
   }
 }

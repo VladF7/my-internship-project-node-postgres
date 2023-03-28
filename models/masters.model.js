@@ -1,70 +1,51 @@
-import database from '../database.js'
+import { Master } from '../db/models/Master.js'
+import { City } from '../db/models/Сity.js'
 
 export default {
   getMasters: async () => {
-    const masters = await database.query('SELECT id, name, rating FROM masters')
-    return masters.rows
+    const masters = await Master.findAll({
+      include: [
+        {
+          model: City,
+          as: 'cities'
+        }
+      ]
+    })
+    return masters
   },
-  getCitiesForMaster: async () => {
-    const cities = await database.query(`SELECT "masterId", cities.name FROM "citiesMasters"
-            JOIN cities ON cities.id = "citiesMasters"."cityId"`)
-    return cities.rows
-  },
-  getMastersByCitiesId: async (id) => {
-    const masters = await database.query(
-      `SELECT masters.id, masters.name, masters.rating FROM masters
-            JOIN "citiesMasters" ON masters.id = "citiesMasters"."masterId"
-            WHERE "cityId" = $1`,
-      [id]
-    )
-    return masters.rows
+  getMastersByCityId: async (id) => {
+    const masters = await Master.findAll({
+      include: [
+        {
+          where: { id },
+          model: City,
+          as: 'cities'
+        }
+      ]
+    })
+    return masters
   },
   getMasterById: async (id) => {
-    const master = await database.query('SELECT id, name, rating FROM masters WHERE id = $1', [id])
-    return master.rows[0]
-  },
-  getCitiesByMasterId: async (id) => {
-    const cities = await database.query(
-      `SELECT "cityId" AS id, cities.name FROM "citiesMasters"  
-            JOIN cities ON cities.id = "citiesMasters"."cityId" 
-            WHERE "masterId" = $1`,
-      [id]
-    )
-    return cities.rows
+    const master = await Master.findOne({
+      where: { id },
+      include: [
+        {
+          model: City,
+          as: 'cities'
+        }
+      ]
+    })
+    return master
   },
   addMaster: async (name, rating) => {
-    const newMaster = await database.query(
-      'INSERT INTO masters (name,rating) VALUES ($1,$2) RETURNING id',
-      [name, rating]
-    )
-    return newMaster.rows[0].id
+    const newMaster = await Master.create({ name, rating })
+    return newMaster
   },
-
   editMaster: async (id, name, rating) => {
-    const editedMaster = await database.query(
-      'UPDATE masters SET name=$1, rating=$2 WHERE id = $3 RETURNING *',
-      [name, rating, id]
-    )
-    return editedMaster.rows[0]
-  },
-  addCitiesForMaster: async (cities, id) => {
-    for (let i = 0; i < cities.length; i++) {
-      await database.query('INSERT INTO "citiesMasters" VALUES ($1,$2) RETURNING *', [
-        cities[i],
-        id
-      ])
-    }
-  },
-  delCitiesForMaster: async (id) => {
-    return await database.query('DELETE FROM "citiesMasters" WHERE "masterId" =$1 ', [id])
-  },
-  isMasterBusy: async (id) => {
-    const masterIdInOrders = await database.query('SELECT id FROM orders WHERE "masterId" = $1', [
-      id
-    ])
-    return masterIdInOrders.rows[0]
+    const editedMaster = await Master.update({ name, rating }, { where: { id } })
+    return editedMaster
   },
   delMaster: async (id) => {
-    return await database.query('DELETE FROM masters WHERE id = $1 RETURNING id', [id])
+    return await Master.destroy({ where: { id } })
   }
 }

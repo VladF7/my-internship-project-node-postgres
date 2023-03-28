@@ -8,14 +8,13 @@ import sendMailService from '../services/mail.service.js'
 export default {
   addOrder: async (masterId, name, email, size, city, startTime, endTime) => {
     let customerId = await customersService.getCustomerId(email)
-
     if (!customerId) {
       await customersService.addCustomer(name, email)
       customerId = await customersService.getCustomerId(email)
     }
     await customersService.editCustomer(customerId, name, email)
-    const clockId = await clocksService.getClocksId(size)
-    const cityId = await citiesService.getCitiesId(city)
+    const clockId = await clocksService.getClockId(size)
+    const cityId = await citiesService.getCityId(city)
     const newOrder = await ordersModel.addOrder(
       customerId,
       clockId,
@@ -46,26 +45,23 @@ export default {
     const orders = await ordersModel.getOrders()
     return orders.map((order) => {
       return {
-        ...order,
+        ...order.dataValues,
         startTime: getFormDate(order.startTime),
         endTime: getFormDate(order.endTime)
       }
     })
   },
-  getOrdersList: async () => {
-    return await ordersModel.getOrdersList()
-  },
   getOrderById: async (id) => {
     const order = await ordersModel.getOrderById(id)
     return {
-      ...order,
+      ...order.dataValues,
       startTime: getFormDate(order.startTime),
       endTime: getFormDate(order.endTime)
     }
   },
   editOrder: async (id, size, masterId, city, start, end) => {
-    const cityId = await citiesService.getCitiesId(city)
-    const clockId = await clocksService.getClocksId(size)
+    const cityId = await citiesService.getCityId(city)
+    const clockId = await clocksService.getClockId(size)
     const startTime = getFormDate(start)
     const endTime = getFormDate(end)
     const editedOrder = await ordersModel.editOrder(
