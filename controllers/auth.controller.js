@@ -14,12 +14,9 @@ export default {
       const body = req.body
       const { email, password } = loginSchema.parse(body)
       const validEmail = email === process.env.ADMIN_EMAIL
-      if (!validEmail) {
-        return res.status(400).json({ message: 'Wrong email' })
-      }
       const validPassword = password === process.env.ADMIN_PASSWORD
-      if (!validPassword) {
-        return res.status(400).json({ message: 'Wrong password' })
+      if (!validEmail || !validPassword) {
+        return res.status(400).json({ message: 'Wrong email or password' })
       }
       const token = generateAccessToken(email)
       return res.status(200).json({ token, user: email })
