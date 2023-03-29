@@ -4,8 +4,8 @@ import { authMiddleWare } from '../middleware/authMiddleware.js'
 
 const router = Router()
 
-router.post('/', ordersController.getEndOrderDate)
-router.post('/:id', ordersController.addOrder)
+router.post('/endTime', ordersController.getEndOrderDate)
+router.post('/', ordersController.addOrder)
 router.get('/', authMiddleWare, ordersController.getOrders)
 router.get('/:id', authMiddleWare, ordersController.getOrderById)
 router.put('/:id', authMiddleWare, ordersController.editOrder)
