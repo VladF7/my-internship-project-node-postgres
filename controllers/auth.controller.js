@@ -16,13 +16,13 @@ export default {
       const validEmail = email === process.env.ADMIN_EMAIL
       const validPassword = password === process.env.ADMIN_PASSWORD
       if (!validEmail || !validPassword) {
-        return res.status(400).json({ message: 'Wrong email or password' })
+        return res.status(400).send({ message: 'Wrong email or password' })
       }
       const token = generateAccessToken(email)
       return res.status(200).json({ token, user: email })
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      console.log(error)
+      return res.status(400).send(error)
     }
   },
   auth: async (req, res) => {

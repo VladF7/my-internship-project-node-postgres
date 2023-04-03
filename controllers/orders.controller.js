@@ -1,3 +1,5 @@
+import { ZodError } from 'zod'
+import CustomError from '../customError.js'
 import ordersService from '../services/orders.service.js'
 import {
   addOrderSchema,
@@ -14,38 +16,57 @@ export default {
       return res.status(200).json(orders)
     } catch (error) {
       console.log(error)
-      return res.status(400).json(error)
+      return res.status(500).send(error)
     }
   },
   addOrder: async (req, res) => {
     try {
       const body = req.body
-      const { masterId, name, email, size, city, startTime, endTime } = addOrderSchema.parse(body)
+      const { masterId, cityId, clockId, name, email, startTime, endTime } =
+        addOrderSchema.parse(body)
       const newOrder = await ordersService.addOrder(
         masterId,
+        cityId,
+        clockId,
         name,
         email,
-        size,
-        city,
         startTime,
         endTime
       )
-      return res.status(200).json(newOrder)
+      return res.status(201).json(newOrder)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        console.log(error)
+        return res.status(500).send(error)
+      }
     }
   },
 
   getEndOrderDate: async (req, res) => {
     try {
       const body = req.body
-      const { size, startTime } = getEndOrderDateSchema.parse(body)
-      const endOrderDate = await ordersService.getEndOrderDate(startTime, size)
+      const { clockId, startTime } = getEndOrderDateSchema.parse(body)
+      const endOrderDate = await ordersService.getEndOrderDate(startTime, clockId)
       return res.status(200).json(endOrderDate)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        console.log(error)
+        return res.status(500).send(error)
+      }
     }
   },
   getOrderById: async (req, res) => {
@@ -55,20 +76,47 @@ export default {
       const order = await ordersService.getOrderById(id)
       return res.status(200).json(order)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send(error.errors)
+      }
     }
   },
   editOrder: async (req, res) => {
     try {
       const body = req.body
       const params = req.params
-      const { id, size, master, city, start, end } = editOrderSchema.parse({ ...body, ...params })
-      const editedOrder = await ordersService.editOrder(id, size, master, city, start, end)
+      const { id, clockId, masterId, cityId, startTime, endTime } = editOrderSchema.parse({
+        ...body,
+        ...params
+      })
+      const editedOrder = await ordersService.editOrder(
+        id,
+        clockId,
+        masterId,
+        cityId,
+        startTime,
+        endTime
+      )
       return res.status(200).json(editedOrder)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        console.log(error)
+        return res.status(500).send(error)
+      }
     }
   },
   delOrder: async (req, res) => {
@@ -76,10 +124,19 @@ export default {
       const params = req.params
       const { id } = delOrderSchema.parse(params)
       await ordersService.delOrder(id)
-      return res.json(id)
+      return res.status(200).json(id)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        console.log(error)
+        return res.status(500).send(error)
+      }
     }
   }
 }

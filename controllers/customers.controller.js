@@ -1,3 +1,5 @@
+import { ZodError } from 'zod'
+import CustomError from '../customError.js'
 import customersService from '../services/customers.service.js'
 import {
   delCustomerSchema,
@@ -12,7 +14,7 @@ export default {
       return res.status(200).json(customers)
     } catch (error) {
       console.log(error)
-      return res.status(400).json(error)
+      return res.status(500).send(error)
     }
   },
   getCustomerById: async (req, res) => {
@@ -22,8 +24,19 @@ export default {
       const customer = await customersService.getCustomerById(id)
       return res.status(200).json(customer)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        console.log(error)
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        console.log(error.issues)
+        return res.status(400).send(error.issues)
+      } else {
+        console.log(error)
+        return res.status(500).send(error)
+      }
     }
   },
   editCustomer: async (req, res) => {
@@ -34,8 +47,19 @@ export default {
       const editedCustomer = await customersService.editCustomer(id, name, email)
       return res.status(200).json(editedCustomer)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        console.log(error)
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        console.log(error.issues)
+        return res.status(400).send(error.issues)
+      } else {
+        console.log(error)
+        return res.status(500).send(error)
+      }
     }
   },
   delCustomer: async (req, res) => {
@@ -45,8 +69,19 @@ export default {
       const delCustomerId = await customersService.delCustomer(id)
       return res.status(200).json(delCustomerId)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        console.log(error)
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        console.log(error.issues)
+        return res.status(400).send(error.issues)
+      } else {
+        console.log(error)
+        return res.status(500).send(error)
+      }
     }
   }
 }

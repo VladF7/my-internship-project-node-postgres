@@ -6,5 +6,8 @@ export default {
   },
   delCitiesForMaster: async (masterId) => {
     return await CityMaster.destroy({ where: { masterId } })
+  },
+  getCitiesForMaster: async (masterId) => {
+    return CityMaster.findAll({ where: { masterId } })
   }
 }

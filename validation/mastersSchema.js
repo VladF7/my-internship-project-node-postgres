@@ -1,12 +1,16 @@
 import { z } from 'zod'
 
 export const getFreeMastersSchema = z.object({
+  cityId: z.number().int().positive(),
+  startTime: z.coerce.date(),
+  endTime: z.coerce.date()
+})
+export const getFreeMastersForCurrOrder = z.object({
   id: z
     .string()
     .regex(/^[1-9]\d*$/)
-    .transform(Number)
-    .optional(),
-  city: z.string().max(255).nonempty(),
+    .transform(Number),
+  cityId: z.number().int().positive(),
   startTime: z.coerce.date(),
   endTime: z.coerce.date()
 })
@@ -18,32 +22,15 @@ export const getMasterByIdSchema = z.object({
 })
 export const addMasterSchema = z.object({
   name: z.string().max(255).nonempty(),
-  rating: z
-    .string()
-    .regex(/^[1-9]\d*$/)
-    .transform(Number),
-  cities: z.array(
-    z
-      .string()
-      .regex(/^[1-9]\d*$/)
-      .transform(Number)
-  )
+  rating: z.number().int().positive(),
+  cities: z.array(z.number().int().positive())
 })
-
 export const editMasterSchema = z.object({
   id: z
     .string()
     .regex(/^[1-9]\d*$/)
     .transform(Number),
   name: z.string().max(255).nonempty(),
-  rating: z
-    .string()
-    .regex(/^[1-9]\d*$/)
-    .transform(Number),
-  cities: z.array(
-    z
-      .string()
-      .regex(/^[1-9]\d*$/)
-      .transform(Number)
-  )
+  rating: z.number().int().positive(),
+  cities: z.array(z.number().int().positive())
 })

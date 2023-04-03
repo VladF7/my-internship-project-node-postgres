@@ -5,6 +5,7 @@ import { authMiddleWare } from '../middleware/authMiddleware.js'
 const router = Router()
 
 router.post('/getMastersList', mastersController.getFreeMasters)
+router.post('/getMastersList/:id', mastersController.getFreeMastersForCurrOrder)
 router.get('/', authMiddleWare, mastersController.getMasters)
 router.get('/:id', authMiddleWare, mastersController.getMasterById)
 router.post('/', authMiddleWare, mastersController.addMaster)
