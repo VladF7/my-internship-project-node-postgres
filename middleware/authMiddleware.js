@@ -7,13 +7,12 @@ export const authMiddleWare = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1]
     if (!token) {
-      return res.status(403).json({ message: 'Пользователь не авторизован' })
+      return res.status(403).json({ message: 'User not authorized' })
     }
     const decodedData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
     req.user = decodedData
     next()
   } catch (error) {
-    console.log(error.message)
-    return res.status(403).json({ message: 'Пользователь не авторизован' })
+    return res.status(403).json({ message: 'User not authorized' })
   }
 }

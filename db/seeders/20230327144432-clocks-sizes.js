@@ -5,19 +5,19 @@ module.exports = {
       'clocks',
       [
         {
-          size: 'Маленькие',
+          size: 'Small',
           timeToFix: 1,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
-          size: 'Средние',
+          size: 'Medium',
           timeToFix: 2,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
-          size: 'Большие',
+          size: 'Big',
           timeToFix: 3,
           createdAt: new Date(),
           updatedAt: new Date()
