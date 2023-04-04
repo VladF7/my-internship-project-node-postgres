@@ -16,7 +16,7 @@ export default {
       const masters = await mastersService.getMasters()
       return res.status(200).json(masters)
     } catch (error) {
-      return res.status(500).send(error)
+      return res.status(500).send('Something went wrong')
     }
   },
   getFreeMasters: async (req, res) => {
@@ -34,7 +34,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -62,7 +62,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -81,7 +81,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -100,7 +100,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -120,7 +120,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -139,7 +139,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   }

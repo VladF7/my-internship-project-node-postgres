@@ -9,7 +9,7 @@ export default {
       const cities = await citiesService.getCities()
       return res.status(200).json(cities)
     } catch (error) {
-      return res.status(500).send(error)
+      return res.status(500).send('Something went wrong')
     }
   },
   addCity: async (req, res) => {
@@ -27,7 +27,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -46,7 +46,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   }

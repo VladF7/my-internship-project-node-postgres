@@ -15,7 +15,7 @@ export default {
       const orders = await ordersService.getOrders()
       return res.status(200).json(orders)
     } catch (error) {
-      return res.status(500).send(error)
+      return res.status(500).send('Something went wrong')
     }
   },
   addOrder: async (req, res) => {
@@ -42,7 +42,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -62,7 +62,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -81,7 +81,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error.errors)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -111,7 +111,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -130,7 +130,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   }

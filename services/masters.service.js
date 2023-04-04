@@ -77,14 +77,8 @@ export default {
       if (!city) {
         throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
       }
-      const orders = await ordersModel.getOrders()
-      if (orders.length > 0) {
-        const freeMasters = await mastersModel.getFreeMasters(startTime, endTime, cityId)
-        return freeMasters
-      } else {
-        const freeMasters = await mastersModel.getMastersByCityId(cityId)
-        return freeMasters
-      }
+      const freeMasters = await mastersModel.getFreeMasters(startTime, endTime, cityId)
+      return freeMasters
     } catch (error) {
       throw error
     }

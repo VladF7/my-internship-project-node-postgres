@@ -13,7 +13,7 @@ export default {
       const customers = await customersService.getCustomers()
       return res.status(200).json(customers)
     } catch (error) {
-      return res.status(500).send(error)
+      return res.status(500).send('Something went wrong')
     }
   },
   getCustomerById: async (req, res) => {
@@ -31,7 +31,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -51,7 +51,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -70,7 +70,7 @@ export default {
       } else if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   }

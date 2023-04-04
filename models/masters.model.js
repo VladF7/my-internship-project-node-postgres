@@ -204,6 +204,6 @@ export default {
         }
       }
     })
-    return !busyMasters.length > 0
+    return !busyMasters.length
   }
 }

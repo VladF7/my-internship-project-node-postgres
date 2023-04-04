@@ -25,7 +25,7 @@ export default {
       if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   },
@@ -39,7 +39,7 @@ export default {
       if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
-        return res.status(500).send(error)
+        return res.status(500).send('Something went wrong')
       }
     }
   }
