@@ -1,6 +1,8 @@
+import { ZodError } from 'zod'
+import CustomError from '../errors/customError.js'
 import customersService from '../services/customers.service.js'
 import {
-  delCustomerSchema,
+  deleteCustomerSchema,
   editCustomerSchema,
   getCustomerByIdSchema
 } from '../validation/customersSchema.js'
@@ -11,8 +13,7 @@ export default {
       const customers = await customersService.getCustomers()
       return res.status(200).json(customers)
     } catch (error) {
-      console.log(error)
-      return res.status(400).json(error)
+      return res.status(500).send('Something went wrong')
     }
   },
   getCustomerById: async (req, res) => {
@@ -22,8 +23,16 @@ export default {
       const customer = await customersService.getCustomerById(id)
       return res.status(200).json(customer)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
   editCustomer: async (req, res) => {
@@ -34,19 +43,35 @@ export default {
       const editedCustomer = await customersService.editCustomer(id, name, email)
       return res.status(200).json(editedCustomer)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
-  delCustomer: async (req, res) => {
+  deleteCustomer: async (req, res) => {
     try {
       const params = req.params
-      const { id } = delCustomerSchema.parse(params)
-      const delCustomerId = await customersService.delCustomer(id)
-      return res.status(200).json(delCustomerId)
+      const { id } = deleteCustomerSchema.parse(params)
+      const deletedCustomer = await customersService.deleteCustomer(id)
+      return res.status(200).json(deletedCustomer)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   }
 }

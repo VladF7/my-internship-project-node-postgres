@@ -1,3 +1,4 @@
+import { Op } from 'sequelize'
 import { City } from '../db/models/models.js'
 
 export default {
@@ -5,21 +6,28 @@ export default {
     const cities = await City.findAll()
     return cities
   },
+  isCitiesExist: async (cities) => {
+    const existCities = await City.findAll({
+      attributes: ['id'],
+      where: { id: { [Op.in]: cities } }
+    })
+    return cities.length === existCities.length
+  },
   addCity: async (name) => {
     const newCity = await City.create({ name })
     return newCity
   },
-  delCity: async (id) => {
-    return await City.destroy({
+  deleteCity: async (id) => {
+    const deletedCity = await City.destroy({
       where: { id }
     })
+    return deletedCity
   },
-  getCityId: async (name) => {
-    const cityId = await City.findOne({
-      attributes: ['id'],
+  getCityByName: async (name) => {
+    const city = await City.findOne({
       where: { name }
     })
-    return cityId.dataValues.id
+    return city
   },
   getCityById: async (id) => {
     const city = await City.findByPk(id)

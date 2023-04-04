@@ -1,31 +1,50 @@
+/* eslint-disable no-useless-catch */
+import CustomError from '../errors/customError.js'
+import { CUSTOMER_IS_NOT_EXIST } from '../errors/types.js'
 import customersModel from '../models/customers.model.js'
 
 export default {
-  addCustomer: async (name, email) => {
-    return await customersModel.addCustomer(name, email)
-  },
-  getCustomerId: async (email) => {
+  getCustomers: async () => {
     try {
-      const customerId = await customersModel.getCustomerId(email)
-      return customerId
+      const customers = await customersModel.getCustomers()
+      return customers
     } catch (error) {
-      return undefined
+      throw error
     }
   },
-  getCustomers: async () => {
-    return await customersModel.getCustomers()
-  },
   getCustomerById: async (id) => {
-    return await customersModel.getCustomerById(id)
+    try {
+      const customer = await customersModel.getCustomerById(id)
+      if (!customer) {
+        throw new CustomError(CUSTOMER_IS_NOT_EXIST, 400, `Customer with id ${id} is not exist`)
+      }
+      return customer
+    } catch (error) {
+      throw error
+    }
   },
   editCustomer: async (id, name, email) => {
-    return await customersModel.editCustomer(id, name, email)
-  },
-  delCustomer: async (id) => {
     try {
-      return await customersModel.delCustomer(id)
+      const customer = await customersModel.getCustomerById(id)
+      if (!customer) {
+        throw new CustomError(CUSTOMER_IS_NOT_EXIST, 400, `Customer with id ${id} is not exist`)
+      }
+      const editedCustomer = await customersModel.editCustomer(id, name, email)
+      return editedCustomer
     } catch (error) {
-      return undefined
+      throw error
+    }
+  },
+  deleteCustomer: async (id) => {
+    try {
+      const customer = await customersModel.getCustomerById(id)
+      if (!customer) {
+        throw new CustomError(CUSTOMER_IS_NOT_EXIST, 400, `Customer with id ${id} is not exist`)
+      }
+      const deletedCustomer = await customersModel.deleteCustomer(id)
+      return deletedCustomer
+    } catch (error) {
+      throw error
     }
   }
 }

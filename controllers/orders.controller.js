@@ -1,9 +1,11 @@
+import { ZodError } from 'zod'
+import CustomError from '../errors/customError.js'
 import ordersService from '../services/orders.service.js'
 import {
   addOrderSchema,
-  delOrderSchema,
+  deleteOrderSchema,
   editOrderSchema,
-  getEndOrderDateSchema,
+  getOrderEndTimeSchema,
   getOrderByIdSchema
 } from '../validation/ordersSchema.js'
 
@@ -13,39 +15,55 @@ export default {
       const orders = await ordersService.getOrders()
       return res.status(200).json(orders)
     } catch (error) {
-      console.log(error)
-      return res.status(400).json(error)
+      return res.status(500).send('Something went wrong')
     }
   },
   addOrder: async (req, res) => {
     try {
       const body = req.body
-      const { masterId, name, email, size, city, startTime, endTime } = addOrderSchema.parse(body)
+      const { masterId, cityId, clockId, name, email, startTime, endTime } =
+        addOrderSchema.parse(body)
       const newOrder = await ordersService.addOrder(
         masterId,
+        cityId,
+        clockId,
         name,
         email,
-        size,
-        city,
         startTime,
         endTime
       )
-      return res.status(200).json(newOrder)
+      return res.status(201).json(newOrder)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
 
-  getEndOrderDate: async (req, res) => {
+  getOrderEndTime: async (req, res) => {
     try {
-      const body = req.body
-      const { size, startTime } = getEndOrderDateSchema.parse(body)
-      const endOrderDate = await ordersService.getEndOrderDate(startTime, size)
-      return res.status(200).json(endOrderDate)
+      const query = req.query
+      const { clockId, startTime } = getOrderEndTimeSchema.parse(query)
+      const orderEndTime = await ordersService.getOrderEndTime(startTime, clockId)
+      return res.status(200).json(orderEndTime)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
   getOrderById: async (req, res) => {
@@ -55,31 +73,65 @@ export default {
       const order = await ordersService.getOrderById(id)
       return res.status(200).json(order)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
   editOrder: async (req, res) => {
     try {
       const body = req.body
       const params = req.params
-      const { id, size, master, city, start, end } = editOrderSchema.parse({ ...body, ...params })
-      const editedOrder = await ordersService.editOrder(id, size, master, city, start, end)
+      const { id, clockId, masterId, cityId, startTime, endTime } = editOrderSchema.parse({
+        ...body,
+        ...params
+      })
+      const editedOrder = await ordersService.editOrder(
+        id,
+        clockId,
+        masterId,
+        cityId,
+        startTime,
+        endTime
+      )
       return res.status(200).json(editedOrder)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
-  delOrder: async (req, res) => {
+  deleteOrder: async (req, res) => {
     try {
       const params = req.params
-      const { id } = delOrderSchema.parse(params)
-      await ordersService.delOrder(id)
-      return res.json(id)
+      const { id } = deleteOrderSchema.parse(params)
+      await ordersService.deleteOrder(id)
+      return res.status(200).json(id)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   }
 }

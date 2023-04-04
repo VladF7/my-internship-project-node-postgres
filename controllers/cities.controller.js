@@ -1,5 +1,7 @@
+import { ZodError } from 'zod'
+import CustomError from '../errors/customError.js'
 import citiesService from '../services/cities.service.js'
-import { addCitySchema, delCitySchema } from '../validation/citiesSchema.js'
+import { addCitySchema, deleteCitySchema } from '../validation/citiesSchema.js'
 
 export default {
   getCities: async (req, res) => {
@@ -7,8 +9,7 @@ export default {
       const cities = await citiesService.getCities()
       return res.status(200).json(cities)
     } catch (error) {
-      console.log(error)
-      return res.status(400).json(error)
+      return res.status(500).send('Something went wrong')
     }
   },
   addCity: async (req, res) => {
@@ -16,21 +17,37 @@ export default {
       const body = req.body
       const { name } = addCitySchema.parse(body)
       const newCity = await citiesService.addCity(name)
-      return res.status(200).json(newCity)
+      return res.status(201).json(newCity)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
-  delCity: async (req, res) => {
+  deleteCity: async (req, res) => {
     try {
       const params = req.params
-      const { id } = delCitySchema.parse(params)
-      const delCityId = await citiesService.delCity(id)
-      return res.status(200).json(delCityId)
+      const { id } = deleteCitySchema.parse(params)
+      const deletedCity = await citiesService.deleteCity(id)
+      return res.status(200).json(deletedCity)
     } catch (error) {
-      console.log(error.errors)
-      return res.status(400).json(...error.errors)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   }
 }

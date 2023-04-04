@@ -1,4 +1,4 @@
-export const getFormDate = (d) => {
+export const getFormatDate = (d) => {
   let date = new Date(d)
   let dd = date.getDate()
   let MM = date.getMonth() + 1
