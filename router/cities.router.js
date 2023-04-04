@@ -6,6 +6,6 @@ const router = Router()
 
 router.get('/', citiesController.getCities)
 router.post('/', authMiddleWare, citiesController.addCity)
-router.delete('/:id', authMiddleWare, citiesController.delCity)
+router.delete('/:id', authMiddleWare, citiesController.deleteCity)
 
 export default router

@@ -1,4 +1,6 @@
-import CustomError from '../customError.js'
+/* eslint-disable no-useless-catch */
+import CustomError from '../errors/customError.js'
+import { CITY_IS_NOT_EXIST, MASTER_IS_NOT_EXIST, ORDER_IS_NOT_EXIST } from '../errors/types.js'
 import citiesModel from '../models/cities.model.js'
 import citiesMastersModel from '../models/citiesMasters.model.js'
 import mastersModel from '../models/masters.model.js'
@@ -10,7 +12,6 @@ export default {
       const masters = await mastersModel.getMasters()
       return masters
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
@@ -18,58 +19,55 @@ export default {
     try {
       const isCitiesExist = await citiesModel.isCitiesExist(cities)
       if (!isCitiesExist) {
-        throw new CustomError('CITY_IS_NOT_EXIST', 404, `Cities for master can't be created`)
+        throw new CustomError(CITY_IS_NOT_EXIST, 400, `Cities for master can't be created`)
       }
       const newMaster = await mastersModel.addMasterAndCities(name, rating, cities)
       return newMaster
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  editMaster: async (masterId, name, rating, cities) => {
+  editMaster: async (id, name, rating, cities) => {
     try {
-      const master = await mastersModel.getMasterById(masterId)
+      const master = await mastersModel.getMasterById(id)
       if (!master) {
-        throw new CustomError('MASTER_IS_NOT_EXIST', 404, `Master with id ${masterId} is not exist`)
+        throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${id} is not exist`)
       }
-      const citiesForMaster = await citiesMastersModel.getCitiesForMaster(masterId)
+      const citiesForMaster = await citiesMastersModel.getCitiesForMaster(id)
       if (!citiesForMaster) {
         throw new CustomError(
-          'CITY_IS_NOT_EXIST',
-          405,
-          `Cities for master with id ${masterId} is not exist`
+          CITY_IS_NOT_EXIST,
+          400,
+          `Cities for master with id ${id} is not exist`
         )
       }
       const isCitiesExist = await citiesModel.isCitiesExist(cities)
       if (!isCitiesExist) {
-        throw new CustomError('CITY_IS_NOT_EXIST', 404, `Cities for master can't be created`)
+        throw new CustomError(CITY_IS_NOT_EXIST, 400, `Cities for master can't be created`)
       }
-      const editedMaster = await mastersModel.editMasterAndCities(masterId, name, rating, cities)
+      const editedMaster = await mastersModel.editMasterAndCities(id, name, rating, cities)
       return editedMaster
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  delMaster: async (masterId) => {
+  deleteMaster: async (id) => {
     try {
-      const master = await mastersModel.getMasterById(masterId)
+      const master = await mastersModel.getMasterById(id)
       if (!master) {
-        throw new CustomError('MASTER_IS_NOT_EXIST', 404, `Master with id ${masterId} is not exist`)
+        throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${id} is not exist`)
       }
-      const citiesForMaster = await citiesMastersModel.getCitiesForMaster(masterId)
+      const citiesForMaster = await citiesMastersModel.getCitiesForMaster(id)
       if (!citiesForMaster) {
         throw new CustomError(
-          'CITY_IS_NOT_EXIST',
-          405,
-          `Cities for master with id ${masterId} is not exist`
+          CITY_IS_NOT_EXIST,
+          400,
+          `Cities for master with id ${id} is not exist`
         )
       }
-      const delMaster = await mastersModel.delMasterAndCities(masterId)
-      return delMaster
+      const deletedMaster = await mastersModel.deleteMasterAndCities(id)
+      return deletedMaster
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
@@ -77,7 +75,7 @@ export default {
     try {
       const city = await citiesModel.getCityById(cityId)
       if (!city) {
-        throw new CustomError('CITY_IS_NOT_EXIST', 404, `City with id ${cityId} is not exist`)
+        throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
       }
       const orders = await ordersModel.getOrders()
       if (orders.length > 0) {
@@ -88,41 +86,38 @@ export default {
         return freeMasters
       }
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  getFreeMastersForCurrOrder: async (orderId, cityId, startTime, endTime) => {
+  getFreeMastersForCurrentOrder: async (orderId, cityId, startTime, endTime) => {
     try {
       const order = await ordersModel.getOrderById(orderId)
       if (!order) {
-        throw new CustomError('ORDER_IS_NOT_EXIST', 404, `Order with id ${orderId} is not exist`)
+        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${orderId} is not exist`)
       }
       const city = await citiesModel.getCityById(cityId)
       if (!city) {
-        throw new CustomError('CITY_IS_NOT_EXIST', 404, `City with id ${cityId} is not exist`)
+        throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
       }
-      const freeMasters = await mastersModel.getFreeMastersForCurrOrder(
+      const freeMastersForCurrentOrder = await mastersModel.getFreeMastersForCurrentOrder(
         startTime,
         endTime,
         orderId,
         cityId
       )
-      return freeMasters
+      return freeMastersForCurrentOrder
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  getMasterById: async (masterId) => {
+  getMasterById: async (id) => {
     try {
-      const master = await mastersModel.getMasterById(masterId)
+      const master = await mastersModel.getMasterById(id)
       if (!master) {
-        throw new CustomError('MASTER_IS_NOT_EXIST', 404, `Master with id ${masterId} is not exist`)
+        throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${id} is not exist`)
       }
       return master
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   }

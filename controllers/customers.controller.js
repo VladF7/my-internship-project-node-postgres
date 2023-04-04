@@ -1,8 +1,8 @@
 import { ZodError } from 'zod'
-import CustomError from '../customError.js'
+import CustomError from '../errors/customError.js'
 import customersService from '../services/customers.service.js'
 import {
-  delCustomerSchema,
+  deleteCustomerSchema,
   editCustomerSchema,
   getCustomerByIdSchema
 } from '../validation/customersSchema.js'
@@ -13,7 +13,6 @@ export default {
       const customers = await customersService.getCustomers()
       return res.status(200).json(customers)
     } catch (error) {
-      console.log(error)
       return res.status(500).send(error)
     }
   },
@@ -25,16 +24,13 @@ export default {
       return res.status(200).json(customer)
     } catch (error) {
       if (error instanceof CustomError) {
-        console.log(error)
         return res.status(error.status).send({
           error: error.code,
           description: error.message
         })
       } else if (error instanceof ZodError) {
-        console.log(error.issues)
         return res.status(400).send(error.issues)
       } else {
-        console.log(error)
         return res.status(500).send(error)
       }
     }
@@ -48,26 +44,23 @@ export default {
       return res.status(200).json(editedCustomer)
     } catch (error) {
       if (error instanceof CustomError) {
-        console.log(error)
         return res.status(error.status).send({
           error: error.code,
           description: error.message
         })
       } else if (error instanceof ZodError) {
-        console.log(error.issues)
         return res.status(400).send(error.issues)
       } else {
-        console.log(error)
         return res.status(500).send(error)
       }
     }
   },
-  delCustomer: async (req, res) => {
+  deleteCustomer: async (req, res) => {
     try {
       const params = req.params
-      const { id } = delCustomerSchema.parse(params)
-      const delCustomerId = await customersService.delCustomer(id)
-      return res.status(200).json(delCustomerId)
+      const { id } = deleteCustomerSchema.parse(params)
+      const deletedCustomer = await customersService.deleteCustomer(id)
+      return res.status(200).json(deletedCustomer)
     } catch (error) {
       if (error instanceof CustomError) {
         console.log(error)
@@ -76,10 +69,8 @@ export default {
           description: error.message
         })
       } else if (error instanceof ZodError) {
-        console.log(error.issues)
         return res.status(400).send(error.issues)
       } else {
-        console.log(error)
         return res.status(500).send(error)
       }
     }

@@ -9,7 +9,6 @@ import { Clock } from '../db/models/Clock.js'
 export default {
   getOrders: async () => {
     const orders = await Order.findAll({
-      logging: false,
       order: [['id', 'DESC']],
       include: [City, Master, Customer, Clock]
     })
@@ -40,11 +39,10 @@ export default {
         { transaction }
       )
       await transaction.commit()
-      if (order) {
-        return order
-      }
+      return order
     } catch (error) {
       await transaction.rollback()
+      throw error
     }
   },
   createOrderAndUpdateCustomer: async (
@@ -72,11 +70,10 @@ export default {
         { transaction }
       )
       await transaction.commit()
-      if (order) {
-        return order
-      }
+      return order
     } catch (error) {
       await transaction.rollback()
+      throw error
     }
   },
 
@@ -93,8 +90,8 @@ export default {
     )
     return editedOrder
   },
-  delOrder: async (id) => {
-    const delOrder = await Order.destroy({ where: { id } })
-    return delOrder
+  deleteOrder: async (id) => {
+    const deletedOrder = await Order.destroy({ where: { id } })
+    return deletedOrder
   }
 }

@@ -1,10 +1,9 @@
+/* eslint-disable no-useless-catch */
 import nodemailer from 'nodemailer'
 import { getDate, getTime } from '../date.js'
 import mastersModel from '../models/masters.model.js'
 import clocksModel from '../models/clocks.model.js'
 import citiesModel from '../models/cities.model.js'
-import customersModel from '../models/customers.model.js'
-import CustomError from '../customError.js'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -19,34 +18,10 @@ const transporter = nodemailer.createTransport({
 export default {
   sendSuccessOrderMail: async (email, name, cityId, clockId, masterId, start, end) => {
     try {
-      const customerEmail = await customersModel.getCustomerByEmail(email)
-      if (!customerEmail) {
-        throw new CustomError(
-          'CUSTOMER_IS_NOT_EXIST',
-          404,
-          `Customer with email ${customerEmail} is not exist`
-        )
-      }
-      const customerName = await customersModel.getCustomerByName(name)
-      if (!customerName) {
-        throw new CustomError(
-          'CUSTOMER_IS_NOT_EXIST',
-          404,
-          `Customer with name ${customerName} is not exist`
-        )
-      }
       const city = await citiesModel.getCityById(cityId)
-      if (!city) {
-        throw new CustomError('CITY_IS_NOT_EXIST', 404, `City with id ${cityId} is not exist`)
-      }
       const clock = await clocksModel.getClockById(clockId)
-      if (!clock) {
-        throw new CustomError('CLOCK_IS_NOT_EXIST', 404, `Clock with id ${clockId} is not exist`)
-      }
       const master = await mastersModel.getMasterById(masterId)
-      if (!master) {
-        throw new CustomError('MASTER_IS_NOT_EXIST', 404, `Master with id ${masterId} is not exist`)
-      }
+
       const masterName = master.name
       const timeToFix = clock.timeToFix
       const size = clock.size
@@ -77,7 +52,6 @@ export default {
               `
       })
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   }

@@ -15,17 +15,12 @@ export default {
     })
     return customer
   },
-  getCustomerByName: async (name) => {
-    const customer = await Customer.findOne({
-      where: { name }
-    })
-    return customer
-  },
   editCustomer: async (id, name, email) => {
     const editedCustomer = await Customer.update({ name, email }, { where: { id } })
     return editedCustomer
   },
-  delCustomer: async (id) => {
-    return await Customer.destroy({ where: { id } })
+  deleteCustomer: async (id) => {
+    const deletedCustomer = await Customer.destroy({ where: { id } })
+    return deletedCustomer
   }
 }

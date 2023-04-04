@@ -9,8 +9,11 @@ export const addOrderSchema = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date()
 })
-export const getEndOrderDateSchema = z.object({
-  clockId: z.number().int().positive(),
+export const getOrderEndTimeSchema = z.object({
+  clockId: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number),
   startTime: z.coerce.date()
 })
 export const getOrderByIdSchema = z.object({
@@ -30,7 +33,7 @@ export const editOrderSchema = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date()
 })
-export const delOrderSchema = z.object({
+export const deleteOrderSchema = z.object({
   id: z
     .string()
     .regex(/^[1-9]\d*$/)

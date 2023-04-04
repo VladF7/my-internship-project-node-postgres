@@ -1,5 +1,7 @@
-import CustomError from '../customError.js'
+/* eslint-disable no-useless-catch */
+import CustomError from '../errors/customError.js'
 import citiesModel from '../models/cities.model.js'
+import { CITY_IS_EXIST, CITY_IS_NOT_EXIST } from '../errors/types.js'
 
 export default {
   getCities: async () => {
@@ -7,7 +9,6 @@ export default {
       const cities = await citiesModel.getCities()
       return cities
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
@@ -15,25 +16,23 @@ export default {
     try {
       const city = await citiesModel.getCityByName(name)
       if (city) {
-        throw new CustomError('CITY_IS_EXIST', 405, `City with name ${name} is exist`)
+        throw new CustomError(CITY_IS_EXIST, 405, `City with name ${name} is exist`)
       }
       const newCity = await citiesModel.addCity(name)
       return newCity
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  delCity: async (cityId) => {
+  deleteCity: async (id) => {
     try {
-      const city = await citiesModel.getCityById(cityId)
+      const city = await citiesModel.getCityById(id)
       if (!city) {
-        throw new CustomError('CITY_IS_NOT_EXIST', 404, `City with id ${cityId} is not exist`)
+        throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${id} is not exist`)
       }
-      const delCity = await citiesModel.delCity(cityId)
-      return delCity
+      const deletedCity = await citiesModel.deleteCity(id)
+      return deletedCity
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   }

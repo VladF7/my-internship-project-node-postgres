@@ -14,7 +14,7 @@ export const editCustomerSchema = z.object({
   name: z.string().max(255).nonempty(),
   email: z.string().email().nonempty()
 })
-export const delCustomerSchema = z.object({
+export const deleteCustomerSchema = z.object({
   id: z
     .string()
     .regex(/^[1-9]\d*$/)

@@ -1,16 +1,22 @@
 import { z } from 'zod'
 
 export const getFreeMastersSchema = z.object({
-  cityId: z.number().int().positive(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date()
-})
-export const getFreeMastersForCurrOrder = z.object({
-  id: z
+  cityId: z
     .string()
     .regex(/^[1-9]\d*$/)
     .transform(Number),
-  cityId: z.number().int().positive(),
+  startTime: z.coerce.date(),
+  endTime: z.coerce.date()
+})
+export const getFreeMastersForCurrentOrder = z.object({
+  orderId: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number),
+  cityId: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number),
   startTime: z.coerce.date(),
   endTime: z.coerce.date()
 })
@@ -33,4 +39,10 @@ export const editMasterSchema = z.object({
   name: z.string().max(255).nonempty(),
   rating: z.number().int().positive(),
   cities: z.array(z.number().int().positive())
+})
+export const deleteMasterSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
 })

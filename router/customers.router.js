@@ -7,6 +7,6 @@ const router = Router()
 router.get('/', authMiddleWare, customersController.getCustomers)
 router.get('/:id', authMiddleWare, customersController.getCustomerById)
 router.put('/:id', authMiddleWare, customersController.editCustomer)
-router.delete('/:id', authMiddleWare, customersController.delCustomer)
+router.delete('/:id', authMiddleWare, customersController.deleteCustomer)
 
 export default router

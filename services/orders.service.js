@@ -1,11 +1,19 @@
-import { getFormDate } from '../date.js'
+/* eslint-disable no-useless-catch */
+import { getFormatDate } from '../date.js'
 import sendMailService from '../services/mail.service.js'
 import mastersModel from '../models/masters.model.js'
 import ordersModel from '../models/orders.model.js'
 import citiesModel from '../models/cities.model.js'
 import clocksModel from '../models/clocks.model.js'
 import customersModel from '../models/customers.model.js'
-import CustomError from '../customError.js'
+import CustomError from '../errors/customError.js'
+import {
+  CITY_IS_NOT_EXIST,
+  CLOCK_IS_NOT_EXIST,
+  MASTER_IS_NOT_AVAILABEL,
+  MASTER_IS_NOT_EXIST,
+  ORDER_IS_NOT_EXIST
+} from '../errors/types.js'
 
 export default {
   getOrders: async () => {
@@ -14,12 +22,11 @@ export default {
       return orders.map((order) => {
         return {
           ...order.dataValues,
-          startTime: getFormDate(order.startTime),
-          endTime: getFormDate(order.endTime)
+          startTime: getFormatDate(order.startTime),
+          endTime: getFormatDate(order.endTime)
         }
       })
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
@@ -27,21 +34,21 @@ export default {
     try {
       const master = await mastersModel.getMasterById(masterId)
       if (!master) {
-        throw new CustomError('MASTER_IS_NOT_EXIST', 404, `Master with id ${masterId} is not exist`)
+        throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${masterId} is not exist`)
       }
       const city = await citiesModel.getCityById(cityId)
       if (!city) {
-        throw new CustomError('CITY_IS_NOT_EXIST', 404, `City with id ${cityId} is not exist`)
+        throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
       }
       const clock = await clocksModel.getClockById(clockId)
       if (!clock) {
-        throw new CustomError('CLOCK_IS_NOT_EXIST', 404, `Clock with id ${clockId} is not exist`)
+        throw new CustomError(CLOCK_IS_NOT_EXIST, 400, `Clock with id ${clockId} is not exist`)
       }
       const isMasterAvailable = await mastersModel.isMasterAvailable(masterId, startTime, endTime)
       if (!isMasterAvailable) {
         throw new CustomError(
-          'MASTER_IS_NOT_AVAILABEL',
-          405,
+          MASTER_IS_NOT_AVAILABEL,
+          400,
           `Master with id ${masterId} is not available now`
         )
       }
@@ -89,85 +96,82 @@ export default {
         return order
       }
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  getEndOrderDate: async (startTime, clockId) => {
+  getOrderEndTime: async (startTime, clockId) => {
     try {
       const clock = await clocksModel.getClockById(clockId)
       if (!clock) {
-        throw new CustomError('CLOCK_IS_NOT_EXIST', 404, `Clock with id ${clockId} is not exist`)
+        throw new CustomError(CLOCK_IS_NOT_EXIST, 400, `Clock with id ${clockId} is not exist`)
       }
       const timeToFix = clock.timeToFix
       let endTime = new Date(startTime)
       endTime = endTime.setHours(endTime.getHours() + timeToFix)
-      endTime = getFormDate(endTime)
+      endTime = getFormatDate(endTime)
       return endTime
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  getOrderById: async (orderId) => {
+  getOrderById: async (id) => {
     try {
-      const order = await ordersModel.getOrderById(orderId)
+      const order = await ordersModel.getOrderById(id)
       if (!order) {
-        throw new CustomError('ORDER_IS_NOT_EXIST', 404, `Order with id ${orderId} is not exist`)
+        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
       }
       return {
         ...order.dataValues,
-        startTime: getFormDate(order.startTime),
-        endTime: getFormDate(order.endTime)
+        startTime: getFormatDate(order.startTime),
+        endTime: getFormatDate(order.endTime)
       }
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  editOrder: async (orderId, clockId, masterId, cityId, start, end) => {
+  editOrder: async (id, clockId, masterId, cityId, start, end) => {
     try {
-      const order = await ordersModel.getOrderById(orderId)
+      const order = await ordersModel.getOrderById(id)
       if (!order) {
-        throw new CustomError('ORDER_IS_NOT_EXIST', 404, `Order with id ${orderId} is not exist`)
+        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
       }
       const clock = await clocksModel.getClockById(clockId)
       if (!clock) {
-        throw new CustomError('CLOCK_IS_NOT_EXIST', 404, `Clock with id ${clockId} is not exist`)
+        throw new CustomError(CLOCK_IS_NOT_EXIST, 400, `Clock with id ${clockId} is not exist`)
       }
       const master = await mastersModel.getMasterById(masterId)
       if (!master) {
-        throw new CustomError('MASTER_IS_NOT_EXIST', 404, `Master with id ${masterId} is not exist`)
+        throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${masterId} is not exist`)
       }
       const city = await citiesModel.getCityById(cityId)
       if (!city) {
-        throw new CustomError('CITY_IS_NOT_EXIST', 404, `City with id ${cityId} is not exist`)
+        throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
       }
-      const startTime = getFormDate(start)
-      const endTime = getFormDate(end)
+      const startTime = getFormatDate(start)
+      const endTime = getFormatDate(end)
+
       const editedOrder = await ordersModel.editOrder(
         cityId,
         masterId,
         clockId,
         startTime,
         endTime,
-        orderId
+        id
       )
       return editedOrder
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  delOrder: async (orderId) => {
+  deleteOrder: async (id) => {
     try {
-      const order = await ordersModel.getOrderById(orderId)
+      const order = await ordersModel.getOrderById(id)
       if (!order) {
-        throw new CustomError('ORDER_IS_NOT_EXIST', 404, `Order with id ${orderId} is not exist`)
+        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
       }
-      return await ordersModel.delOrder(orderId)
+      const deletedOrder = await ordersModel.deleteOrder(id)
+      return deletedOrder
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   }

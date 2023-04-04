@@ -1,4 +1,6 @@
-import CustomError from '../customError.js'
+/* eslint-disable no-useless-catch */
+import CustomError from '../errors/customError.js'
+import { CUSTOMER_IS_NOT_EXIST } from '../errors/types.js'
 import customersModel from '../models/customers.model.js'
 
 export default {
@@ -7,57 +9,41 @@ export default {
       const customers = await customersModel.getCustomers()
       return customers
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  getCustomerById: async (customerId) => {
+  getCustomerById: async (id) => {
     try {
-      const customer = await customersModel.getCustomerById(customerId)
+      const customer = await customersModel.getCustomerById(id)
       if (!customer) {
-        throw new CustomError(
-          'CUSTOMER_IS_NOT_EXIST',
-          404,
-          `Customer with id ${customerId} is not exist`
-        )
+        throw new CustomError(CUSTOMER_IS_NOT_EXIST, 400, `Customer with id ${id} is not exist`)
       }
       return customer
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  editCustomer: async (customerId, name, email) => {
+  editCustomer: async (id, name, email) => {
     try {
-      const customer = await customersModel.getCustomerById(customerId)
+      const customer = await customersModel.getCustomerById(id)
       if (!customer) {
-        throw new CustomError(
-          'CUSTOMER_IS_NOT_EXIST',
-          404,
-          `Customer with id ${customerId} is not exist`
-        )
+        throw new CustomError(CUSTOMER_IS_NOT_EXIST, 400, `Customer with id ${id} is not exist`)
       }
-      const editedCustomer = await customersModel.editCustomer(customerId, name, email)
+      const editedCustomer = await customersModel.editCustomer(id, name, email)
       return editedCustomer
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   },
-  delCustomer: async (customerId) => {
+  deleteCustomer: async (id) => {
     try {
-      const customer = await customersModel.getCustomerById(customerId)
+      const customer = await customersModel.getCustomerById(id)
       if (!customer) {
-        throw new CustomError(
-          'CUSTOMER_IS_NOT_EXIST',
-          404,
-          `Customer with id ${customerId} is not exist`
-        )
+        throw new CustomError(CUSTOMER_IS_NOT_EXIST, 400, `Customer with id ${id} is not exist`)
       }
-      const delCustomer = await customersModel.delCustomer(customerId)
-      return delCustomer
+      const deletedCustomer = await customersModel.deleteCustomer(id)
+      return deletedCustomer
     } catch (error) {
-      console.log(error.message)
       throw error
     }
   }

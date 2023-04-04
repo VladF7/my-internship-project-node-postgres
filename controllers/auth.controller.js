@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { ZodError } from 'zod'
 import { authSchema, loginSchema } from '../validation/authSchema.js'
 
 const generateAccessToken = (email) => {
@@ -21,8 +22,11 @@ export default {
       const token = generateAccessToken(email)
       return res.status(200).json({ token, user: email })
     } catch (error) {
-      console.log(error)
-      return res.status(400).send(error)
+      if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send(error)
+      }
     }
   },
   auth: async (req, res) => {
@@ -32,7 +36,11 @@ export default {
       const token = generateAccessToken(email)
       return res.status(200).json({ token, user: email })
     } catch (error) {
-      console.log(error)
+      if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send(error)
+      }
     }
   }
 }
