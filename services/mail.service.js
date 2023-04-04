@@ -37,16 +37,16 @@ export default {
         subject: `${process.env.COMPANY_NAME}`,
         text: '',
         html: `
-                <h1>Вы успешно оформили заказ на сайте ${process.env.API_URL}</h1>
+                <h1>You have successfully placed an order on the site ${process.env.API_URL}</h1>
                 <div>
                     <div>
-                        Здравствуйте, ${name}, вы оформили заказ на ремонт часов, в городе ${cityName} на ${date}.
+                        Hello, ${name}, you placed an order for clock repair, in the city of ${cityName} on ${date}.
                     </div>
                     <div>
-                        Размер часов - ${size}, время ремонта займет ${timeToFix} час/а.
+                        Clock size - ${size}, time to fix - ${timeToFix} hour/s.
                     </div>
                     <div>
-                        Мастер ${masterName}, будет у вас с ${startTime} до ${endTime}.
+                        The master whose name is ${masterName}, will be from ${startTime} to ${endTime}.
                     </div>
                 </div>
               `
