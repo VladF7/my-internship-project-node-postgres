@@ -50,7 +50,6 @@ export default {
   getOrderEndTime: async (req, res) => {
     try {
       const query = req.query
-      console.log(query)
       const { clockId, startTime } = getOrderEndTimeSchema.parse(query)
       const orderEndTime = await ordersService.getOrderEndTime(startTime, clockId)
       return res.status(200).json(orderEndTime)

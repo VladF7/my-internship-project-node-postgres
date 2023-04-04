@@ -63,7 +63,6 @@ export default {
       return res.status(200).json(deletedCustomer)
     } catch (error) {
       if (error instanceof CustomError) {
-        console.log(error)
         return res.status(error.status).send({
           error: error.code,
           description: error.message
