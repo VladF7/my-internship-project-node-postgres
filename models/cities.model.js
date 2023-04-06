@@ -1,5 +1,5 @@
 import { Op } from 'sequelize'
-import { City } from '../db/models/models.js'
+import { City, Clock } from '../db/models/models.js'
 
 export default {
   getCities: async () => {
@@ -13,9 +13,13 @@ export default {
     })
     return cities.length === existCities.length
   },
-  addCity: async (name) => {
-    const newCity = await City.create({ name })
+  addCity: async (name, priceForHour) => {
+    const newCity = await City.create({ name, priceForHour })
     return newCity
+  },
+  editCity: async (id, name, priceForHour) => {
+    const editedCity = await City.update({ name, priceForHour }, { where: { id } })
+    return editedCity
   },
   deleteCity: async (id) => {
     const deletedCity = await City.destroy({
@@ -32,5 +36,19 @@ export default {
   getCityById: async (id) => {
     const city = await City.findByPk(id)
     return city
+  },
+  getCorrectPriceForHour: async (id) => {
+    const city = await City.findByPk(id)
+    const correctPriceForHour = city.priceForHour
+    return correctPriceForHour
+  },
+  getCorrectPrice: async (id, clockId) => {
+    const city = await City.findByPk(id)
+    const clock = await Clock.findByPk(clockId)
+    const priceForHour = city.dataValues.priceForHour
+    const timeToFix = clock.dataValues.timeToFix
+
+    const correctPrice = priceForHour * timeToFix
+    return correctPrice
   }
 }

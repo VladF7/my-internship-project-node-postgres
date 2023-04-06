@@ -12,6 +12,10 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      priceForHour: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false
@@ -115,50 +119,78 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false
       }
-    })
-    await queryInterface.createTable('orders', {
-      id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-      },
-      startTime: {
-        type: Sequelize.DATE,
-        allowNull: false
-      },
-      endTime: {
-        type: Sequelize.DATE,
-        allowNull: false
-      },
-      customerId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: 'customers', key: 'id' }
-      },
-      clockId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: 'clocks', key: 'id' }
-      },
-      masterId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: 'masters', key: 'id' }
-      },
-      cityId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: 'cities', key: 'id' }
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false
-      }
-    })
+    }),
+      await queryInterface.createTable('statuses', {
+        id: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        name: {
+          type: Sequelize.STRING,
+          allowNull: false
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          allowNull: false
+        }
+      }),
+      await queryInterface.createTable('orders', {
+        id: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        startTime: {
+          type: Sequelize.DATE,
+          allowNull: false
+        },
+        endTime: {
+          type: Sequelize.DATE,
+          allowNull: false
+        },
+        price: {
+          type: Sequelize.INTEGER,
+          allowNull: false
+        },
+        statusId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'statuses', key: 'id' }
+        },
+        customerId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'customers', key: 'id' }
+        },
+        clockId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'clocks', key: 'id' }
+        },
+        masterId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'masters', key: 'id' }
+        },
+        cityId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'cities', key: 'id' }
+        },
+        createdAt: {
+          type: Sequelize.DATE,
+          allowNull: false
+        },
+        updatedAt: {
+          type: Sequelize.DATE,
+          allowNull: false
+        }
+      })
   },
   async down(queryInterface) {
     await queryInterface.dropTable('orders')
@@ -167,5 +199,6 @@ module.exports = {
     await queryInterface.dropTable('cities')
     await queryInterface.dropTable('masters')
     await queryInterface.dropTable('clocks')
+    await queryInterface.dropTable('statuses')
   }
 }
