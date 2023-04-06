@@ -108,7 +108,7 @@ export default {
     try {
       const master = await mastersModel.getMasterById(id)
       if (!master) {
-        throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${id} is not exist`)
+        throw new CustomError(MASTER_IS_NOT_EXIST, 404, `Master with id ${id} is not exist`)
       }
       return master
     } catch (error) {

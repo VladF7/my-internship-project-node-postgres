@@ -28,7 +28,7 @@ export default {
     try {
       const city = await citiesModel.getCityById(id)
       if (!city) {
-        throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${id} is not exist`)
+        throw new CustomError(CITY_IS_NOT_EXIST, 404, `City with id ${id} is not exist`)
       }
       return city
     } catch (error) {

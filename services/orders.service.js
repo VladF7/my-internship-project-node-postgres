@@ -149,7 +149,7 @@ export default {
     try {
       const order = await ordersModel.getOrderById(id)
       if (!order) {
-        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
+        throw new CustomError(ORDER_IS_NOT_EXIST, 404, `Order with id ${id} is not exist`)
       }
       return {
         ...order.dataValues,

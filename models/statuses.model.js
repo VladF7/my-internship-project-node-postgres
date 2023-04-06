@@ -10,8 +10,8 @@ export default {
     return statuses
   },
   getConfirmedStatusId: async () => {
-    const name = 'Confirmed'
-    const status = await Status.findOne({ where: { name } })
+    const id = 1
+    const status = await Status.findByPk(id)
     return status.dataValues.id
   }
 }
