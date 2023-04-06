@@ -10,10 +10,14 @@ import CustomError from '../errors/customError.js'
 import {
   CITY_IS_NOT_EXIST,
   CLOCK_IS_NOT_EXIST,
+  INCORRECT_PRICE,
   MASTER_IS_NOT_AVAILABEL,
   MASTER_IS_NOT_EXIST,
-  ORDER_IS_NOT_EXIST
+  ORDER_IS_NOT_EXIST,
+  PRICE_FOR_HOUR_IS_NOT_EXIS,
+  STATUS_IS_NOT_EXIST
 } from '../errors/types.js'
+import statusModel from '../models/statuses.model.js'
 
 export default {
   getOrders: async () => {
@@ -30,19 +34,21 @@ export default {
       throw error
     }
   },
-  addOrder: async (masterId, cityId, clockId, name, email, startTime, endTime) => {
+  addOrder: async (
+    masterId,
+    cityId,
+    clockId,
+    name,
+    email,
+    startTime,
+    endTime,
+    priceForHour,
+    price
+  ) => {
     try {
       const master = await mastersModel.getMasterById(masterId)
       if (!master) {
         throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${masterId} is not exist`)
-      }
-      const city = await citiesModel.getCityById(cityId)
-      if (!city) {
-        throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
-      }
-      const clock = await clocksModel.getClockById(clockId)
-      if (!clock) {
-        throw new CustomError(CLOCK_IS_NOT_EXIST, 400, `Clock with id ${clockId} is not exist`)
       }
       const isMasterAvailable = await mastersModel.isMasterAvailable(masterId, startTime, endTime)
       if (!isMasterAvailable) {
@@ -52,6 +58,27 @@ export default {
           `Master with id ${masterId} is not available now`
         )
       }
+      const city = await citiesModel.getCityById(cityId)
+      if (!city) {
+        throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
+      }
+      const correctPriceForHour = await citiesModel.getCorrectPriceForHour(cityId)
+      if (priceForHour !== correctPriceForHour) {
+        throw new CustomError(
+          PRICE_FOR_HOUR_IS_NOT_EXIS,
+          400,
+          `Price for hour ${priceForHour} for city with id ${cityId} is not exist`
+        )
+      }
+      const clock = await clocksModel.getClockById(clockId)
+      if (!clock) {
+        throw new CustomError(CLOCK_IS_NOT_EXIST, 400, `Clock with id ${clockId} is not exist`)
+      }
+      const correctPrice = await citiesModel.getCorrectPrice(cityId, clockId)
+      if (price !== correctPrice) {
+        throw new CustomError(INCORRECT_PRICE, 400, `Price ${price} is wrong`)
+      }
+      const statusId = await statusModel.getConfirmedStatusId()
       const customer = await customersModel.getCustomerByEmail(email)
       if (!customer) {
         const order = await ordersModel.createOrderAndCreateCustomer(
@@ -61,7 +88,9 @@ export default {
           name,
           email,
           startTime,
-          endTime
+          endTime,
+          price,
+          statusId
         )
         await sendMailService.sendSuccessOrderMail(
           email,
@@ -82,7 +111,9 @@ export default {
           customerId,
           name,
           startTime,
-          endTime
+          endTime,
+          price,
+          statusId
         )
         await sendMailService.sendSuccessOrderMail(
           email,
@@ -118,7 +149,7 @@ export default {
     try {
       const order = await ordersModel.getOrderById(id)
       if (!order) {
-        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
+        throw new CustomError(ORDER_IS_NOT_EXIST, 404, `Order with id ${id} is not exist`)
       }
       return {
         ...order.dataValues,
@@ -129,7 +160,7 @@ export default {
       throw error
     }
   },
-  editOrder: async (id, clockId, masterId, cityId, start, end) => {
+  editOrder: async (id, clockId, masterId, cityId, start, end, priceForHour, price, statusId) => {
     try {
       const order = await ordersModel.getOrderById(id)
       if (!order) {
@@ -147,16 +178,35 @@ export default {
       if (!city) {
         throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
       }
+      const correctPriceForHour = await citiesModel.getCorrectPriceForHour(cityId)
+      if (priceForHour !== correctPriceForHour) {
+        throw new CustomError(
+          PRICE_FOR_HOUR_IS_NOT_EXIS,
+          400,
+          `Price for hour ${priceForHour} for city with id ${cityId} is not exist`
+        )
+      }
+      const correctPrice = await citiesModel.getCorrectPrice(cityId, clockId)
+      if (price !== correctPrice) {
+        throw new CustomError(INCORRECT_PRICE, 400, `Price ${price} is wrong`)
+      }
+      const status = await statusModel.getStatusById(statusId)
+      if (!status) {
+        throw new CustomError(STATUS_IS_NOT_EXIST, 400, `Status with id ${statusId} is not exist`)
+      }
+
       const startTime = getFormatDate(start)
       const endTime = getFormatDate(end)
 
       const editedOrder = await ordersModel.editOrder(
+        id,
         cityId,
         masterId,
         clockId,
         startTime,
         endTime,
-        id
+        price,
+        statusId
       )
       return editedOrder
     } catch (error) {

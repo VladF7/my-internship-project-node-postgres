@@ -16,7 +16,7 @@ export default {
     try {
       const customer = await customersModel.getCustomerById(id)
       if (!customer) {
-        throw new CustomError(CUSTOMER_IS_NOT_EXIST, 400, `Customer with id ${id} is not exist`)
+        throw new CustomError(CUSTOMER_IS_NOT_EXIST, 404, `Customer with id ${id} is not exist`)
       }
       return customer
     } catch (error) {

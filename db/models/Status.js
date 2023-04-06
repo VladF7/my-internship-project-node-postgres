@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
 import sequelize from '../database.js'
 
-const City = sequelize.define('city', {
+const Status = sequelize.define('status', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -11,11 +11,7 @@ const City = sequelize.define('city', {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
-  },
-  priceForHour: {
-    type: DataTypes.INTEGER,
-    allowNull: false
   }
 })
 
-export { City }
+export { Status }

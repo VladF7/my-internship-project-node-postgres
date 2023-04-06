@@ -5,6 +5,7 @@ import { City } from './Сity.js'
 import { Clock } from './Clock.js'
 import { Master } from './Master.js'
 import { Customer } from './Сustomer.js'
+import { Status } from './Status.js'
 
 const Order = sequelize.define('order', {
   id: {
@@ -18,6 +19,10 @@ const Order = sequelize.define('order', {
   },
   endTime: {
     type: DataTypes.DATE,
+    allowNull: false
+  },
+  price: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 })
@@ -33,5 +38,8 @@ Order.belongsTo(Master)
 
 City.hasMany(Order, { onDelete: 'RESTRICT' })
 Order.belongsTo(City)
+
+Status.hasMany(Order, { onDelete: 'RESTRICT' })
+Order.belongsTo(Status)
 
 export { Order }

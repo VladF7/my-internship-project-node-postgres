@@ -5,12 +5,13 @@ import { City } from '../db/models/Сity.js'
 import { Master } from '../db/models/Master.js'
 import { Customer } from '../db/models/Сustomer.js'
 import { Clock } from '../db/models/Clock.js'
+import { Status } from '../db/models/Status.js'
 
 export default {
   getOrders: async () => {
     const orders = await Order.findAll({
       order: [['id', 'DESC']],
-      include: [City, Master, Customer, Clock]
+      include: [City, Master, Customer, Clock, Status]
     })
     return orders
   },
@@ -21,7 +22,9 @@ export default {
     name,
     email,
     startTime,
-    endTime
+    endTime,
+    price,
+    statusId
   ) => {
     const transaction = await sequelize.transaction()
     try {
@@ -34,7 +37,9 @@ export default {
           cityId,
           clockId,
           startTime,
-          endTime
+          endTime,
+          price,
+          statusId
         },
         { transaction }
       )
@@ -52,7 +57,9 @@ export default {
     customerId,
     name,
     startTime,
-    endTime
+    endTime,
+    price,
+    statusId
   ) => {
     const transaction = await sequelize.transaction()
     try {
@@ -65,7 +72,9 @@ export default {
           cityId,
           clockId,
           startTime,
-          endTime
+          endTime,
+          price,
+          statusId
         },
         { transaction }
       )
@@ -79,13 +88,13 @@ export default {
 
   getOrderById: async (id) => {
     const order = await Order.findByPk(id, {
-      include: [City, Master, Customer, Clock]
+      include: [City, Master, Customer, Clock, Status]
     })
     return order
   },
-  editOrder: async (cityId, masterId, clockId, startTime, endTime, id) => {
+  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, statusId) => {
     const editedOrder = await Order.update(
-      { cityId, masterId, clockId, startTime, endTime },
+      { cityId, masterId, clockId, startTime, endTime, price, statusId },
       { where: { id } }
     )
     return editedOrder
