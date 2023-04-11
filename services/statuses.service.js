@@ -4,7 +4,7 @@ import statusesModel from '../models/statuses.model.js'
 export default {
   getStatuses: async () => {
     try {
-      const statuses = await statusesModel.getStatuses()
+      const statuses = await statusesModel.getOrderStatuses()
       return statuses
     } catch (error) {
       throw error

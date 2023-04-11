@@ -10,8 +10,8 @@ router.get(
   authMiddleWare,
   mastersController.getFreeMastersForCurrentOrder
 )
+router.get('/:id', mastersController.getMasterById)
 router.get('/', authMiddleWare, mastersController.getMasters)
-router.get('/:id', authMiddleWare, mastersController.getMasterById)
 router.post('/', authMiddleWare, mastersController.addMaster)
 router.put('/:id', authMiddleWare, mastersController.editMaster)
 router.delete('/:id', authMiddleWare, mastersController.deleteMaster)

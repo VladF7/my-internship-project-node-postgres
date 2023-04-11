@@ -6,19 +6,19 @@ module.exports = {
       [
         {
           name: 'Dnipro',
-          priceForHour: 10,
+          priceForHour: 1000,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
           name: 'Uzhgorod',
-          priceForHour: 15,
+          priceForHour: 1533,
           createdAt: new Date(),
           updatedAt: new Date()
         },
         {
           name: 'Kharkiv',
-          priceForHour: 20,
+          priceForHour: 2050,
           createdAt: new Date(),
           updatedAt: new Date()
         }
