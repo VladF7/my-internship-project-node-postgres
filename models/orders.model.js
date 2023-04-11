@@ -5,13 +5,12 @@ import { City } from '../db/models/Сity.js'
 import { Master } from '../db/models/Master.js'
 import { Customer } from '../db/models/Сustomer.js'
 import { Clock } from '../db/models/Clock.js'
-import { Status } from '../db/models/Status.js'
 
 export default {
   getOrders: async () => {
     const orders = await Order.findAll({
       order: [['id', 'DESC']],
-      include: [City, Master, Customer, Clock, Status]
+      include: [City, Master, Customer, Clock]
     })
     return orders
   },
@@ -88,15 +87,16 @@ export default {
 
   getOrderById: async (id) => {
     const order = await Order.findByPk(id, {
-      include: [City, Master, Customer, Clock, Status]
+      include: [City, Master, Customer, Clock]
     })
     return order
   },
-  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, statusId) => {
+  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status) => {
     const editedOrder = await Order.update(
-      { cityId, masterId, clockId, startTime, endTime, price, statusId },
+      { cityId, masterId, clockId, startTime, endTime, price, status },
       { where: { id } }
     )
+
     return editedOrder
   },
   deleteOrder: async (id) => {

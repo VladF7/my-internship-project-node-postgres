@@ -36,7 +36,7 @@ export const editOrderSchema = z.object({
   endTime: z.coerce.date(),
   priceForHour: z.number().int().positive(),
   price: z.number().int().positive(),
-  statusId: z.number().int().positive()
+  status: z.string().max(255).nonempty()
 })
 export const deleteOrderSchema = z.object({
   id: z

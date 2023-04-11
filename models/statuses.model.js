@@ -1,17 +1,12 @@
-import { Status } from '../db/models/Status.js'
+import { Order } from '../db/models/models.js'
 
 export default {
-  getStatusById: async (id) => {
-    const status = await Status.findByPk(id)
-    return status
-  },
-  getStatuses: async () => {
-    const statuses = await Status.findAll()
+  getOrderStatuses: async () => {
+    const statuses = await Order.getAttributes().status.values
     return statuses
   },
-  getConfirmedStatusId: async () => {
-    const id = 1
-    const status = await Status.findByPk(id)
-    return status.dataValues.id
+  checkCorrectOrderStatus: async (status) => {
+    const statuses = await Order.getAttributes().status.values
+    return statuses.includes(status)
   }
 }

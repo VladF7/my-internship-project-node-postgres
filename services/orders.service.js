@@ -17,7 +17,7 @@ import {
   PRICE_FOR_HOUR_IS_NOT_EXIS,
   STATUS_IS_NOT_EXIST
 } from '../errors/types.js'
-import statusModel from '../models/statuses.model.js'
+import statusesModel from '../models/statuses.model.js'
 
 export default {
   getOrders: async () => {
@@ -78,7 +78,6 @@ export default {
       if (price !== correctPrice) {
         throw new CustomError(INCORRECT_PRICE, 400, `Price ${price} is wrong`)
       }
-      const statusId = await statusModel.getConfirmedStatusId()
       const customer = await customersModel.getCustomerByEmail(email)
       if (!customer) {
         const order = await ordersModel.createOrderAndCreateCustomer(
@@ -89,8 +88,7 @@ export default {
           email,
           startTime,
           endTime,
-          price,
-          statusId
+          price
         )
         await sendMailService.sendSuccessOrderMail(
           email,
@@ -112,8 +110,7 @@ export default {
           name,
           startTime,
           endTime,
-          price,
-          statusId
+          price
         )
         await sendMailService.sendSuccessOrderMail(
           email,
@@ -160,7 +157,7 @@ export default {
       throw error
     }
   },
-  editOrder: async (id, clockId, masterId, cityId, start, end, priceForHour, price, statusId) => {
+  editOrder: async (id, clockId, masterId, cityId, start, end, priceForHour, price, status) => {
     try {
       const order = await ordersModel.getOrderById(id)
       if (!order) {
@@ -190,9 +187,9 @@ export default {
       if (price !== correctPrice) {
         throw new CustomError(INCORRECT_PRICE, 400, `Price ${price} is wrong`)
       }
-      const status = await statusModel.getStatusById(statusId)
-      if (!status) {
-        throw new CustomError(STATUS_IS_NOT_EXIST, 400, `Status with id ${statusId} is not exist`)
+      const correctStatus = await statusesModel.checkCorrectOrderStatus(status)
+      if (!correctStatus) {
+        throw new CustomError(STATUS_IS_NOT_EXIST, 400, `Status ${status} for order is not exist`)
       }
 
       const startTime = getFormatDate(start)
@@ -206,7 +203,7 @@ export default {
         startTime,
         endTime,
         price,
-        statusId
+        status
       )
       return editedOrder
     } catch (error) {

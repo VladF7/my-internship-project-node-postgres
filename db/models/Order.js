@@ -1,11 +1,12 @@
-import { DataTypes } from 'sequelize'
+import { DataTypes, Sequelize } from 'sequelize'
 import sequelize from '../database.js'
 
 import { City } from './Сity.js'
 import { Clock } from './Clock.js'
 import { Master } from './Master.js'
 import { Customer } from './Сustomer.js'
-import { Status } from './Status.js'
+
+export const Statuses = { Confirmed: 'Confirmed', Completed: 'Completed', Canceled: 'Canceled' }
 
 const Order = sequelize.define('order', {
   id: {
@@ -24,6 +25,10 @@ const Order = sequelize.define('order', {
   price: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  status: {
+    type: Sequelize.ENUM(Statuses.Confirmed, Statuses.Completed, Statuses.Canceled),
+    defaultValue: Statuses.Confirmed
   }
 })
 
@@ -38,8 +43,5 @@ Order.belongsTo(Master)
 
 City.hasMany(Order, { onDelete: 'RESTRICT' })
 Order.belongsTo(City)
-
-Status.hasMany(Order, { onDelete: 'RESTRICT' })
-Order.belongsTo(Status)
 
 export { Order }

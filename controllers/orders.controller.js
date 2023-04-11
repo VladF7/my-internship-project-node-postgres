@@ -91,7 +91,7 @@ export default {
     try {
       const body = req.body
       const params = req.params
-      const { id, clockId, masterId, cityId, startTime, endTime, priceForHour, price, statusId } =
+      const { id, clockId, masterId, cityId, startTime, endTime, priceForHour, price, status } =
         editOrderSchema.parse({
           ...body,
           ...params
@@ -105,7 +105,7 @@ export default {
         endTime,
         priceForHour,
         price,
-        statusId
+        status
       )
       return res.status(200).json(editedOrder)
     } catch (error) {
