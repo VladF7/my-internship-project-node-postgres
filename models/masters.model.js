@@ -3,6 +3,7 @@ import sequelize from '../db/database.js'
 import { CityMaster } from '../db/models/CityMaster.js'
 import { Master } from '../db/models/Master.js'
 import { Order } from '../db/models/Order.js'
+import { User } from '../db/models/User.js'
 import { City } from '../db/models/Сity.js'
 
 export default {
@@ -12,6 +13,10 @@ export default {
         {
           model: City,
           as: 'cities'
+        },
+        {
+          attributes: ['isEmailActivated', 'email'],
+          model: User
         }
       ]
     })
@@ -129,27 +134,17 @@ export default {
     })
     return freeMastersForCurrentOrder
   },
-  addMasterAndCities: async (name, rating, cities) => {
+  deleteMasterAndUserAndCities: async (id, userId) => {
     const transaction = await sequelize.transaction()
     try {
-      const newMaster = await Master.create({ name, rating }, { transaction })
-      const masterId = newMaster.dataValues.id
-      await CityMaster.bulkCreate(
-        cities.map((cityId) => ({ cityId, masterId })),
-        { transaction }
-      )
-      await transaction.commit()
-      return newMaster
-    } catch (error) {
-      await transaction.rollback()
-      throw error
-    }
-  },
-  deleteMasterAndCities: async (masterId) => {
-    const transaction = await sequelize.transaction()
-    try {
-      await CityMaster.destroy({ where: { masterId }, transaction })
-      const deletedMaster = await Master.destroy({ where: { id: masterId }, transaction })
+      await CityMaster.destroy({ where: { masterId: id }, transaction })
+      const deletedMaster = await Master.destroy({
+        where: { id },
+        returning: true,
+        plain: true,
+        transaction
+      })
+      await User.destroy({ where: { id: userId }, transaction })
       await transaction.commit()
       return deletedMaster
     } catch (error) {

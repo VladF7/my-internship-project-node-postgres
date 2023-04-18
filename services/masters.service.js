@@ -1,28 +1,26 @@
 /* eslint-disable no-useless-catch */
+import { generate } from 'generate-password'
 import CustomError from '../errors/customError.js'
-import { CITY_IS_NOT_EXIST, MASTER_IS_NOT_EXIST, ORDER_IS_NOT_EXIST } from '../errors/types.js'
+import {
+  CITY_IS_NOT_EXIST,
+  MASTER_IS_NOT_EXIST,
+  ORDER_IS_NOT_EXIST,
+  USER_IS_NOT_EXIST
+} from '../errors/types.js'
 import citiesModel from '../models/cities.model.js'
 import citiesMastersModel from '../models/citiesMasters.model.js'
 import mastersModel from '../models/masters.model.js'
 import ordersModel from '../models/orders.model.js'
+import usersModel from '../models/users.model.js'
+import usersModele from '../models/users.model.js'
+import mailService from './mail.service.js'
+import bcrypt from 'bcrypt'
 
 export default {
   getMasters: async () => {
     try {
       const masters = await mastersModel.getMasters()
       return masters
-    } catch (error) {
-      throw error
-    }
-  },
-  addMaster: async (name, rating, cities) => {
-    try {
-      const isCitiesExist = await citiesModel.isCitiesExist(cities)
-      if (!isCitiesExist) {
-        throw new CustomError(CITY_IS_NOT_EXIST, 400, `Cities for master can't be created`)
-      }
-      const newMaster = await mastersModel.addMasterAndCities(name, rating, cities)
-      return newMaster
     } catch (error) {
       throw error
     }
@@ -65,7 +63,12 @@ export default {
           `Cities for master with id ${id} is not exist`
         )
       }
-      const deletedMaster = await mastersModel.deleteMasterAndCities(id)
+      const userId = master.userId
+      const user = await usersModele.getUserById(userId)
+      if (!user) {
+        throw new CustomError(USER_IS_NOT_EXIST, 400, `User is not exist`)
+      }
+      const deletedMaster = await mastersModel.deleteMasterAndUserAndCities(id, userId)
       return deletedMaster
     } catch (error) {
       throw error
@@ -111,6 +114,43 @@ export default {
         throw new CustomError(MASTER_IS_NOT_EXIST, 404, `Master with id ${id} is not exist`)
       }
       return master
+    } catch (error) {
+      throw error
+    }
+  },
+  activate: async (id) => {
+    try {
+      const master = await mastersModel.getMasterById(id)
+      if (!master) {
+        throw new CustomError(MASTER_IS_NOT_EXIST, 404, `Master with id ${id} is not exist`)
+      }
+      master.isActivated = true
+      await master.save()
+      const userId = master.userId
+      const email = await usersModel.getUserEmailById(userId)
+      await mailService.sendAproveMail(email)
+      return master
+    } catch (error) {
+      throw error
+    }
+  },
+  resetPassword: async (id) => {
+    try {
+      const master = await mastersModel.getMasterById(id)
+      if (!master) {
+        throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Customer with id ${id} is not exist`)
+      }
+      const userId = master.userId
+      const user = await usersModel.getUserById(userId)
+      if (!user) {
+        throw new CustomError(USER_IS_NOT_EXIST, 400, `User with id ${userId} is not exist`)
+      }
+      const newPassword = generate({ length: 10, numbers: true })
+      const hashNewPassword = await bcrypt.hash(newPassword, 3)
+      const resetedPassword = await usersModel.resetPassword(userId, hashNewPassword)
+      const email = user.email
+      await mailService.sendNewPasswordMail(email, newPassword)
+      return resetedPassword
     } catch (error) {
       throw error
     }

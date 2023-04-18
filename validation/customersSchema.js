@@ -20,3 +20,9 @@ export const deleteCustomerSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number)
 })
+export const resetPasswordSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})

@@ -10,9 +10,10 @@ router.get(
   authMiddleWare,
   mastersController.getFreeMastersForCurrentOrder
 )
+router.get('/activate/:id', authMiddleWare, mastersController.activate)
 router.get('/:id', mastersController.getMasterById)
 router.get('/', authMiddleWare, mastersController.getMasters)
-router.post('/', authMiddleWare, mastersController.addMaster)
+router.get('/resetPassword/:id', authMiddleWare, mastersController.resetPassword)
 router.put('/:id', authMiddleWare, mastersController.editMaster)
 router.delete('/:id', authMiddleWare, mastersController.deleteMaster)
 

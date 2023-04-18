@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize'
 import sequelize from '../database.js'
+import { User } from './User.js'
 
 const Customer = sequelize.define('customer', {
   id: {
@@ -17,5 +18,7 @@ const Customer = sequelize.define('customer', {
     unique: true
   }
 })
+User.hasOne(Customer, { onDelete: 'RESTRICT' })
+Customer.belongsTo(User)
 
 export { Customer }
