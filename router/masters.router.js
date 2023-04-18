@@ -10,7 +10,7 @@ router.get(
   authMiddleWare,
   mastersController.getFreeMastersForCurrentOrder
 )
-router.get('/activate/:id', authMiddleWare, mastersController.activateMaster)
+router.get('/activate/:id', authMiddleWare, mastersController.activate)
 router.get('/:id', mastersController.getMasterById)
 router.get('/', authMiddleWare, mastersController.getMasters)
 router.get('/resetPassword/:id', authMiddleWare, mastersController.resetPassword)

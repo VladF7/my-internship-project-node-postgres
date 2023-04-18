@@ -8,6 +8,7 @@ export default {
       order: [['id', 'DESC']],
       include: [
         {
+          attributes: ['isEmailActivated'],
           model: User
         }
       ]

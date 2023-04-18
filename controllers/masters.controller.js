@@ -125,11 +125,11 @@ export default {
       }
     }
   },
-  activateMaster: async (req, res) => {
+  activate: async (req, res) => {
     try {
       const params = req.params
       const { id } = activateMasterSchema.parse(params)
-      const activatedMaster = await mastersService.activateMaster(id)
+      const activatedMaster = await mastersService.activate(id)
       return res.status(200).json(activatedMaster)
     } catch (error) {
       if (error instanceof CustomError) {

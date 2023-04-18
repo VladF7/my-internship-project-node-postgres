@@ -15,6 +15,7 @@ export default {
           as: 'cities'
         },
         {
+          attributes: ['isEmailActivated', 'email'],
           model: User
         }
       ]

@@ -5,8 +5,8 @@ module.exports = {
       'users',
       [
         {
-          email: 'admin@example.com',
-          password: '$2b$04$TfvNGX8bxNNNhZ9ikK2e4u1SiwpbAox4OD.zgk8AB6j2SEH0HfUSm',
+          email: process.env.ADMIN_EMAIL,
+          password: process.env.ADMIN_PASSWORD,
           role: 'Admin',
           isEmailActivated: true,
           createdAt: new Date(),

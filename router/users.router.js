@@ -17,7 +17,7 @@ router.post(
   authMiddleWare,
   usersController.customerRegistrationFromAdminPage
 )
-router.get('/activate/:activationLink', usersController.activate)
+router.get('/confirmEmail/:activationLink', usersController.confirmEmail)
 router.get('/auth', authMiddleWare, usersController.auth)
 
 export default router

@@ -11,7 +11,6 @@ import {
   INVALID_DATA,
   USER_IS_EXIST
 } from '../errors/types.js'
-import UserDto from '../dtos/user.dto.js'
 import { Roles } from '../db/models/User.js'
 import citiesModel from '../models/cities.model.js'
 import customersModel from '../models/customers.model.js'
@@ -29,8 +28,13 @@ export default {
       if (!user || !validPassword) {
         throw new CustomError(INVALID_DATA, 400, `Wrong email or password`)
       }
-      const userDto = new UserDto(user)
-      const token = generateAccessToken({ ...userDto })
+      const generateTokenPayload = {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        isEmailActivated: user.isEmailActivated
+      }
+      const token = generateAccessToken(generateTokenPayload)
       const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
       return { token, user: userData }
     } catch (error) {
@@ -39,13 +43,12 @@ export default {
   },
   auth: async (userData) => {
     try {
-      const token = generateAccessToken(userData)
-      return { token, user: userData }
+      return { user: userData }
     } catch (error) {
       throw error
     }
   },
-  activate: async (activationLink) => {
+  confirmEmail: async (activationLink) => {
     try {
       const user = await usersModel.getUserByActivationLink(activationLink)
       if (!user) {
@@ -81,7 +84,7 @@ export default {
       )
       await mailService.sendActivationMailForMaster(
         email,
-        `${process.env.API_URL}/api/activate/${activationLink}`
+        `${process.env.API_URL}/api/confirmEmail/${activationLink}`
       )
       return newUserMaster
     } catch (error) {
@@ -115,7 +118,7 @@ export default {
       }
       await mailService.sendActivationMail(
         email,
-        `${process.env.API_URL}/api/activate/${activationLink}`
+        `${process.env.API_URL}/api/confirmEmail/${activationLink}`
       )
       return newUserCustomer
     } catch (error) {
@@ -179,10 +182,7 @@ export default {
           isEmailActivated
         )
       }
-      await mailService.sendActivationMail(
-        email,
-        `${process.env.API_URL}/api/activate/${activationLink}`
-      )
+
       return newUserCustomer
     } catch (error) {
       throw error

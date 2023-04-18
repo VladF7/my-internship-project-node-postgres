@@ -118,7 +118,7 @@ export default {
       throw error
     }
   },
-  activateMaster: async (id) => {
+  activate: async (id) => {
     try {
       const master = await mastersModel.getMasterById(id)
       if (!master) {

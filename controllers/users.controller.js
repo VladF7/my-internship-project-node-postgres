@@ -48,11 +48,11 @@ export default {
       }
     }
   },
-  activate: async (req, res) => {
+  confirmEmail: async (req, res) => {
     try {
       const params = req.params
       const { activationLink } = activateSchema.parse(params)
-      await usersService.activate(activationLink)
+      await usersService.confirmEmail(activationLink)
       return res.redirect(process.env.CLIENT_URL)
     } catch (error) {
       if (error instanceof CustomError) {
