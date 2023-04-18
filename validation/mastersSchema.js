@@ -26,11 +26,6 @@ export const getMasterByIdSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number)
 })
-export const addMasterSchema = z.object({
-  name: z.string().max(255).nonempty(),
-  rating: z.number().int().positive(),
-  cities: z.array(z.number().int().positive())
-})
 export const editMasterSchema = z.object({
   id: z
     .string()
@@ -41,6 +36,18 @@ export const editMasterSchema = z.object({
   cities: z.array(z.number().int().positive())
 })
 export const deleteMasterSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})
+export const activateMasterSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})
+export const resetPasswordSchema = z.object({
   id: z
     .string()
     .regex(/^[1-9]\d*$/)

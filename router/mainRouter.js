@@ -3,7 +3,7 @@ import citiesRouter from './cities.router.js'
 import mastersRouter from './masters.router.js'
 import ordersRouter from './orders.router.js'
 import customersRouter from './customers.router.js'
-import authRouter from './auth.router.js'
+import usersRouter from './users.router.js'
 import clocksRouter from './clocks.router.js'
 import statusesRouter from './statuses.router.js'
 
@@ -15,6 +15,6 @@ router.use('/cities', citiesRouter)
 router.use('/masters', mastersRouter)
 router.use('/customers', customersRouter)
 router.use('/orders', ordersRouter)
-router.use('/auth', authRouter)
+router.use('/', usersRouter)
 
 export default router

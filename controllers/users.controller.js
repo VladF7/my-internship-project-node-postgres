@@ -1,98 +1,21 @@
 import { ZodError } from 'zod'
-import CustomError from '../errors/customError.js'
-import mastersService from '../services/masters.service.js'
 import {
-  editMasterSchema,
-  getFreeMastersForCurrentOrder,
-  getFreeMastersSchema,
-  getMasterByIdSchema,
-  deleteMasterSchema,
-  resetPasswordSchema,
-  activateMasterSchema
-} from '../validation/mastersSchema.js'
+  activateSchema,
+  authSchema,
+  customerRegistrationSchema,
+  loginSchema,
+  masterRegistrationSchema
+} from '../validation/usersSchema.js'
+import usersService from '../services/users.service.js'
+import CustomError from '../errors/customError.js'
 
 export default {
-  getMasters: async (req, res) => {
-    try {
-      const masters = await mastersService.getMasters()
-      return res.status(200).json(masters)
-    } catch (error) {
-      return res.status(500).send('Something went wrong')
-    }
-  },
-  getFreeMasters: async (req, res) => {
-    try {
-      const query = req.query
-      const { cityId, startTime, endTime } = getFreeMastersSchema.parse(query)
-      const freeMasters = await mastersService.getFreeMasters(cityId, startTime, endTime)
-      return res.status(200).json(freeMasters)
-    } catch (error) {
-      if (error instanceof CustomError) {
-        return res.status(error.status).send({
-          error: error.code,
-          description: error.message
-        })
-      } else if (error instanceof ZodError) {
-        return res.status(400).send(error.issues)
-      } else {
-        return res.status(500).send('Something went wrong')
-      }
-    }
-  },
-  getFreeMastersForCurrentOrder: async (req, res) => {
-    try {
-      const query = req.query
-      const params = req.params
-      const { orderId, cityId, startTime, endTime } = getFreeMastersForCurrentOrder.parse({
-        ...query,
-        ...params
-      })
-      const freeMastersForCurrentOrder = await mastersService.getFreeMastersForCurrentOrder(
-        orderId,
-        cityId,
-        startTime,
-        endTime
-      )
-      return res.status(200).json(freeMastersForCurrentOrder)
-    } catch (error) {
-      if (error instanceof CustomError) {
-        return res.status(error.status).send({
-          error: error.code,
-          description: error.message
-        })
-      } else if (error instanceof ZodError) {
-        return res.status(400).send(error.issues)
-      } else {
-        return res.status(500).send('Something went wrong')
-      }
-    }
-  },
-  getMasterById: async (req, res) => {
-    try {
-      const params = req.params
-      const { id } = getMasterByIdSchema.parse(params)
-      const master = await mastersService.getMasterById(id)
-      return res.status(200).json(master)
-    } catch (error) {
-      if (error instanceof CustomError) {
-        return res.status(error.status).send({
-          error: error.code,
-          description: error.message
-        })
-      } else if (error instanceof ZodError) {
-        return res.status(400).send(error.issues)
-      } else {
-        return res.status(500).send('Something went wrong')
-      }
-    }
-  },
-  editMaster: async (req, res) => {
+  login: async (req, res) => {
     try {
       const body = req.body
-      const params = req.params
-      const { id, name, rating, cities } = editMasterSchema.parse({ ...body, ...params })
-      const editedMaster = await mastersService.editMaster(id, name, rating, cities)
-      return res.status(200).json(editedMaster)
+      const { email, password } = loginSchema.parse(body)
+      const userData = await usersService.login(email, password)
+      return res.status(200).json(userData)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({
@@ -106,12 +29,12 @@ export default {
       }
     }
   },
-  deleteMaster: async (req, res) => {
+  auth: async (req, res) => {
     try {
-      const params = req.params
-      const { id } = deleteMasterSchema.parse(params)
-      const deletedMaster = await mastersService.deleteMaster(id)
-      return res.status(200).json(deletedMaster)
+      const user = req.user
+      const { id, email, role, isEmailActivated } = authSchema.parse(user)
+      const userData = await usersService.auth({ id, email, role, isEmailActivated })
+      return res.status(200).json(userData)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({
@@ -125,12 +48,12 @@ export default {
       }
     }
   },
-  activateMaster: async (req, res) => {
+  activate: async (req, res) => {
     try {
       const params = req.params
-      const { id } = activateMasterSchema.parse(params)
-      const activatedMaster = await mastersService.activateMaster(id)
-      return res.status(200).json(activatedMaster)
+      const { activationLink } = activateSchema.parse(params)
+      await usersService.activate(activationLink)
+      return res.redirect(process.env.CLIENT_URL)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({
@@ -144,12 +67,78 @@ export default {
       }
     }
   },
-  resetPassword: async (req, res) => {
+  masterRegistration: async (req, res) => {
     try {
-      const params = req.params
-      const { id } = resetPasswordSchema.parse(params)
-      const resetedPassword = await mastersService.resetPassword(id)
-      return res.status(200).json(resetedPassword)
+      const body = req.body
+      const { name, email, password, cities } = masterRegistrationSchema.parse(body)
+      const newUserMaster = await usersService.masterRegistration(name, email, password, cities)
+      return res.status(200).json(newUserMaster)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  customerRegistration: async (req, res) => {
+    try {
+      const body = req.body
+      const { name, email, password } = customerRegistrationSchema.parse(body)
+      const newUserCustomer = await usersService.customerRegistration(name, email, password)
+      return res.status(200).json(newUserCustomer)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  masterRegistrationFromAdminPage: async (req, res) => {
+    try {
+      const body = req.body
+      const { name, email, password, cities } = masterRegistrationSchema.parse(body)
+      const newUserMaster = await usersService.masterRegistrationFromAdminPage(
+        name,
+        email,
+        password,
+        cities
+      )
+      return res.status(200).json(newUserMaster)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  customerRegistrationFromAdminPage: async (req, res) => {
+    try {
+      const body = req.body
+      const { name, email, password } = customerRegistrationSchema.parse(body)
+      const newUserCustomer = await usersService.customerRegistrationFromAdminPage(
+        name,
+        email,
+        password
+      )
+      return res.status(200).json(newUserCustomer)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({

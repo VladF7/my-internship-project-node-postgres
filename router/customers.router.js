@@ -6,6 +6,7 @@ const router = Router()
 
 router.get('/', authMiddleWare, customersController.getCustomers)
 router.get('/:id', authMiddleWare, customersController.getCustomerById)
+router.get('/resetPassword/:id', authMiddleWare, customersController.resetPassword)
 router.put('/:id', authMiddleWare, customersController.editCustomer)
 router.delete('/:id', authMiddleWare, customersController.deleteCustomer)
 
