@@ -34,5 +34,5 @@ export const authSchema = z.object({
   isEmailActivated: z.boolean()
 })
 export const activateSchema = z.object({
-  activationLink: z.string(255).nonempty()
+  activationLink: z.string(255).uuid().nonempty()
 })
