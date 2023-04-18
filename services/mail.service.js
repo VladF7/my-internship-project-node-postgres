@@ -1,9 +1,7 @@
 /* eslint-disable no-useless-catch */
 import nodemailer from 'nodemailer'
 import { getDate, getTime } from '../date.js'
-import mastersModel from '../models/masters.model.js'
-import clocksModel from '../models/clocks.model.js'
-import citiesModel from '../models/cities.model.js'
+import { mastersModel, citiesModel, clocksModel } from '../models/model.layer.js'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,

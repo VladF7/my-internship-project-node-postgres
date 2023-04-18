@@ -1,10 +1,6 @@
 import { Op } from 'sequelize'
 import sequelize from '../db/database.js'
-import { CityMaster } from '../db/models/CityMaster.js'
-import { Master } from '../db/models/Master.js'
-import { Order } from '../db/models/Order.js'
-import { User } from '../db/models/User.js'
-import { City } from '../db/models/Сity.js'
+import { City, User, Order, Master, CityMaster } from '../db/models/models.DALayer.js'
 
 export default {
   getMasters: async () => {

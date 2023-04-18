@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import statusesController from '../controllers/statuses.controller.js'
+import { statusesController } from '../controllers/controller.layer'
 import { authMiddleWare } from '../middleware/authMiddleware.js'
 
 const router = Router()

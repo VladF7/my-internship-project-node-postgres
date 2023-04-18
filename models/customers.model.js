@@ -1,6 +1,5 @@
 import sequelize from '../db/database.js'
-import { User } from '../db/models/User.js'
-import { Customer } from '../db/models/Сustomer.js'
+import { User, Customer } from '../db/models/models.DALayer.js'
 
 export default {
   getCustomers: async () => {

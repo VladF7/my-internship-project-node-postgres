@@ -6,7 +6,7 @@ import {
   loginSchema,
   masterRegistrationSchema
 } from '../validation/usersSchema.js'
-import usersService from '../services/users.service.js'
+import { usersService } from '../services/service.layer.js'
 import CustomError from '../errors/customError.js'
 
 export default {

@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 import CustomError from '../errors/customError.js'
 import { CLOCK_IS_NOT_EXIST } from '../errors/types.js'
-import clocksModel from '../models/clocks.model.js'
+import { clocksModel } from '../models/model.layer.js'
 
 export default {
   getClocks: async () => {

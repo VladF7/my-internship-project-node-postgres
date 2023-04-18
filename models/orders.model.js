@@ -1,10 +1,6 @@
 import sequelize from '../db/database.js'
 
-import { Order } from '../db/models/Order.js'
-import { City } from '../db/models/Сity.js'
-import { Master } from '../db/models/Master.js'
-import { Customer } from '../db/models/Сustomer.js'
-import { Clock } from '../db/models/Clock.js'
+import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
 
 export default {
   getOrders: async () => {

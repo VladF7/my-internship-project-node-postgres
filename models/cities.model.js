@@ -1,5 +1,5 @@
 import { Op } from 'sequelize'
-import { City, Clock } from '../db/models/models.js'
+import { City, Clock } from '../db/models/models.DALayer.js'
 
 export default {
   getCities: async () => {

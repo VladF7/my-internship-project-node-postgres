@@ -7,12 +7,7 @@ import {
   ORDER_IS_NOT_EXIST,
   USER_IS_NOT_EXIST
 } from '../errors/types.js'
-import citiesModel from '../models/cities.model.js'
-import citiesMastersModel from '../models/citiesMasters.model.js'
-import mastersModel from '../models/masters.model.js'
-import ordersModel from '../models/orders.model.js'
-import usersModel from '../models/users.model.js'
-import usersModele from '../models/users.model.js'
+import { mastersModel, ordersModel, citiesModel, usersModel } from '../models/model.layer.js'
 import mailService from './mail.service.js'
 import bcrypt from 'bcrypt'
 

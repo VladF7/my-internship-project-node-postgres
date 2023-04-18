@@ -1,6 +1,6 @@
 import { ZodError } from 'zod'
 import CustomError from '../errors/customError.js'
-import citiesService from '../services/cities.service.js'
+import { citiesService } from '../services/service.layer.js'
 import {
   addCitySchema,
   deleteCitySchema,

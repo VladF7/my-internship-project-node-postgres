@@ -1,6 +1,6 @@
 import { ZodError } from 'zod'
 import CustomError from '../errors/customError.js'
-import clocksService from '../services/clocks.service.js'
+import { clocksService } from '../services/service.layer.js'
 import { getClockByIdSchema } from '../validation/clocksSchema.js'
 
 export default {

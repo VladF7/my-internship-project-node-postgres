@@ -1,6 +1,6 @@
 import { ZodError } from 'zod'
 import CustomError from '../errors/customError.js'
-import ordersService from '../services/orders.service.js'
+import { ordersService } from '../services/service.layer.js'
 import {
   addOrderSchema,
   deleteOrderSchema,

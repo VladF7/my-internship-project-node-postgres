@@ -1,4 +1,4 @@
-import { Clock } from '../db/models/Clock.js'
+import { Clock } from '../db/models/models.js'
 
 export default {
   getClockById: async (id) => {
