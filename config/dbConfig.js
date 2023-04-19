@@ -1,6 +1,6 @@
 import sequelize from '../db/database.js'
 /* eslint-disable */
-import * as models from '../db/models/models.js'
+import * as models from '../db/models/models.DALayer.js'
 
 const connectDB = async () => {
   try {
