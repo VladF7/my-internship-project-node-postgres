@@ -21,16 +21,6 @@ router.post(
 )
 router.get('/confirmEmail/:activationLink', usersController.confirmEmail)
 router.get('/auth', authMiddleWare, usersController.auth)
-router.get(
-  '/master/:id',
-  checkAuthAndRole(Roles.Master),
-  usersController.getOrdersForMasterByUserId
-)
-router.get(
-  '/customer/:id',
-  checkAuthAndRole(Roles.Customer),
-  usersController.getOrdersForCustomerByUserId
-)
 router.get('/users', usersController.getUserByEmail)
 router.post('/createUser', usersController.createUserCustomer)
 

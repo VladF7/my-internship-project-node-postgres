@@ -1,10 +1,7 @@
 import sequelize from '../db/database.js'
 import { CityMaster } from '../db/models/CityMaster.js'
-import { Clock } from '../db/models/Clock.js'
 import { Master } from '../db/models/Master.js'
-import { Order } from '../db/models/Order.js'
 import { User } from '../db/models/User.js'
-import { City } from '../db/models/Сity.js'
 import { Customer } from '../db/models/Сustomer.js'
 
 export default {
@@ -94,33 +91,5 @@ export default {
   resetPassword: async (id, password) => {
     const resetedPassword = await User.update({ password }, { where: { id } })
     return resetedPassword
-  },
-  getOrdersForMasterByUserId: async (id) => {
-    const master = await Master.findOne({ where: { userId: id } })
-    const masterId = master.dataValues.id
-    const orders = await Order.findAll({
-      where: {
-        masterId
-      },
-
-      include: [Customer, Clock, City],
-      order: [['startTime', 'DESC']]
-    })
-
-    return orders
-  },
-  getOrdersForCustomerByUserId: async (id) => {
-    const customer = await Customer.findOne({ where: { userId: id } })
-    const customerId = customer.dataValues.id
-    const orders = await Order.findAll({
-      where: {
-        customerId
-      },
-
-      include: [Master, Clock, City],
-      order: [['startTime', 'DESC']]
-    })
-
-    return orders
   }
 }

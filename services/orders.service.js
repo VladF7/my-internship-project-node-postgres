@@ -10,6 +10,7 @@ import CustomError from '../errors/customError.js'
 import {
   CITY_IS_NOT_EXIST,
   CLOCK_IS_NOT_EXIST,
+  CUSTOMER_IS_NOT_EXIST,
   INCORRECT_PRICE,
   MASTER_IS_NOT_AVAILABEL,
   MASTER_IS_NOT_EXIST,
@@ -223,7 +224,7 @@ export default {
       throw error
     }
   },
-  changeStatus: async (id) => {
+  completeOrder: async (id) => {
     try {
       const order = await ordersModel.getOrderById(id)
       if (!order) {
@@ -245,6 +246,46 @@ export default {
       order.rating = rating
       await order.save()
       return order.rating
+    } catch (error) {
+      throw error
+    }
+  },
+  getOrdersForMasterById: async (id) => {
+    try {
+      const master = await mastersModel.getMasterById(id)
+      if (!master) {
+        throw new CustomError(MASTER_IS_NOT_EXIST, 404, `User with user id ${id} is not exist`)
+      }
+      const orders = await ordersModel.getOrdersForMasterById(id)
+      return orders.map((order) => {
+        return {
+          ...order.dataValues,
+          startTime: getFormatDate(order.startTime),
+          endTime: getFormatDate(order.endTime)
+        }
+      })
+    } catch (error) {
+      throw error
+    }
+  },
+  getOrdersForCustomerById: async (customerId) => {
+    try {
+      const customer = await customersModel.getCustomerById(customerId)
+      if (!customer) {
+        throw new CustomError(
+          CUSTOMER_IS_NOT_EXIST,
+          404,
+          `Customer with id ${customerId} is not exist`
+        )
+      }
+      const orders = await ordersModel.getOrdersForCustomerById(customerId)
+      return orders.map((order) => {
+        return {
+          ...order.dataValues,
+          startTime: getFormatDate(order.startTime),
+          endTime: getFormatDate(order.endTime)
+        }
+      })
     } catch (error) {
       throw error
     }

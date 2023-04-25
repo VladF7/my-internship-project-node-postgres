@@ -7,8 +7,10 @@ import {
   editOrderSchema,
   getOrderEndTimeSchema,
   getOrderByIdSchema,
-  changeStatusSchema,
-  setRatingSchema
+  setRatingSchema,
+  completeOrderSchema,
+  getOrdersForMasterByIdSchema,
+  getOrdersForCustomerByIdSchema
 } from '../validation/ordersSchema.js'
 
 export default {
@@ -142,11 +144,11 @@ export default {
       }
     }
   },
-  changeStatus: async (req, res) => {
+  completeOrder: async (req, res) => {
     try {
       const params = req.params
-      const { id } = changeStatusSchema.parse(params)
-      const changedStatus = await ordersService.changeStatus(id)
+      const { id } = completeOrderSchema.parse(params)
+      const changedStatus = await ordersService.completeOrder(id)
       return res.status(200).json(changedStatus)
     } catch (error) {
       if (error instanceof CustomError) {
@@ -169,7 +171,44 @@ export default {
       const newRating = await ordersService.setRating(id, rating)
       return res.status(200).json(newRating)
     } catch (error) {
-      console.log(error)
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  getOrdersForMasterById: async (req, res) => {
+    try {
+      const params = req.params
+      const { masterId } = getOrdersForMasterByIdSchema.parse(params)
+      const orders = await ordersService.getOrdersForMasterById(masterId)
+      return res.status(200).json(orders)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  getOrdersForCustomerById: async (req, res) => {
+    try {
+      const params = req.params
+      const { customerId } = getOrdersForCustomerByIdSchema.parse(params)
+      const orders = await ordersService.getOrdersForCustomerById(customerId)
+      return res.status(200).json(orders)
+    } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({
           error: error.code,

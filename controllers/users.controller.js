@@ -4,7 +4,6 @@ import {
   authSchema,
   createUserCustomerSchema,
   customerRegistrationSchema,
-  getOrdersByUserIdSchema,
   getUserByEmailSchema,
   loginSchema,
   masterRegistrationSchema
@@ -35,14 +34,17 @@ export default {
   auth: async (req, res) => {
     try {
       const user = req.user
-      const { id, email, role, isEmailActivated, name, isActivated } = authSchema.parse(user)
+      const { id, email, role, isEmailActivated, name, isActivated, masterId, customerId } =
+        authSchema.parse(user)
       const userData = await usersService.auth({
         id,
         email,
         role,
         isEmailActivated,
         name,
-        isActivated
+        isActivated,
+        masterId,
+        customerId
       })
       return res.status(200).json(userData)
     } catch (error) {
@@ -162,44 +164,6 @@ export default {
       }
     }
   },
-  getOrdersForMasterByUserId: async (req, res) => {
-    try {
-      const params = req.params
-      const { id } = getOrdersByUserIdSchema.parse(params)
-      const ordersByUserId = await usersService.getOrdersForMasterByUserId(id)
-      return res.status(200).json(ordersByUserId)
-    } catch (error) {
-      if (error instanceof CustomError) {
-        return res.status(error.status).send({
-          error: error.code,
-          description: error.message
-        })
-      } else if (error instanceof ZodError) {
-        return res.status(400).send(error.issues)
-      } else {
-        return res.status(500).send('Something went wrong')
-      }
-    }
-  },
-  getOrdersForCustomerByUserId: async (req, res) => {
-    try {
-      const params = req.params
-      const { id } = getOrdersByUserIdSchema.parse(params)
-      const ordersByUserId = await usersService.getOrdersForCustomerByUserId(id)
-      return res.status(200).json(ordersByUserId)
-    } catch (error) {
-      if (error instanceof CustomError) {
-        return res.status(error.status).send({
-          error: error.code,
-          description: error.message
-        })
-      } else if (error instanceof ZodError) {
-        return res.status(400).send(error.issues)
-      } else {
-        return res.status(500).send('Something went wrong')
-      }
-    }
-  },
   getUserByEmail: async (req, res) => {
     try {
       const query = req.query
@@ -226,7 +190,6 @@ export default {
       const newUserCustomer = await usersService.createUserCustomer(email, name)
       return res.status(200).json(newUserCustomer)
     } catch (error) {
-      console.log(error)
       if (error instanceof CustomError) {
         return res.status(error.status).send({
           error: error.code,

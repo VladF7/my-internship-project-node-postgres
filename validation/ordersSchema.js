@@ -44,7 +44,7 @@ export const deleteOrderSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number)
 })
-export const changeStatusSchema = z.object({
+export const completeOrderSchema = z.object({
   id: z
     .string()
     .regex(/^[1-9]\d*$/)
@@ -56,4 +56,16 @@ export const setRatingSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number),
   rating: z.number().gte(1).lte(5).int().positive()
+})
+export const getOrdersForMasterByIdSchema = z.object({
+  masterId: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})
+export const getOrdersForCustomerByIdSchema = z.object({
+  customerId: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
 })

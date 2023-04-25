@@ -9,13 +9,11 @@ import {
   CITY_IS_NOT_EXIST,
   INCORRECT_ACTIVATION_LINK,
   INVALID_DATA,
-  USER_IS_EXIST,
-  USER_IS_NOT_EXIST
+  USER_IS_EXIST
 } from '../errors/types.js'
 import { Roles } from '../db/models/User.js'
 import citiesModel from '../models/cities.model.js'
 import customersModel from '../models/customers.model.js'
-import { getFormatDate } from '../date.js'
 import { generate } from 'generate-password'
 import mastersModel from '../models/masters.model.js'
 
@@ -37,6 +35,7 @@ export default {
         const customer = await customersModel.getCustomerByUserId(user.id)
         generateTokenPayload = {
           id: user.id,
+          customerId: customer.id,
           name: customer.name,
           email: user.email,
           role: user.role,
@@ -54,6 +53,7 @@ export default {
         const master = await mastersModel.getMasterByUserId(user.id)
         generateTokenPayload = {
           id: user.id,
+          masterId: master.id,
           name: master.name,
           email: user.email,
           role: user.role,
@@ -87,7 +87,6 @@ export default {
       const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
       return { token, user: userData }
     } catch (error) {
-      console.log(error)
       throw error
     }
   },
@@ -238,42 +237,6 @@ export default {
       }
 
       return newUserCustomer
-    } catch (error) {
-      throw error
-    }
-  },
-  getOrdersForMasterByUserId: async (id) => {
-    try {
-      const user = await usersModel.getUserById(id)
-      if (!user) {
-        throw new CustomError(USER_IS_NOT_EXIST, 404, `User with user id ${id} is not exist`)
-      }
-      const orders = await usersModel.getOrdersForMasterByUserId(id)
-      return orders.map((order) => {
-        return {
-          ...order.dataValues,
-          startTime: getFormatDate(order.startTime),
-          endTime: getFormatDate(order.endTime)
-        }
-      })
-    } catch (error) {
-      throw error
-    }
-  },
-  getOrdersForCustomerByUserId: async (id) => {
-    try {
-      const user = await usersModel.getUserById(id)
-      if (!user) {
-        throw new CustomError(USER_IS_NOT_EXIST, 404, `User with user id ${id} is not exist`)
-      }
-      const orders = await usersModel.getOrdersForCustomerByUserId(id)
-      return orders.map((order) => {
-        return {
-          ...order.dataValues,
-          startTime: getFormatDate(order.startTime),
-          endTime: getFormatDate(order.endTime)
-        }
-      })
     } catch (error) {
       throw error
     }

@@ -18,11 +18,7 @@
     "migrate:create": "npx sequelize-cli  migration:create    --name new-migration",
     "seed:create": "npx sequelize-cli seed:create --name new-seed",
     "seed:all": "npx sequelize-cli db:seed:all",
-    "seed:undo:all": "npx sequelize-cli db:seed:undo:all",
-    "seed:admin:up": "npx sequelize-cli db:seed --seed 20230414093548-create-admin.js",
-    "seed:admin:undo": "npx sequelize-cli db:seed:undo --seed 20230414093548-create-admin.js",
-    "rating:undo": "npx sequelize-cli db:migrate:undo --name 20230421130920-add-rating-column-to-orders.js",
-    "rating:up": "npx sequelize-cli db:migrate --name 20230421130920-add-rating-column-to-orders.js"
+    "seed:undo:all": "npx sequelize-cli db:seed:undo:all"
   },
   "keywords": [],
   "author": "",
