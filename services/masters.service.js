@@ -7,7 +7,13 @@ import {
   ORDER_IS_NOT_EXIST,
   USER_IS_NOT_EXIST
 } from '../errors/types.js'
-import { mastersModel, ordersModel, citiesModel, usersModel } from '../models/model.layer.js'
+import {
+  mastersModel,
+  ordersModel,
+  citiesModel,
+  usersModel,
+  citiesMastersModel
+} from '../models/model.layer.js'
 import mailService from './mail.service.js'
 import bcrypt from 'bcrypt'
 
@@ -59,7 +65,7 @@ export default {
         )
       }
       const userId = master.userId
-      const user = await usersModele.getUserById(userId)
+      const user = await usersModel.getUserById(userId)
       if (!user) {
         throw new CustomError(USER_IS_NOT_EXIST, 400, `User is not exist`)
       }
