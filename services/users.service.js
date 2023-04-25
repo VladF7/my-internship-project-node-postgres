@@ -14,6 +14,8 @@ import {
 import { Roles } from '../db/models/User.js'
 import citiesModel from '../models/cities.model.js'
 import customersModel from '../models/customers.model.js'
+import { generate } from 'generate-password'
+import mastersModel from '../models/masters.model.js'
 
 const generateAccessToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '24h' })
@@ -28,11 +30,58 @@ export default {
       if (!user || !validPassword) {
         throw new CustomError(INVALID_DATA, 400, `Wrong email or password`)
       }
-      const generateTokenPayload = {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        isEmailActivated: user.isEmailActivated
+      let generateTokenPayload
+      if (user.role === Roles.Customer) {
+        const customer = await customersModel.getCustomerByUserId(user.id)
+        generateTokenPayload = {
+          id: user.id,
+          customerId: customer.id,
+          name: customer.name,
+          email: user.email,
+          role: user.role,
+          isEmailActivated: user.isEmailActivated
+        }
+        if (!user.isEmailActivated) {
+          return {
+            message: 'This user is not confirm email',
+            redirect: true,
+            redirectTo: 'confirmEmail'
+          }
+        }
+      }
+      if (user.role === Roles.Master) {
+        const master = await mastersModel.getMasterByUserId(user.id)
+        generateTokenPayload = {
+          id: user.id,
+          masterId: master.id,
+          name: master.name,
+          email: user.email,
+          role: user.role,
+          isActivated: master.isActivated,
+          isEmailActivated: user.isEmailActivated
+        }
+        if (!user.isEmailActivated) {
+          return {
+            message: 'This user is not confirm email',
+            redirect: true,
+            redirectTo: 'confirmEmail'
+          }
+        }
+        if (!master.isActivated) {
+          return {
+            message: 'This user is not activated by admin',
+            redirect: true,
+            redirectTo: 'awaitAprove'
+          }
+        }
+      }
+      if (user.role === Roles.Admin) {
+        generateTokenPayload = {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          isEmailActivated: user.isEmailActivated
+        }
       }
       const token = generateAccessToken(generateTokenPayload)
       const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
@@ -54,8 +103,12 @@ export default {
       if (!user) {
         throw new CustomError(INCORRECT_ACTIVATION_LINK, 404, `Incorrect activation link`)
       }
+      if (user.isEmailActivated) {
+        return `${process.env.CLIENT_URL}/user/emailConfirmed`
+      }
       user.isEmailActivated = true
       await user.save()
+      return process.env.CLIENT_URL
     } catch (error) {
       throw error
     }
@@ -183,6 +236,49 @@ export default {
         )
       }
 
+      return newUserCustomer
+    } catch (error) {
+      throw error
+    }
+  },
+  getUserByEmail: async (email) => {
+    try {
+      const user = await usersModel.getUserByEmail(email)
+      if (!user) {
+        return null
+      }
+      const userData = {
+        email: user.email,
+        id: user.id,
+        role: user.role,
+        isEmailActivated: user.isEmailActivated
+      }
+      return userData
+    } catch (error) {
+      throw error
+    }
+  },
+  createUserCustomer: async (email, name) => {
+    try {
+      const existUser = await usersModel.getUserByEmail(email)
+      if (existUser) {
+        throw new CustomError(USER_IS_EXIST, 405, `User with email ${email} is alredy exist`)
+      }
+      const password = generate({ length: 10, numbers: true })
+      const hashPassword = await bcrypt.hash(password, 3)
+      const activationLink = v4()
+
+      const newUserCustomer = await usersModel.createUserAndCreateCustomer(
+        name,
+        email,
+        hashPassword,
+        activationLink
+      )
+      await mailService.sendNewUserCustomerDataMail(
+        email,
+        password,
+        `${process.env.API_URL}/api/confirmEmail/${activationLink}`
+      )
       return newUserCustomer
     } catch (error) {
       throw error

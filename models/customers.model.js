@@ -44,5 +44,9 @@ export default {
       await transaction.rollback()
       throw error
     }
+  },
+  getCustomerByUserId: async (userId) => {
+    const customer = await Customer.findOne({ where: { userId } })
+    return customer
   }
 }

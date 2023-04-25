@@ -12,11 +12,6 @@ const Master = sequelize.define('master', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  rating: {
-    type: DataTypes.INTEGER,
-    defaultValue: 5,
-    allowNull: false
-  },
   isActivated: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
