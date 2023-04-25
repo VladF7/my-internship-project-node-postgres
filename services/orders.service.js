@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-catch */
 import { getFormatDate } from '../date.js'
+import CustomError from '../errors/customError.js'
 import {
   mastersModel,
   ordersModel,
@@ -21,7 +22,6 @@ import {
   PRICE_FOR_HOUR_IS_NOT_EXIS,
   STATUS_IS_NOT_EXIST
 } from '../errors/types.js'
-import statusesModel from '../models/statuses.model.js'
 import { Statuses } from '../db/models/Order.js'
 
 export default {
