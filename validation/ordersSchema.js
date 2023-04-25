@@ -44,3 +44,16 @@ export const deleteOrderSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number)
 })
+export const changeStatusSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})
+export const setRatingSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number),
+  rating: z.number().gte(1).lte(5).int().positive()
+})

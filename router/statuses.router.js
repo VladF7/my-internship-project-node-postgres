@@ -1,9 +1,10 @@
 import { Router } from 'express'
 import statusesController from '../controllers/statuses.controller.js'
-import { authMiddleWare } from '../middleware/authMiddleware.js'
+import { checkAuthAndRole } from '../middleware/checkAuthAndRoleMiddleware.js'
+import { Roles } from '../db/models/User.js'
 
 const router = Router()
 
-router.get('/', authMiddleWare, statusesController.getStatuses)
+router.get('/', checkAuthAndRole(Roles.Admin), statusesController.getStatuses)
 
 export default router

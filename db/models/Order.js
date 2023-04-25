@@ -29,6 +29,9 @@ const Order = sequelize.define('order', {
   status: {
     type: Sequelize.ENUM(Statuses.Confirmed, Statuses.Completed, Statuses.Canceled),
     defaultValue: Statuses.Confirmed
+  },
+  rating: {
+    type: DataTypes.INTEGER
   }
 })
 

@@ -25,7 +25,7 @@ export default {
       throw error
     }
   },
-  editMaster: async (id, name, rating, cities) => {
+  editMaster: async (id, name, cities) => {
     try {
       const master = await mastersModel.getMasterById(id)
       if (!master) {
@@ -43,7 +43,7 @@ export default {
       if (!isCitiesExist) {
         throw new CustomError(CITY_IS_NOT_EXIST, 400, `Cities for master can't be created`)
       }
-      const editedMaster = await mastersModel.editMasterAndCities(id, name, rating, cities)
+      const editedMaster = await mastersModel.editMasterAndCities(id, name, cities)
       return editedMaster
     } catch (error) {
       throw error
@@ -74,15 +74,28 @@ export default {
       throw error
     }
   },
-  getFreeMasters: async (cityId, startTime, endTime) => {
+  getFreeMasters: async (cityId, startTime, endTime, email) => {
     try {
       const city = await citiesModel.getCityById(cityId)
       if (!city) {
         throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
       }
-      const freeMasters = await mastersModel.getFreeMasters(startTime, endTime, cityId)
+      let currentUserId
+      const user = await usersModel.getUserByEmail(email)
+      if (user) {
+        currentUserId = user.id
+      } else {
+        currentUserId = null
+      }
+      const freeMasters = await mastersModel.getFreeMasters(
+        startTime,
+        endTime,
+        cityId,
+        currentUserId
+      )
       return freeMasters
     } catch (error) {
+      console.log(error)
       throw error
     }
   },

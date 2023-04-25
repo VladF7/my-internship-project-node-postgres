@@ -30,9 +30,24 @@ export const customerRegistrationSchema = z.object({
 export const authSchema = z.object({
   id: z.number().int().positive(),
   email: z.string().email().nonempty(),
-  role: z.string(255).nonempty().optional(),
-  isEmailActivated: z.boolean()
+  role: z.string(255).nonempty(),
+  isEmailActivated: z.boolean(),
+  name: z.string(255).nonempty().optional(),
+  isActivated: z.boolean().optional()
 })
 export const activateSchema = z.object({
   activationLink: z.string(255).uuid().nonempty()
+})
+export const getOrdersByUserIdSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})
+export const getUserByEmailSchema = z.object({
+  email: z.string().email().nonempty()
+})
+export const createUserCustomerSchema = z.object({
+  name: z.string(255).nonempty(),
+  email: z.string(255).email().nonempty()
 })

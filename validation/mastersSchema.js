@@ -6,7 +6,8 @@ export const getFreeMastersSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number),
   startTime: z.coerce.date(),
-  endTime: z.coerce.date()
+  endTime: z.coerce.date(),
+  email: z.string().email().nonempty()
 })
 export const getFreeMastersForCurrentOrder = z.object({
   orderId: z
@@ -32,7 +33,6 @@ export const editMasterSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number),
   name: z.string().max(255).nonempty(),
-  rating: z.number().int().positive(),
   cities: z.array(z.number().int().positive())
 })
 export const deleteMasterSchema = z.object({
@@ -48,6 +48,12 @@ export const activateMasterSchema = z.object({
     .transform(Number)
 })
 export const resetPasswordSchema = z.object({
+  id: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})
+export const getRatingForMasterSchema = z.object({
   id: z
     .string()
     .regex(/^[1-9]\d*$/)

@@ -18,6 +18,7 @@ import {
   STATUS_IS_NOT_EXIST
 } from '../errors/types.js'
 import statusesModel from '../models/statuses.model.js'
+import { Statuses } from '../db/models/Order.js'
 
 export default {
   getOrders: async () => {
@@ -218,6 +219,32 @@ export default {
       }
       const deletedOrder = await ordersModel.deleteOrder(id)
       return deletedOrder
+    } catch (error) {
+      throw error
+    }
+  },
+  changeStatus: async (id) => {
+    try {
+      const order = await ordersModel.getOrderById(id)
+      if (!order) {
+        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
+      }
+      order.status = Statuses.Completed
+      await order.save()
+      return order.status
+    } catch (error) {
+      throw error
+    }
+  },
+  setRating: async (id, rating) => {
+    try {
+      const order = await ordersModel.getOrderById(id)
+      if (!order) {
+        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
+      }
+      order.rating = rating
+      await order.save()
+      return order.rating
     } catch (error) {
       throw error
     }

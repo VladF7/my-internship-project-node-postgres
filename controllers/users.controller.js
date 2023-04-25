@@ -2,7 +2,10 @@ import { ZodError } from 'zod'
 import {
   activateSchema,
   authSchema,
+  createUserCustomerSchema,
   customerRegistrationSchema,
+  getOrdersByUserIdSchema,
+  getUserByEmailSchema,
   loginSchema,
   masterRegistrationSchema
 } from '../validation/usersSchema.js'
@@ -32,8 +35,15 @@ export default {
   auth: async (req, res) => {
     try {
       const user = req.user
-      const { id, email, role, isEmailActivated } = authSchema.parse(user)
-      const userData = await usersService.auth({ id, email, role, isEmailActivated })
+      const { id, email, role, isEmailActivated, name, isActivated } = authSchema.parse(user)
+      const userData = await usersService.auth({
+        id,
+        email,
+        role,
+        isEmailActivated,
+        name,
+        isActivated
+      })
       return res.status(200).json(userData)
     } catch (error) {
       if (error instanceof CustomError) {
@@ -52,8 +62,8 @@ export default {
     try {
       const params = req.params
       const { activationLink } = activateSchema.parse(params)
-      await usersService.confirmEmail(activationLink)
-      return res.redirect(process.env.CLIENT_URL)
+      const redirectionLink = await usersService.confirmEmail(activationLink)
+      return res.redirect(301, redirectionLink)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({
@@ -140,6 +150,83 @@ export default {
       )
       return res.status(200).json(newUserCustomer)
     } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  getOrdersForMasterByUserId: async (req, res) => {
+    try {
+      const params = req.params
+      const { id } = getOrdersByUserIdSchema.parse(params)
+      const ordersByUserId = await usersService.getOrdersForMasterByUserId(id)
+      return res.status(200).json(ordersByUserId)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  getOrdersForCustomerByUserId: async (req, res) => {
+    try {
+      const params = req.params
+      const { id } = getOrdersByUserIdSchema.parse(params)
+      const ordersByUserId = await usersService.getOrdersForCustomerByUserId(id)
+      return res.status(200).json(ordersByUserId)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  getUserByEmail: async (req, res) => {
+    try {
+      const query = req.query
+      const { email } = getUserByEmailSchema.parse(query)
+      const user = await usersService.getUserByEmail(email)
+      return res.status(200).json(user)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  createUserCustomer: async (req, res) => {
+    try {
+      const body = req.body
+      const { email, name } = createUserCustomerSchema.parse(body)
+      const newUserCustomer = await usersService.createUserCustomer(email, name)
+      return res.status(200).json(newUserCustomer)
+    } catch (error) {
+      console.log(error)
       if (error instanceof CustomError) {
         return res.status(error.status).send({
           error: error.code,

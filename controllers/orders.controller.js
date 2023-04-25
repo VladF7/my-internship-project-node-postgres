@@ -6,7 +6,9 @@ import {
   deleteOrderSchema,
   editOrderSchema,
   getOrderEndTimeSchema,
-  getOrderByIdSchema
+  getOrderByIdSchema,
+  changeStatusSchema,
+  setRatingSchema
 } from '../validation/ordersSchema.js'
 
 export default {
@@ -128,6 +130,46 @@ export default {
       await ordersService.deleteOrder(id)
       return res.status(200).json(id)
     } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  changeStatus: async (req, res) => {
+    try {
+      const params = req.params
+      const { id } = changeStatusSchema.parse(params)
+      const changedStatus = await ordersService.changeStatus(id)
+      return res.status(200).json(changedStatus)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  setRating: async (req, res) => {
+    try {
+      const params = req.params
+      const body = req.body
+      const { id, rating } = setRatingSchema.parse({ ...body, ...params })
+      const newRating = await ordersService.setRating(id, rating)
+      return res.status(200).json(newRating)
+    } catch (error) {
+      console.log(error)
       if (error instanceof CustomError) {
         return res.status(error.status).send({
           error: error.code,

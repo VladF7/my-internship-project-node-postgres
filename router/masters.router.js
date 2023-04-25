@@ -1,20 +1,21 @@
 import { Router } from 'express'
 import mastersController from '../controllers/masters.controller.js'
-import { authMiddleWare } from '../middleware/authMiddleware.js'
+import { checkAuthAndRole } from '../middleware/checkAuthAndRoleMiddleware.js'
+import { Roles } from '../db/models/User.js'
 
 const router = Router()
 
 router.get('/getFreeMasters', mastersController.getFreeMasters)
 router.get(
   '/freeMastersForOrder/:orderId',
-  authMiddleWare,
+  checkAuthAndRole(Roles.Admin),
   mastersController.getFreeMastersForCurrentOrder
 )
-router.get('/activate/:id', authMiddleWare, mastersController.activate)
+router.get('/activate/:id', checkAuthAndRole(Roles.Admin), mastersController.activate)
 router.get('/:id', mastersController.getMasterById)
-router.get('/', authMiddleWare, mastersController.getMasters)
-router.get('/resetPassword/:id', authMiddleWare, mastersController.resetPassword)
-router.put('/:id', authMiddleWare, mastersController.editMaster)
-router.delete('/:id', authMiddleWare, mastersController.deleteMaster)
+router.get('/', checkAuthAndRole(Roles.Admin), mastersController.getMasters)
+router.get('/resetPassword/:id', checkAuthAndRole(Roles.Admin), mastersController.resetPassword)
+router.put('/:id', checkAuthAndRole(Roles.Admin), mastersController.editMaster)
+router.delete('/:id', checkAuthAndRole(Roles.Admin), mastersController.deleteMaster)
 
 export default router
