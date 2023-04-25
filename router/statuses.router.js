@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import statusesController from '../controllers/statuses.controller.js'
+import { statusesController } from '../controllers/controller.layer.js'
 import { checkAuthAndRole } from '../middleware/checkAuthAndRoleMiddleware.js'
 import { Roles } from '../db/models/User.js'
 

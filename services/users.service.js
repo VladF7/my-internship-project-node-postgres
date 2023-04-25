@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { v4 } from 'uuid'
 import mailService from '../services/mail.service.js'
-import usersModel from '../models/users.model.js'
 import CustomError from '../errors/customError.js'
 import {
   CITY_IS_NOT_EXIST,
@@ -12,10 +11,9 @@ import {
   USER_IS_EXIST
 } from '../errors/types.js'
 import { Roles } from '../db/models/User.js'
-import citiesModel from '../models/cities.model.js'
-import customersModel from '../models/customers.model.js'
+import { citiesModel, customersModel, usersModel, mastersModel } from '../models/model.layer.js'
 import { generate } from 'generate-password'
-import mastersModel from '../models/masters.model.js'
+
 
 const generateAccessToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '24h' })

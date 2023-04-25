@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import citiesController from '../controllers/cities.controller.js'
+import { citiesController } from '../controllers/controller.layer.js'
 import { checkAuthAndRole } from '../middleware/checkAuthAndRoleMiddleware.js'
 import { Roles } from '../db/models/User.js'
 

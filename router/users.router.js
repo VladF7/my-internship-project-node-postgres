@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import usersController from '../controllers/users.controller.js'
+import { usersController } from '../controllers/controller.layer.js'
 import { authMiddleWare } from '../middleware/authMiddleware.js'
 import { checkAuthAndRole } from '../middleware/checkAuthAndRoleMiddleware.js'
 import { Roles } from '../db/models/User.js'

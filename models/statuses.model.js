@@ -1,4 +1,4 @@
-import { Order } from '../db/models/models.js'
+import { Order } from '../db/models/models.DALayer.js'
 
 export default {
   getOrderStatuses: async () => {

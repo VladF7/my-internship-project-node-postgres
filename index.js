@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import express from 'express'
-import routes from './router/mainRouter.js'
+import routes from './router/router.layer.js'
 import cors from 'cors'
 import corsOptions from './config/corsOption.js'
 import connectDB from './config/dbConfig.js'

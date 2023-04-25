@@ -1,12 +1,15 @@
 /* eslint-disable no-useless-catch */
 import { getFormatDate } from '../date.js'
+import {
+  mastersModel,
+  ordersModel,
+  citiesModel,
+  clocksModel,
+  customersModel,
+  statusesModel
+} from '../models/model.layer.js'
 import sendMailService from '../services/mail.service.js'
-import mastersModel from '../models/masters.model.js'
-import ordersModel from '../models/orders.model.js'
-import citiesModel from '../models/cities.model.js'
-import clocksModel from '../models/clocks.model.js'
-import customersModel from '../models/customers.model.js'
-import CustomError from '../errors/customError.js'
+
 import {
   CITY_IS_NOT_EXIST,
   CLOCK_IS_NOT_EXIST,

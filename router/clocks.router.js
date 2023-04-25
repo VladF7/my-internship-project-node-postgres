@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import clocksController from '../controllers/clocks.contorller.js'
+import { clocksController } from '../controllers/controller.layer.js'
 
 const router = Router()
 

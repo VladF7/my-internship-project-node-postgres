@@ -1,6 +1,6 @@
 import { ZodError } from 'zod'
 import CustomError from '../errors/customError.js'
-import mastersService from '../services/masters.service.js'
+import { mastersService } from '../services/service.layer.js'
 import {
   editMasterSchema,
   getFreeMastersForCurrentOrder,

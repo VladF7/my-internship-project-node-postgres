@@ -1,8 +1,5 @@
 import sequelize from '../db/database.js'
-import { CityMaster } from '../db/models/CityMaster.js'
-import { Master } from '../db/models/Master.js'
-import { User } from '../db/models/User.js'
-import { Customer } from '../db/models/Сustomer.js'
+import { User, CityMaster, Master, Customer } from '../db/models/models.DALayer.js'
 
 export default {
   getUserByEmail: async (email) => {

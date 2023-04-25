@@ -1,8 +1,7 @@
 /* eslint-disable no-useless-catch */
 import { CUSTOMER_IS_NOT_EXIST, USER_IS_NOT_EXIST } from '../errors/types.js'
 import CustomError from '../errors/customError.js'
-import customersModel from '../models/customers.model.js'
-import usersModel from '../models/users.model.js'
+import { customersModel, usersModel } from '../models/model.layer.js'
 import { generate } from 'generate-password'
 import bcrypt from 'bcrypt'
 import mailService from './mail.service.js'

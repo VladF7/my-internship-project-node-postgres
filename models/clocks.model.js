@@ -1,4 +1,4 @@
-import { Clock } from '../db/models/Clock.js'
+import { Clock } from '../db/models/models.DALayer.js'
 
 export default {
   getClockById: async (id) => {

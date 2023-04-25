@@ -1,4 +1,4 @@
-import statusesService from '../services/statuses.service.js'
+import { statusesService } from '../services/service.layer.js'
 
 export default {
   getStatuses: async (req, res) => {

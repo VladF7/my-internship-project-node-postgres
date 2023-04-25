@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import statusesModel from '../models/statuses.model.js'
+import { statusesModel } from '../models/model.layer.js'
 
 export default {
   getStatuses: async () => {

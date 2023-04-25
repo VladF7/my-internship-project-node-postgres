@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 import CustomError from '../errors/customError.js'
-import citiesModel from '../models/cities.model.js'
+import { citiesModel } from '../models/model.layer.js'
 import { CITY_IS_EXIST, CITY_IS_NOT_EXIST } from '../errors/types.js'
 
 export default {
