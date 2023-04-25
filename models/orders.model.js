@@ -98,5 +98,25 @@ export default {
   deleteOrder: async (id) => {
     const deletedOrder = await Order.destroy({ where: { id } })
     return deletedOrder
+  },
+  getOrdersForMasterById: async (masterId) => {
+    const orders = await Order.findAll({
+      where: {
+        masterId
+      },
+      include: [Customer, Clock, City],
+      order: [['startTime', 'DESC']]
+    })
+    return orders
+  },
+  getOrdersForCustomerById: async (customerId) => {
+    const orders = await Order.findAll({
+      where: {
+        customerId
+      },
+      include: [Master, Clock, City],
+      order: [['startTime', 'DESC']]
+    })
+    return orders
   }
 }

@@ -5,6 +5,16 @@ import { City, User, Order, Master, CityMaster } from '../db/models/models.DALay
 export default {
   getMasters: async () => {
     const masters = await Master.findAll({
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+            ),
+            'rating'
+          ]
+        ]
+      },
       include: [
         {
           model: City,
@@ -41,9 +51,8 @@ export default {
     })
     return master
   },
-  getFreeMasters: async (startTime, endTime, cityId) => {
+  getFreeMasters: async (startTime, endTime, cityId, currentUserId) => {
     const busyMasters = await Order.findAll({
-      attributes: ['masterId'],
       where: {
         [Op.or]: {
           [Op.and]: {
@@ -71,15 +80,31 @@ export default {
     })
     const busyMastersId = busyMasters.map((master) => master.dataValues.masterId)
     const freeMasters = await Master.findAll({
-      where: { id: { [Op.notIn]: busyMastersId } },
-      order: [['rating', 'DESC']],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+            ),
+            'rating'
+          ]
+        ]
+      },
+      where: {
+        [Op.and]: {
+          isActivated: { [Op.ne]: false },
+          userId: { [Op.ne]: currentUserId },
+          id: { [Op.notIn]: busyMastersId }
+        }
+      },
       include: [
         {
           where: { id: cityId },
           model: City,
-          as: 'cities'
+          attributes: ['id', 'name']
         }
-      ]
+      ],
+      order: [['rating', 'ASC']]
     })
     return freeMasters
   },
@@ -119,14 +144,24 @@ export default {
     const busyMastersId = busyMasters.map((master) => master.dataValues.masterId)
     const freeMastersForCurrentOrder = await Master.findAll({
       where: { id: { [Op.notIn]: busyMastersId } },
-      order: [['rating', 'DESC']],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+            ),
+            'rating'
+          ]
+        ]
+      },
       include: [
         {
           where: { id: cityId },
           model: City,
           as: 'cities'
         }
-      ]
+      ],
+      order: [['rating', 'ASC']]
     })
     return freeMastersForCurrentOrder
   },
@@ -148,10 +183,10 @@ export default {
       throw error
     }
   },
-  editMasterAndCities: async (id, name, rating, cities) => {
+  editMasterAndCities: async (id, name, cities) => {
     const transaction = await sequelize.transaction()
     try {
-      const editedMaster = await Master.update({ name, rating }, { where: { id }, transaction })
+      const editedMaster = await Master.update({ name }, { where: { id }, transaction })
       await CityMaster.destroy({ where: { masterId: id }, transaction })
       await CityMaster.bulkCreate(
         cities.map((cityId) => ({ cityId, masterId: id })),
@@ -196,5 +231,9 @@ export default {
       }
     })
     return !busyMasters.length
+  },
+  getMasterByUserId: async (userId) => {
+    const master = await Master.findOne({ where: { userId } })
+    return master
   }
 }

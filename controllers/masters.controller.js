@@ -23,8 +23,8 @@ export default {
   getFreeMasters: async (req, res) => {
     try {
       const query = req.query
-      const { cityId, startTime, endTime } = getFreeMastersSchema.parse(query)
-      const freeMasters = await mastersService.getFreeMasters(cityId, startTime, endTime)
+      const { cityId, startTime, endTime, email } = getFreeMastersSchema.parse(query)
+      const freeMasters = await mastersService.getFreeMasters(cityId, startTime, endTime, email)
       return res.status(200).json(freeMasters)
     } catch (error) {
       if (error instanceof CustomError) {
@@ -90,8 +90,8 @@ export default {
     try {
       const body = req.body
       const params = req.params
-      const { id, name, rating, cities } = editMasterSchema.parse({ ...body, ...params })
-      const editedMaster = await mastersService.editMaster(id, name, rating, cities)
+      const { id, name, cities } = editMasterSchema.parse({ ...body, ...params })
+      const editedMaster = await mastersService.editMaster(id, name, cities)
       return res.status(200).json(editedMaster)
     } catch (error) {
       if (error instanceof CustomError) {

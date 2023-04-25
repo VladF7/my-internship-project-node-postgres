@@ -128,5 +128,27 @@ export default {
     } catch (error) {
       throw error
     }
+  },
+  sendNewUserCustomerDataMail: async (email, password, link) => {
+    try {
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: email,
+        subject: `You have created an account on the ${process.env.COMPANY_NAME}`,
+        text: '',
+        html: `
+                <div>
+                <h1>You have created an account on the ${process.env.COMPANY_NAME}</h1>
+                <div>For activation account follow the link</div>
+                <a target="_blank" href=${link}>${link}</a>
+                <div>Your data for login</div>
+                <div>Email: ${email}</div>
+                <div>Password: ${password}</div>
+                </div>
+              `
+      })
+    } catch (error) {
+      throw error
+    }
   }
 }
