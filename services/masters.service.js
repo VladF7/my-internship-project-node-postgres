@@ -136,7 +136,7 @@ export default {
       await master.save()
       const userId = master.userId
       const email = await usersModel.getUserEmailById(userId)
-      await mailService.sendAproveMail(email)
+      await mailService.sendApproveMail(email)
       return master
     } catch (error) {
       throw error

@@ -7,7 +7,8 @@ import {
   citiesModel,
   clocksModel,
   customersModel,
-  statusesModel
+  statusesModel,
+  usersModel
 } from '../models/model.layer.js'
 import sendMailService from '../services/mail.service.js'
 
@@ -54,6 +55,15 @@ export default {
       const master = await mastersModel.getMasterById(masterId)
       if (!master) {
         throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${masterId} is not exist`)
+      }
+      const userId = master.userId
+      const masterEmail = await usersModel.getUserEmailById(userId)
+      if (masterEmail === email) {
+        throw new CustomError(
+          MASTER_IS_NOT_AVAILABEL,
+          400,
+          `Master with id ${masterId} is not not available for order`
+        )
       }
       const isMasterAvailable = await mastersModel.isMasterAvailable(masterId, startTime, endTime)
       if (!isMasterAvailable) {
