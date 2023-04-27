@@ -24,7 +24,8 @@ export default {
           attributes: ['isEmailActivated', 'email'],
           model: User
         }
-      ]
+      ],
+      order: [['id', 'DESC']]
     })
     return masters
   },

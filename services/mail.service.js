@@ -53,16 +53,16 @@ export default {
       throw error
     }
   },
-  sendActivationMail: async (email, link) => {
+  sendConfirmMail: async (email, link) => {
     try {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: email,
-        subject: `Activation email on the ${process.env.COMPANY_NAME}`,
+        subject: `Confirm email on the ${process.env.COMPANY_NAME}`,
         text: '',
         html: `
                 <div>
-                <h1>For activation email on the ${process.env.COMPANY_NAME} follow the link</h1>
+                <h1>For confirm email on the ${process.env.COMPANY_NAME} follow the link</h1>
                 <a target="_blank" href=${link}>${link}</a>
                 </div>
               `
@@ -71,18 +71,18 @@ export default {
       throw error
     }
   },
-  sendActivationMailForMaster: async (email, link) => {
+  sendConfirmMailForMaster: async (email, link) => {
     try {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: email,
-        subject: `Activation email on the ${process.env.COMPANY_NAME}`,
+        subject: `Confirm email on the ${process.env.COMPANY_NAME}`,
         text: '',
         html: `
                 <div>
-                <h1>For activation email on the ${process.env.COMPANY_NAME} follow the link</h1>
+                <h1>For confirm email on the ${process.env.COMPANY_NAME} follow the link</h1>
                 <a target="_blank" href=${link}>${link}</a>
-                <div>Before login you need also wait for approve from admin</div>
+                <div>Before login you need also await for approve from admin</div>
                 </div>
               `
       })
@@ -99,7 +99,7 @@ export default {
         text: '',
         html: `
                 <div>
-                <h1>Your password on the ${process.env.COMPANY_NAME} was reseted</h1>
+                <h1>Your password on the ${process.env.COMPANY_NAME} has been reset</h1>
                 <div>Your email: ${email}</div>
                 <div>New password: ${password}</div>
                 <div>Follow the link <a target="_blank" href=${process.env.CLIENT_URL}/auth>${process.env.CLIENT_URL}</a></div>
@@ -110,17 +110,17 @@ export default {
       throw error
     }
   },
-  sendAproveMail: async (email) => {
+  sendApproveMail: async (email) => {
     try {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: email,
-        subject: `Aprove email on the ${process.env.COMPANY_NAME}`,
+        subject: `Approve profile on the ${process.env.COMPANY_NAME}`,
         text: '',
         html: `
                 <div>
-                <h1>Your email on the ${process.env.COMPANY_NAME} was aproved</h1>
-                <div>Your mail has been aproved by the admin, now you can enter your account </div>
+                <h1>Your profile on the ${process.env.COMPANY_NAME} was approved</h1>
+                <div>Your profile has been approved by the admin, now you can enter your account </div>
                 <div>Follow the link <a target="_blank" href=${process.env.CLIENT_URL}/auth>${process.env.CLIENT_URL}</a></div>
                 </div>
               `
@@ -139,7 +139,7 @@ export default {
         html: `
                 <div>
                 <h1>You have created an account on the ${process.env.COMPANY_NAME}</h1>
-                <div>For activation account follow the link</div>
+                <div>For confirm email follow the link</div>
                 <a target="_blank" href=${link}>${link}</a>
                 <div>Your data for login</div>
                 <div>Email: ${email}</div>

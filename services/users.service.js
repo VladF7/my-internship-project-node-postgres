@@ -14,7 +14,6 @@ import { Roles } from '../db/models/User.js'
 import { citiesModel, customersModel, usersModel, mastersModel } from '../models/model.layer.js'
 import { generate } from 'generate-password'
 
-
 const generateAccessToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '24h' })
 }
@@ -69,7 +68,7 @@ export default {
           return {
             message: 'This user is not activated by admin',
             redirect: true,
-            redirectTo: 'awaitAprove'
+            redirectTo: 'awaitApprove'
           }
         }
       }
@@ -133,7 +132,7 @@ export default {
         cities,
         activationLink
       )
-      await mailService.sendActivationMailForMaster(
+      await mailService.sendConfirmMailForMaster(
         email,
         `${process.env.API_URL}/api/confirmEmail/${activationLink}`
       )
@@ -167,7 +166,7 @@ export default {
           activationLink
         )
       }
-      await mailService.sendActivationMail(
+      await mailService.sendConfirmMail(
         email,
         `${process.env.API_URL}/api/confirmEmail/${activationLink}`
       )
