@@ -58,9 +58,8 @@ export default {
       if (!master) {
         throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${masterId} is not exist`)
       }
-      const userId = master.userId
-      const user = await usersModel.getUserById(userId)
-      const userRole = user.role
+      const user = await usersModel.getUserByEmail(email)
+      const userRole = user ? user.role : Roles.Customer
       if (userRole === Roles.Master) {
         throw new CustomError(
           WRONG_USER_ROLE,
