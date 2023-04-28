@@ -22,9 +22,12 @@ export default {
   login: async (email, password) => {
     try {
       const user = await usersModel.getUserByEmail(email)
+      if (!user) {
+        throw new CustomError(INVALID_DATA, 400, `Wrong email or password`)
+      }
       const userPassword = user.password
       const validPassword = await bcrypt.compareSync(password, userPassword)
-      if (!user || !validPassword) {
+      if (!validPassword) {
         throw new CustomError(INVALID_DATA, 400, `Wrong email or password`)
       }
       let generateTokenPayload
@@ -105,7 +108,7 @@ export default {
       }
       user.isEmailActivated = true
       await user.save()
-      return process.env.CLIENT_URL
+      return `${process.env.CLIENT_URL}/user/successEmailConfirm`
     } catch (error) {
       throw error
     }
