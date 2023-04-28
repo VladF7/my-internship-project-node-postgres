@@ -192,18 +192,6 @@ export default {
       if (!city) {
         throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${cityId} is not exist`)
       }
-      const correctPriceForHour = await citiesModel.getCorrectPriceForHour(cityId)
-      if (priceForHour !== correctPriceForHour) {
-        throw new CustomError(
-          PRICE_FOR_HOUR_IS_NOT_EXIS,
-          400,
-          `Price for hour ${priceForHour} for city with id ${cityId} is not exist`
-        )
-      }
-      const correctPrice = await citiesModel.getCorrectPrice(cityId, clockId)
-      if (price !== correctPrice) {
-        throw new CustomError(INCORRECT_PRICE, 400, `Price ${price} is wrong`)
-      }
       const correctStatus = await statusesModel.checkCorrectOrderStatus(status)
       if (!correctStatus) {
         throw new CustomError(STATUS_IS_NOT_EXIST, 400, `Status ${status} for order is not exist`)
