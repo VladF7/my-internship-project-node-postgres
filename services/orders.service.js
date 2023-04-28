@@ -21,9 +21,11 @@ import {
   MASTER_IS_NOT_EXIST,
   ORDER_IS_NOT_EXIST,
   PRICE_FOR_HOUR_IS_NOT_EXIS,
-  STATUS_IS_NOT_EXIST
+  STATUS_IS_NOT_EXIST,
+  WRONG_USER_ROLE
 } from '../errors/types.js'
 import { Statuses } from '../db/models/Order.js'
+import { Roles } from '../db/models/User.js'
 
 export default {
   getOrders: async () => {
@@ -57,12 +59,13 @@ export default {
         throw new CustomError(MASTER_IS_NOT_EXIST, 400, `Master with id ${masterId} is not exist`)
       }
       const userId = master.userId
-      const masterEmail = await usersModel.getUserEmailById(userId)
-      if (masterEmail === email) {
+      const user = await usersModel.getUserById(userId)
+      const userRole = user.role
+      if (userRole === Roles.Master) {
         throw new CustomError(
-          MASTER_IS_NOT_AVAILABEL,
+          WRONG_USER_ROLE,
           400,
-          `Master with id ${masterId} is not not available for order`
+          `User with role ${Roles.Master} can't create orders`
         )
       }
       const isMasterAvailable = await mastersModel.isMasterAvailable(masterId, startTime, endTime)

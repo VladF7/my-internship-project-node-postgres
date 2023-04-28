@@ -35,18 +35,22 @@ export default {
         subject: `${process.env.COMPANY_NAME}`,
         text: '',
         html: `
+              <div>
                 <h1>You have successfully placed an order on the site ${process.env.CLIENT_URL}</h1>
-                <div>
-                    <div>
-                        Hello, ${name}, you placed an order for clock repair, in the city of ${cityName} on ${date}.
-                    </div>
-                    <div>
-                        Clock size - ${size}, time to fix - ${timeToFix} hour/s.
-                    </div>
-                    <div>
-                        The master whose name is ${masterName}, will be from ${startTime} to ${endTime}.
-                    </div>
-                </div>
+                <font color='black' size='3'>
+                  <div>
+                      <div>
+                          Hello, ${name}, you placed an order for clock repair, in the city of ${cityName} on ${date}.
+                      </div>
+                      <div>
+                          Clock size - ${size}, time to fix - ${timeToFix} hour/s.
+                      </div>
+                      <div>
+                          The master whose name is ${masterName}, will be from ${startTime} to ${endTime}.
+                      </div>
+                  </div>
+                </font>
+              </div>
               `
       })
     } catch (error) {
@@ -62,8 +66,10 @@ export default {
         text: '',
         html: `
                 <div>
-                <h1>For confirm email on the ${process.env.COMPANY_NAME} follow the link</h1>
-                <a target="_blank" href=${link}>${link}</a>
+                  <h1>For confirm email on the ${process.env.COMPANY_NAME} follow the link</h1>
+                  <font color='black' size='3'>
+                    <a target="_blank" href=${link}>${link}</a>
+                  </font>
                 </div>
               `
       })
@@ -80,9 +86,11 @@ export default {
         text: '',
         html: `
                 <div>
-                <h1>For confirm email on the ${process.env.COMPANY_NAME} follow the link</h1>
-                <a target="_blank" href=${link}>${link}</a>
-                <div>Before login you need also await for approve from admin</div>
+                  <h1>For confirm email on the ${process.env.COMPANY_NAME} follow the link</h1>
+                  <font color='black' size='3'>
+                    <a target="_blank" href=${link}>${link}</a>
+                    <div>Before login you need also await for approve from admin</div>
+                  </font> 
                 </div>
               `
       })
@@ -99,10 +107,12 @@ export default {
         text: '',
         html: `
                 <div>
-                <h1>Your password on the ${process.env.COMPANY_NAME} has been reset</h1>
-                <div>Your email: ${email}</div>
-                <div>New password: ${password}</div>
-                <div>Follow the link <a target="_blank" href=${process.env.CLIENT_URL}/auth>${process.env.CLIENT_URL}</a></div>
+                  <h1>Your password on the ${process.env.COMPANY_NAME} has been reset</h1>
+                  <font color='black' size='3'>
+                    <div><b>Your email:</b> ${email}</div>
+                    <div><b>New password:</b> ${password}</div>
+                    <div>Follow the link <a target="_blank" href=${process.env.CLIENT_URL}/login>${process.env.CLIENT_URL}</a></div>
+                  </font>
                 </div>
               `
       })
@@ -119,9 +129,11 @@ export default {
         text: '',
         html: `
                 <div>
-                <h1>Your profile on the ${process.env.COMPANY_NAME} was approved</h1>
-                <div>Your profile has been approved by the admin, now you can enter your account </div>
-                <div>Follow the link <a target="_blank" href=${process.env.CLIENT_URL}/auth>${process.env.CLIENT_URL}</a></div>
+                  <font color='black' size='3'>
+                    <h1>Your profile on the ${process.env.COMPANY_NAME} was approved</h1>
+                    <div>Your profile has been approved by the admin, now you can enter your account </div>
+                    <div>Follow the link <a target="_blank" href=${process.env.CLIENT_URL}/login>${process.env.CLIENT_URL}</a></div>
+                  </font>
                 </div>
               `
       })
@@ -138,12 +150,14 @@ export default {
         text: '',
         html: `
                 <div>
-                <h1>You have created an account on the ${process.env.COMPANY_NAME}</h1>
-                <div>For confirm email follow the link</div>
-                <a target="_blank" href=${link}>${link}</a>
-                <div>Your data for login</div>
-                <div>Email: ${email}</div>
-                <div>Password: ${password}</div>
+                  <h1>You have created an account on the ${process.env.COMPANY_NAME}</h1>
+                  <font color='black' size='3'>
+                    <div>For confirm email follow the link</div>
+                    <a target="_blank" href=${link}>${link}</a>
+                    <div>Your data for login</div>
+                    <div><b>Email:</b> ${email}</div>
+                    <div><b>Password:</b> ${password}</div>
+                  </font>
                 </div>
               `
       })
