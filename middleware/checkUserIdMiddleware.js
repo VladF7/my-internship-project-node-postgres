@@ -1,20 +1,21 @@
-import jwt from 'jsonwebtoken'
-
 export const checkUserId = () => {
   return (req, res, next) => {
     if (req.method === 'OPTIONS') {
       next()
     }
     try {
-      const token = req.headers.authorization.split(' ')[1]
-      if (!token) {
-        return res.status(401).json({ message: 'User not authorized' })
-      }
-      const decodedData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+      const decodedData = req.user
 
-      const { id } = req.query
-      if (decodedData.id !== +id) {
-        return res.status(403).json({ message: "Don't have access" })
+      if (decodedData.masterId) {
+        const { masterId } = req.params
+        if (decodedData.masterId !== +masterId) {
+          return res.status(403).json({ message: "Don't have access" })
+        }
+      } else {
+        const { customerId } = req.params
+        if (decodedData.customerId !== +customerId) {
+          return res.status(403).json({ message: "Don't have access" })
+        }
       }
 
       next()
