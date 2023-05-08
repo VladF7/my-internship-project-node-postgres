@@ -144,7 +144,12 @@ export default {
     })
     const busyMastersId = busyMasters.map((master) => master.dataValues.masterId)
     const freeMastersForCurrentOrder = await Master.findAll({
-      where: { id: { [Op.notIn]: busyMastersId } },
+      where: {
+        [Op.and]: {
+          isActivated: { [Op.ne]: false },
+          id: { [Op.notIn]: busyMastersId }
+        }
+      },
       attributes: {
         include: [
           [
