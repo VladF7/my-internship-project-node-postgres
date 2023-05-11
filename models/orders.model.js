@@ -95,9 +95,7 @@ export default {
   },
   deleteOrder: async (id) => {
     const deletedOrder = await Order.destroy({ where: { id } })
-    if (deletedOrder) {
-      return id
-    }
+    return deletedOrder
   },
   getOrdersForMasterById: async (masterId) => {
     const orders = await Order.findAll({

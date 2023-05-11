@@ -222,7 +222,10 @@ export default {
         throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
       }
       const deletedOrder = await ordersModel.deleteOrder(id)
-      return deletedOrder
+      if (!deletedOrder) {
+        throw new Error()
+      }
+      return id
     } catch (error) {
       throw error
     }

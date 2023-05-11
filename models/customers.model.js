@@ -31,17 +31,15 @@ export default {
   },
   deleteCustomer: async (id) => {
     const deletedCustomer = await Customer.destroy({ where: { id } })
-    if (deletedCustomer) {
-      return id
-    }
+    return deletedCustomer
   },
   deleteCustomerAndUser: async (id, userId) => {
     const transaction = await sequelize.transaction()
     try {
-      await Customer.destroy({ where: { id }, transaction })
+      const deletedCustomer = await Customer.destroy({ where: { id }, transaction })
       await User.destroy({ where: { id: userId }, transaction })
       await transaction.commit()
-      return id
+      return deletedCustomer
     } catch (error) {
       await transaction.rollback()
       throw error

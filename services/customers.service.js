@@ -48,11 +48,16 @@ export default {
       const user = await usersModel.getUserById(userId)
       if (user) {
         const deletedCustomer = await customersModel.deleteCustomerAndUser(id, userId)
-        return deletedCustomer
+        if (!deletedCustomer) {
+          throw new Error()
+        }
       } else {
         const deletedCustomer = await customersModel.deleteCustomer(id)
-        return deletedCustomer
+        if (!deletedCustomer) {
+          throw new Error()
+        }
       }
+      return id
     } catch (error) {
       throw error
     }

@@ -54,7 +54,10 @@ export default {
         throw new CustomError(CITY_IS_NOT_EXIST, 400, `City with id ${id} is not exist`)
       }
       const deletedCity = await citiesModel.deleteCity(id)
-      return deletedCity
+      if (!deletedCity) {
+        throw new Error()
+      }
+      return id
     } catch (error) {
       throw error
     }
