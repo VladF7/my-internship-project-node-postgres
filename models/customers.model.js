@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import sequelize from '../db/database.js'
 import { User, Customer } from '../db/models/models.DALayer.js'
 
@@ -30,15 +31,17 @@ export default {
   },
   deleteCustomer: async (id) => {
     const deletedCustomer = await Customer.destroy({ where: { id } })
-    return deletedCustomer
+    if (deletedCustomer) {
+      return id
+    }
   },
   deleteCustomerAndUser: async (id, userId) => {
     const transaction = await sequelize.transaction()
     try {
-      const deletedCustomer = await Customer.destroy({ where: { id }, transaction })
+      await Customer.destroy({ where: { id }, transaction })
       await User.destroy({ where: { id: userId }, transaction })
       await transaction.commit()
-      return deletedCustomer
+      return id
     } catch (error) {
       await transaction.rollback()
       throw error

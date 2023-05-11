@@ -25,7 +25,9 @@ export default {
     const deletedCity = await City.destroy({
       where: { id }
     })
-    return deletedCity
+    if (deletedCity) {
+      return id
+    }
   },
   getCityByName: async (name) => {
     const city = await City.findOne({

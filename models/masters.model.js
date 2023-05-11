@@ -175,7 +175,7 @@ export default {
     const transaction = await sequelize.transaction()
     try {
       await CityMaster.destroy({ where: { masterId: id }, transaction })
-      const deletedMaster = await Master.destroy({
+      await Master.destroy({
         where: { id },
         returning: true,
         plain: true,
@@ -183,7 +183,7 @@ export default {
       })
       await User.destroy({ where: { id: userId }, transaction })
       await transaction.commit()
-      return deletedMaster
+      return id
     } catch (error) {
       await transaction.rollback()
       throw error

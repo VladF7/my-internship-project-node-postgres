@@ -82,9 +82,7 @@ export default {
   },
 
   getOrderById: async (id) => {
-    const order = await Order.findByPk(id, {
-      include: [City, Master, Customer, Clock]
-    })
+    const order = await Order.findByPk(id)
     return order
   },
   editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status) => {
@@ -97,7 +95,9 @@ export default {
   },
   deleteOrder: async (id) => {
     const deletedOrder = await Order.destroy({ where: { id } })
-    return deletedOrder
+    if (deletedOrder) {
+      return id
+    }
   },
   getOrdersForMasterById: async (masterId) => {
     const orders = await Order.findAll({
