@@ -129,8 +129,8 @@ export default {
     try {
       const params = req.params
       const { id } = deleteOrderSchema.parse(params)
-      await ordersService.deleteOrder(id)
-      return res.status(200).json(id)
+      const deletedOrder = await ordersService.deleteOrder(id)
+      return res.status(200).json(deletedOrder)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({

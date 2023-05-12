@@ -70,7 +70,10 @@ export default {
         throw new CustomError(USER_IS_NOT_EXIST, 400, `User is not exist`)
       }
       const deletedMaster = await mastersModel.deleteMasterAndUserAndCities(id, userId)
-      return deletedMaster
+      if (!deletedMaster) {
+        throw new Error()
+      }
+      return id
     } catch (error) {
       throw error
     }

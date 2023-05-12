@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import sequelize from '../db/database.js'
 import { User, Customer } from '../db/models/models.DALayer.js'
 

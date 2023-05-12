@@ -82,9 +82,7 @@ export default {
   },
 
   getOrderById: async (id) => {
-    const order = await Order.findByPk(id, {
-      include: [City, Master, Customer, Clock]
-    })
+    const order = await Order.findByPk(id)
     return order
   },
   editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status) => {
