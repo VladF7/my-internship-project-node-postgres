@@ -73,9 +73,11 @@ export const getOrdersSchema = z.object({
   page: z
     .string()
     .regex(/^[0-9]\d*$/)
-    .transform(Number),
-  ordersPerPage: z
+    .transform(Number)
+    .default('0'),
+  limit: z
     .string()
     .regex(/^[1-9]\d*$/)
     .transform(Number)
+    .default('10')
 })

@@ -18,9 +18,9 @@ import mailService from './mail.service.js'
 import bcrypt from 'bcrypt'
 
 export default {
-  getMasters: async (page, mastersPerPage) => {
+  getMasters: async (page, limit) => {
     try {
-      const masters = await mastersModel.getMasters(page, mastersPerPage)
+      const masters = await mastersModel.getMasters(page, limit)
       return masters
     } catch (error) {
       throw error

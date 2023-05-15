@@ -3,10 +3,10 @@ import sequelize from '../db/database.js'
 import { City, User, Order, Master, CityMaster } from '../db/models/models.DALayer.js'
 
 export default {
-  getMasters: async (page, mastersPerPage) => {
+  getMasters: async (page, limit) => {
     const masters = await Master.findAndCountAll({
-      limit: mastersPerPage,
-      offset: page * mastersPerPage,
+      limit: limit,
+      offset: page * limit,
       order: [['id', 'DESC']],
       distinct: true,
       attributes: {
