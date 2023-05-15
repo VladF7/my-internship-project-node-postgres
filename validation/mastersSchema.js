@@ -59,3 +59,13 @@ export const getRatingForMasterSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number)
 })
+export const getMastersSchema = z.object({
+  page: z
+    .string()
+    .regex(/^[0-9]\d*$/)
+    .transform(Number),
+  mastersPerPage: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})

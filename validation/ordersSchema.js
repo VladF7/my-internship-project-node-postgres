@@ -69,3 +69,13 @@ export const getOrdersForCustomerByIdSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number)
 })
+export const getOrdersSchema = z.object({
+  page: z
+    .string()
+    .regex(/^[0-9]\d*$/)
+    .transform(Number),
+  ordersPerPage: z
+    .string()
+    .regex(/^[1-9]\d*$/)
+    .transform(Number)
+})

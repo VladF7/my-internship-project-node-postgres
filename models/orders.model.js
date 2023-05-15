@@ -3,8 +3,10 @@ import sequelize from '../db/database.js'
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
 
 export default {
-  getOrders: async () => {
-    const orders = await Order.findAll({
+  getOrders: async (page, ordersPerPage) => {
+    const orders = await Order.findAndCountAll({
+      limit: ordersPerPage,
+      offset: page * ordersPerPage,
       order: [['id', 'DESC']],
       include: [City, Master, Customer, Clock]
     })

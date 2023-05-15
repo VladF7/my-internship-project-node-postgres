@@ -10,16 +10,23 @@ import {
   setRatingSchema,
   completeOrderSchema,
   getOrdersForMasterByIdSchema,
-  getOrdersForCustomerByIdSchema
+  getOrdersForCustomerByIdSchema,
+  getOrdersSchema
 } from '../validation/ordersSchema.js'
 
 export default {
   getOrders: async (req, res) => {
     try {
-      const orders = await ordersService.getOrders()
+      const query = req.query
+      const { page, ordersPerPage } = getOrdersSchema.parse(query)
+      const orders = await ordersService.getOrders(page, ordersPerPage)
       return res.status(200).json(orders)
     } catch (error) {
-      return res.status(500).send('Something went wrong')
+      if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
   addOrder: async (req, res) => {
