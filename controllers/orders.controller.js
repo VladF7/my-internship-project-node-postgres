@@ -18,7 +18,7 @@ export default {
   getOrders: async (req, res) => {
     try {
       const query = req.query
-      let { page, limit } = getOrdersSchema.parse(query)
+      const { page, limit } = getOrdersSchema.parse(query)
       const orders = await ordersService.getOrders(page, limit)
       return res.status(200).json(orders)
     } catch (error) {
