@@ -28,16 +28,17 @@ import { Statuses } from '../db/models/Order.js'
 import { Roles } from '../db/models/User.js'
 
 export default {
-  getOrders: async () => {
+  getOrders: async (page, limit) => {
     try {
-      const orders = await ordersModel.getOrders()
-      return orders.map((order) => {
+      const orders = await ordersModel.getOrders(page, limit)
+      orders.rows = orders.rows.map((order) => {
         return {
           ...order.dataValues,
           startTime: getFormatDate(order.startTime),
           endTime: getFormatDate(order.endTime)
         }
       })
+      return orders
     } catch (error) {
       throw error
     }

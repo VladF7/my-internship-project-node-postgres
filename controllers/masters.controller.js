@@ -8,16 +8,23 @@ import {
   getMasterByIdSchema,
   deleteMasterSchema,
   resetPasswordSchema,
-  activateMasterSchema
+  activateMasterSchema,
+  getMastersSchema
 } from '../validation/mastersSchema.js'
 
 export default {
   getMasters: async (req, res) => {
     try {
-      const masters = await mastersService.getMasters()
+      const query = req.query
+      const { page, limit } = getMastersSchema.parse(query)
+      const masters = await mastersService.getMasters(page, limit)
       return res.status(200).json(masters)
     } catch (error) {
-      return res.status(500).send('Something went wrong')
+      if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   },
   getFreeMasters: async (req, res) => {

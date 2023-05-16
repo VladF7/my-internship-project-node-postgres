@@ -3,8 +3,12 @@ import sequelize from '../db/database.js'
 import { City, User, Order, Master, CityMaster } from '../db/models/models.DALayer.js'
 
 export default {
-  getMasters: async () => {
-    const masters = await Master.findAll({
+  getMasters: async (page, limit) => {
+    const masters = await Master.findAndCountAll({
+      limit: limit,
+      offset: page * limit,
+      order: [['id', 'DESC']],
+      distinct: true,
       attributes: {
         include: [
           [
@@ -24,8 +28,7 @@ export default {
           attributes: ['isEmailActivated', 'email'],
           model: User
         }
-      ],
-      order: [['id', 'DESC']]
+      ]
     })
     return masters
   },
