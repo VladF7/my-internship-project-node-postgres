@@ -9,7 +9,7 @@ export const sortByFields = {
   RATING: 'rating',
   CITIES: 'cities',
   IS_EMAIL_ACTIVATED: 'isEmailActivated',
-  IS__ACTIVATED: 'isActivated'
+  IS_ACTIVATED: 'isActivated'
 }
 
 export const sortOptions = ['asc', 'desc']
