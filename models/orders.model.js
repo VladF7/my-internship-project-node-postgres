@@ -2,12 +2,47 @@ import sequelize from '../db/database.js'
 
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
 
+export const sortByFields = {
+  ID: 'id',
+  NAME: 'name',
+  EMAIL: 'email',
+  CLOCK: 'clock',
+  TIME_TO_FIX: 'timeToFix',
+  MASTER_NAME: 'masterName',
+  CITY: 'city',
+  START_TIME: 'startTime',
+  END_TIME: 'endTime',
+  PRICE: 'price',
+  STATUS: 'status'
+}
+
+export const sortOptions = ['asc', 'desc']
+export const limitOptions = ['10', '25', '50']
+
 export default {
-  getOrders: async (page, limit) => {
+  getOrders: async (page, limit, sort, sortBy) => {
+    const order = []
+
+    if (sortBy === sortByFields.NAME) {
+      order[0] = [{ model: Customer }, 'name', sort]
+    } else if (sortBy === sortByFields.EMAIL) {
+      order[0] = [{ model: Customer }, 'email', sort]
+    } else if (sortBy === sortByFields.CLOCK) {
+      order[0] = [{ model: Clock }, 'size', sort]
+    } else if (sortBy === sortByFields.TIME_TO_FIX) {
+      order[0] = [{ model: Clock }, 'timeToFix', sort]
+    } else if (sortBy === sortByFields.MASTER_NAME) {
+      order[0] = [{ model: Master }, 'name', sort]
+    } else if (sortBy === sortByFields.CITY) {
+      order[0] = [{ model: City }, 'name', sort]
+    } else {
+      order[0] = [sortBy, sort]
+    }
+
     const orders = await Order.findAndCountAll({
       limit: limit,
       offset: page * limit,
-      order: [['id', 'DESC']],
+      order,
       include: [City, Master, Customer, Clock]
     })
     return orders

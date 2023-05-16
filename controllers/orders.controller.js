@@ -18,11 +18,10 @@ export default {
   getOrders: async (req, res) => {
     try {
       const query = req.query
-      const { page, limit } = getOrdersSchema.parse(query)
-      const orders = await ordersService.getOrders(page, limit)
+      const { page, limit, sort, sortBy } = getOrdersSchema.parse(query)
+      const orders = await ordersService.getOrders(page, limit, sort, sortBy)
       return res.status(200).json(orders)
     } catch (error) {
-      console.log(error)
       if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {

@@ -2,12 +2,39 @@ import { Op } from 'sequelize'
 import sequelize from '../db/database.js'
 import { City, User, Order, Master, CityMaster } from '../db/models/models.DALayer.js'
 
+export const sortByFields = {
+  ID: 'id',
+  NAME: 'name',
+  EMAIL: 'email',
+  RATING: 'rating',
+  CITIES: 'cities',
+  IS_EMAIL_ACTIVATED: 'isEmailActivated',
+  IS_ACTIVATED: 'isActivated'
+}
+
+export const sortOptions = ['asc', 'desc']
+export const limitOptions = ['10', '25', '50']
+
 export default {
-  getMasters: async (page, limit) => {
+  getMasters: async (page, limit, sort, sortBy) => {
+    const order = []
+
+    if (sortBy === sortByFields.EMAIL) {
+      order[0] = [{ model: User }, 'email', sort]
+    } else if (sortBy === sortByFields.CITIES) {
+      order[0] = [{ model: City }, 'name', sort]
+    } else if (sortBy === sortByFields.IS_EMAIL_ACTIVATED) {
+      order[0] = [{ model: User }, 'isEmailActivated', sort]
+    } else if (sortBy === sortByFields.RATING) {
+      order[0] = [sequelize.literal(`rating`), sort]
+    } else {
+      order[0] = [sortBy, sort]
+    }
+
     const masters = await Master.findAndCountAll({
       limit: limit,
       offset: page * limit,
-      order: [['id', 'DESC']],
+      order,
       distinct: true,
       attributes: {
         include: [

@@ -16,8 +16,8 @@ export default {
   getMasters: async (req, res) => {
     try {
       const query = req.query
-      const { page, limit } = getMastersSchema.parse(query)
-      const masters = await mastersService.getMasters(page, limit)
+      const { page, limit, sort, sortBy } = getMastersSchema.parse(query)
+      const masters = await mastersService.getMasters(page, limit, sort, sortBy)
       return res.status(200).json(masters)
     } catch (error) {
       if (error instanceof ZodError) {

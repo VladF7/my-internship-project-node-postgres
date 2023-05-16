@@ -28,9 +28,9 @@ import { Statuses } from '../db/models/Order.js'
 import { Roles } from '../db/models/User.js'
 
 export default {
-  getOrders: async (page, limit) => {
+  getOrders: async (page, limit, sort, sortBy) => {
     try {
-      const orders = await ordersModel.getOrders(page, limit)
+      const orders = await ordersModel.getOrders(page, limit, sort, sortBy)
       orders.rows = orders.rows.map((order) => {
         return {
           ...order.dataValues,
