@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { ordersController } from '../controllers/controller.layer.js'
 import { checkAuthAndRole } from '../middleware/checkAuthAndRoleMiddleware.js'
 import { Roles } from '../db/models/User.js'
+import { checkUserId } from '../middleware/checkUserIdMiddleware.js'
 
 const router = Router()
 
@@ -16,11 +17,13 @@ router.put('/setRating/:id', checkAuthAndRole(Roles.Customer), ordersController.
 router.get(
   '/master/:masterId',
   checkAuthAndRole(Roles.Master),
+  checkUserId(),
   ordersController.getOrdersForMasterById
 )
 router.get(
   '/customer/:customerId',
   checkAuthAndRole(Roles.Customer),
+  checkUserId(),
   ordersController.getOrdersForCustomerById
 )
 
