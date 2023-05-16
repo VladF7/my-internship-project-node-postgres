@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { limitOptions, sortByFields, sortOptions } from '../models/masters.model.js'
 
 export const getFreeMastersSchema = z.object({
   cityId: z
@@ -65,9 +66,7 @@ export const getMastersSchema = z.object({
     .regex(/^[0-9]\d*$/)
     .transform(Number)
     .default('0'),
-  limit: z
-    .string()
-    .regex(/^[1-9]\d*$/)
-    .transform(Number)
-    .default('10')
+  limit: z.nativeEnum(limitOptions),
+  sort: z.nativeEnum(sortOptions),
+  sortBy: z.nativeEnum(Object.values(sortByFields))
 })
