@@ -169,5 +169,13 @@ export default {
         return res.status(500).send('Something went wrong')
       }
     }
+  },
+  getMastersAll: async (req, res) => {
+    try {
+      const masters = await mastersService.getMastersAll()
+      return res.status(200).json(masters)
+    } catch (error) {
+      return res.status(500).send('Something went wrong')
+    }
   }
 }

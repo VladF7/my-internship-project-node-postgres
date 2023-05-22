@@ -1,6 +1,8 @@
+import { formatISO, setHours, setMinutes } from 'date-fns'
 import sequelize from '../db/database.js'
 
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
+import { Op } from 'sequelize'
 
 export const sortByFields = {
   ID: 'id',
@@ -17,11 +19,50 @@ export const sortByFields = {
 }
 
 export const sortOptions = ['asc', 'desc']
-export const limitOptions = ['10', '25', '50']
+export const limitOptions = [10, 25, 50]
+export const statusFilterOptions = ['Completed', 'Confirmed', 'Canceled', '']
 
 export default {
-  getOrders: async (page, limit, sort, sortBy) => {
+  getOrders: async (page, limit, sort, sortBy, filtersFields) => {
     const order = []
+    const where = {}
+
+    const filters = {
+      MASTERS: filtersFields?.masters?.length,
+      CITIES: filtersFields?.cities?.length,
+      STATUS: filtersFields?.status,
+      MIN_DATE: filtersFields?.dateRange?.[0],
+      MAX_DATE: filtersFields?.dateRange?.[1],
+      PRICE_RANGE: filtersFields?.priceRange?.length
+    }
+
+    if (filters.MASTERS) {
+      where.masterId = filtersFields.masters
+    }
+    if (filters.CITIES) {
+      where.cityId = filtersFields.cities
+    }
+    if (filters.STATUS) {
+      where.status = filtersFields.status
+    }
+    if (filters.MAX_DATE) {
+      where.startTime = {
+        [Op.gte]: formatISO(new Date(filtersFields.dateRange[0]))
+      }
+    }
+    if (filters.MAX_DATE) {
+      where.endTime = {
+        [Op.lte]: formatISO(new Date(setMinutes(setHours(filtersFields.dateRange[1], 23), 59)))
+      }
+    }
+    if (filters.PRICE_RANGE) {
+      where.price = {
+        [Op.and]: {
+          [Op.gte]: filtersFields.priceRange[0],
+          [Op.lte]: filtersFields.priceRange[1]
+        }
+      }
+    }
 
     if (sortBy === sortByFields.NAME) {
       order[0] = [{ model: Customer }, 'name', sort]
@@ -38,14 +79,26 @@ export default {
     } else {
       order[0] = [sortBy, sort]
     }
-
     const orders = await Order.findAndCountAll({
-      limit: limit,
+      where,
+      limit,
       offset: page * limit,
       order,
       include: [City, Master, Customer, Clock]
     })
     return orders
+  },
+  getOrdersDateRange: async () => {
+    const minOrderStartTime = await Order.min('startTime')
+    const maxOrderEndTime = await Order.max('endTime')
+
+    return [minOrderStartTime, maxOrderEndTime]
+  },
+  getOrdersPriceRange: async () => {
+    const minOrderPrice = await Order.min('price')
+    const maxOrderPrice = await Order.max('price')
+
+    return [minOrderPrice, maxOrderPrice]
   },
   createOrderAndCreateCustomer: async (
     masterId,

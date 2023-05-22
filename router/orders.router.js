@@ -23,5 +23,7 @@ router.get(
   checkAuthAndRole(Roles.Customer),
   ordersController.getOrdersForCustomerById
 )
+router.get('/date/range', ordersController.getOrdersDateRange)
+router.get('/price/range', ordersController.getOrdersPriceRange)
 
 export default router

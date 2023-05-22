@@ -28,9 +28,9 @@ import { Statuses } from '../db/models/Order.js'
 import { Roles } from '../db/models/User.js'
 
 export default {
-  getOrders: async (page, limit, sort, sortBy) => {
+  getOrders: async (page, limit, sort, sortBy, filtersFields) => {
     try {
-      const orders = await ordersModel.getOrders(page, limit, sort, sortBy)
+      const orders = await ordersModel.getOrders(page, limit, sort, sortBy, filtersFields)
       orders.rows = orders.rows.map((order) => {
         return {
           ...order.dataValues,
@@ -39,6 +39,23 @@ export default {
         }
       })
       return orders
+    } catch (error) {
+      throw error
+    }
+  },
+  getOrdersDateRange: async () => {
+    try {
+      const ordersDateRange = await ordersModel.getOrdersDateRange()
+      return ordersDateRange.map((orderDate) => getFormatDate(orderDate))
+    } catch (error) {
+      throw error
+    }
+  },
+
+  getOrdersPriceRange: async () => {
+    try {
+      const ordersPriceRange = await ordersModel.getOrdersPriceRange()
+      return ordersPriceRange
     } catch (error) {
       throw error
     }

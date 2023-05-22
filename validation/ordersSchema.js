@@ -1,5 +1,10 @@
 import { z } from 'zod'
-import { limitOptions, sortByFields, sortOptions } from '../models/orders.model.js'
+import {
+  limitOptions,
+  sortByFields,
+  sortOptions,
+  statusFilterOptions
+} from '../models/orders.model.js'
 
 export const addOrderSchema = z.object({
   masterId: z.number().int().positive(),
@@ -71,12 +76,15 @@ export const getOrdersForCustomerByIdSchema = z.object({
     .transform(Number)
 })
 export const getOrdersSchema = z.object({
-  page: z
-    .string()
-    .regex(/^[0-9]\d*$/)
-    .transform(Number)
-    .default('0'),
+  page: z.number().int().nonnegative().default(0),
   limit: z.nativeEnum(limitOptions),
   sort: z.nativeEnum(sortOptions),
-  sortBy: z.nativeEnum(Object.values(sortByFields))
+  sortBy: z.nativeEnum(Object.values(sortByFields)),
+  filtersFields: z.object({
+    masters: z.array(z.number().int().positive()).optional(),
+    cities: z.array(z.number().int().positive()).optional(),
+    status: z.nativeEnum(statusFilterOptions).optional(),
+    dateRange: z.array(z.coerce.date().nullable()).optional(),
+    priceRange: z.array(z.number().int().positive()).optional()
+  })
 })
