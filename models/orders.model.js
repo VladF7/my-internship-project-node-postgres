@@ -32,7 +32,7 @@ export default {
       STATUS: filtersFields?.status,
       MIN_DATE: filtersFields?.minMaxDate?.[0],
       MAX_DATE: filtersFields?.minMaxDate?.[1],
-      PRICE_RANGE: filtersFields?.minMaxPrice?.length
+      MIN_MAX_PRICE: filtersFields?.minMaxPrice?.length
     }
 
     if (filters.MASTERS) {
@@ -54,7 +54,7 @@ export default {
         [Op.lte]: formatISO(new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59)))
       }
     }
-    if (filters.PRICE_RANGE) {
+    if (filters.MIN_MAX_PRICE) {
       where.price = {
         [Op.and]: {
           [Op.gte]: filtersFields.minMaxPrice[0],
@@ -62,7 +62,6 @@ export default {
         }
       }
     }
-
     if (sortBy === sortByFields.NAME) {
       order[0] = [{ model: Customer }, 'name', sort]
     } else if (sortBy === sortByFields.EMAIL) {
