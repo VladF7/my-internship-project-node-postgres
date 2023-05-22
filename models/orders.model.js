@@ -26,14 +26,13 @@ export default {
   getOrders: async (page, limit, sort, sortBy, filtersFields) => {
     const order = []
     const where = {}
-
     const filters = {
       MASTERS: filtersFields?.masters?.length,
       CITIES: filtersFields?.cities?.length,
       STATUS: filtersFields?.status,
-      MIN_DATE: filtersFields?.dateRange?.[0],
-      MAX_DATE: filtersFields?.dateRange?.[1],
-      PRICE_RANGE: filtersFields?.priceRange?.length
+      MIN_DATE: filtersFields?.minMaxDate?.[0],
+      MAX_DATE: filtersFields?.minMaxDate?.[1],
+      PRICE_RANGE: filtersFields?.minMaxPrice?.length
     }
 
     if (filters.MASTERS) {
@@ -45,21 +44,21 @@ export default {
     if (filters.STATUS) {
       where.status = filtersFields.status
     }
-    if (filters.MAX_DATE) {
+    if (filters.MIN_DATE) {
       where.startTime = {
-        [Op.gte]: formatISO(new Date(filtersFields.dateRange[0]))
+        [Op.gte]: formatISO(new Date(filtersFields.minMaxDate[0]))
       }
     }
     if (filters.MAX_DATE) {
       where.endTime = {
-        [Op.lte]: formatISO(new Date(setMinutes(setHours(filtersFields.dateRange[1], 23), 59)))
+        [Op.lte]: formatISO(new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59)))
       }
     }
     if (filters.PRICE_RANGE) {
       where.price = {
         [Op.and]: {
-          [Op.gte]: filtersFields.priceRange[0],
-          [Op.lte]: filtersFields.priceRange[1]
+          [Op.gte]: filtersFields.minMaxPrice[0],
+          [Op.lte]: filtersFields.minMaxPrice[1]
         }
       }
     }
@@ -88,13 +87,13 @@ export default {
     })
     return orders
   },
-  getOrdersDateRange: async () => {
-    const minOrderStartTime = await Order.min('startTime')
-    const maxOrderEndTime = await Order.max('endTime')
+  getMinMaxOrdersDate: async () => {
+    const minOrderDate = await Order.min('startTime')
+    const maxOrderDate = await Order.max('endTime')
 
-    return [minOrderStartTime, maxOrderEndTime]
+    return [minOrderDate, maxOrderDate]
   },
-  getOrdersPriceRange: async () => {
+  getMinMaxOrdersPrice: async () => {
     const minOrderPrice = await Order.min('price')
     const maxOrderPrice = await Order.max('price')
 

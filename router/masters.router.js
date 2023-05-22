@@ -12,10 +12,10 @@ router.get(
   checkAuthAndRole(Roles.Admin),
   mastersController.getFreeMastersForCurrentOrder
 )
+router.get('/all', checkAuthAndRole(Roles.Admin), mastersController.getMastersAll)
 router.get('/activate/:id', checkAuthAndRole(Roles.Admin), mastersController.activate)
 router.get('/:id', mastersController.getMasterById)
 router.get('/', checkAuthAndRole(Roles.Admin), mastersController.getMasters)
-router.get('/list/all', checkAuthAndRole(Roles.Admin), mastersController.getMastersAll)
 router.get('/resetPassword/:id', checkAuthAndRole(Roles.Admin), mastersController.resetPassword)
 router.put('/:id', checkAuthAndRole(Roles.Admin), mastersController.editMaster)
 router.delete('/:id', checkAuthAndRole(Roles.Admin), mastersController.deleteMaster)

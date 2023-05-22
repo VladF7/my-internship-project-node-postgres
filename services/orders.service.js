@@ -43,19 +43,19 @@ export default {
       throw error
     }
   },
-  getOrdersDateRange: async () => {
+  getMinMaxOrdersDate: async () => {
     try {
-      const ordersDateRange = await ordersModel.getOrdersDateRange()
-      return ordersDateRange.map((orderDate) => getFormatDate(orderDate))
+      const minMaxOrdersDate = await ordersModel.getMinMaxOrdersDate()
+      return minMaxOrdersDate.map((orderDate) => getFormatDate(orderDate))
     } catch (error) {
       throw error
     }
   },
 
-  getOrdersPriceRange: async () => {
+  getMinMaxOrdersPrice: async () => {
     try {
-      const ordersPriceRange = await ordersModel.getOrdersPriceRange()
-      return ordersPriceRange
+      const minMaxOrdersPrice = await ordersModel.getMinMaxOrdersPrice()
+      return minMaxOrdersPrice
     } catch (error) {
       throw error
     }

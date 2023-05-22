@@ -84,7 +84,7 @@ export const getOrdersSchema = z.object({
     masters: z.array(z.number().int().positive()).optional(),
     cities: z.array(z.number().int().positive()).optional(),
     status: z.nativeEnum(statusFilterOptions).optional(),
-    dateRange: z.array(z.coerce.date().nullable()).optional(),
-    priceRange: z.array(z.number().int().positive()).optional()
+    minMaxDate: z.array(z.coerce.date().nullable()).optional(),
+    minMaxPrice: z.array(z.number().int().positive()).optional()
   })
 })

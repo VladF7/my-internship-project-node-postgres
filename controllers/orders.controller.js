@@ -30,18 +30,18 @@ export default {
       }
     }
   },
-  getOrdersDateRange: async (req, res) => {
+  getMinMaxOrdersDate: async (req, res) => {
     try {
-      const ordersDateRange = await ordersService.getOrdersDateRange()
-      return res.status(200).json(ordersDateRange)
+      const minMaxOrdersDate = await ordersService.getMinMaxOrdersDate()
+      return res.status(200).json(minMaxOrdersDate)
     } catch (error) {
       return res.status(500).send('Something went wrong')
     }
   },
-  getOrdersPriceRange: async (req, res) => {
+  getMinMaxOrdersPrice: async (req, res) => {
     try {
-      const ordersPriceRange = await ordersService.getOrdersPriceRange()
-      return res.status(200).json(ordersPriceRange)
+      const minMaxOrdersPrice = await ordersService.getMinMaxOrdersPrice()
+      return res.status(200).json(minMaxOrdersPrice)
     } catch (error) {
       return res.status(500).send('Something went wrong')
     }
