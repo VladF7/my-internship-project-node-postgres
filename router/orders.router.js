@@ -5,6 +5,8 @@ import { Roles } from '../db/models/User.js'
 
 const router = Router()
 
+router.get('/minMaxDate', checkAuthAndRole(Roles.Admin), ordersController.getMinMaxOrdersDate)
+router.get('/minMaxPrice', checkAuthAndRole(Roles.Admin), ordersController.getMinMaxOrdersPrice)
 router.get('/orderEndTime', ordersController.getOrderEndTime)
 router.post('/', ordersController.addOrder)
 router.get('/', checkAuthAndRole(Roles.Admin), ordersController.getOrders)

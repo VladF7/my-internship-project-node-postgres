@@ -12,6 +12,7 @@ router.get(
   checkAuthAndRole(Roles.Admin),
   mastersController.getFreeMastersForCurrentOrder
 )
+router.get('/all', checkAuthAndRole(Roles.Admin), mastersController.getMastersAll)
 router.get('/activate/:id', checkAuthAndRole(Roles.Admin), mastersController.activate)
 router.get('/:id', mastersController.getMasterById)
 router.get('/', checkAuthAndRole(Roles.Admin), mastersController.getMasters)

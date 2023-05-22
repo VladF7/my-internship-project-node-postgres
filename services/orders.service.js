@@ -28,9 +28,9 @@ import { Statuses } from '../db/models/Order.js'
 import { Roles } from '../db/models/User.js'
 
 export default {
-  getOrders: async (page, limit, sort, sortBy) => {
+  getOrders: async (page, limit, sort, sortBy, filtersFields) => {
     try {
-      const orders = await ordersModel.getOrders(page, limit, sort, sortBy)
+      const orders = await ordersModel.getOrders(page, limit, sort, sortBy, filtersFields)
       orders.rows = orders.rows.map((order) => {
         return {
           ...order.dataValues,
@@ -39,6 +39,23 @@ export default {
         }
       })
       return orders
+    } catch (error) {
+      throw error
+    }
+  },
+  getMinMaxOrdersDate: async () => {
+    try {
+      const minMaxOrdersDate = await ordersModel.getMinMaxOrdersDate()
+      return minMaxOrdersDate.map((orderDate) => getFormatDate(orderDate))
+    } catch (error) {
+      throw error
+    }
+  },
+
+  getMinMaxOrdersPrice: async () => {
+    try {
+      const minMaxOrdersPrice = await ordersModel.getMinMaxOrdersPrice()
+      return minMaxOrdersPrice
     } catch (error) {
       throw error
     }

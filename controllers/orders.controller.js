@@ -17,9 +17,10 @@ import {
 export default {
   getOrders: async (req, res) => {
     try {
-      const query = req.query
-      const { page, limit, sort, sortBy } = getOrdersSchema.parse(query)
-      const orders = await ordersService.getOrders(page, limit, sort, sortBy)
+      const { filters } = req.query
+      const decodedFilters = JSON.parse(decodeURIComponent(filters))
+      const { page, limit, sort, sortBy, filtersFields } = getOrdersSchema.parse(decodedFilters)
+      const orders = await ordersService.getOrders(page, limit, sort, sortBy, filtersFields)
       return res.status(200).json(orders)
     } catch (error) {
       if (error instanceof ZodError) {
@@ -27,6 +28,22 @@ export default {
       } else {
         return res.status(500).send('Something went wrong')
       }
+    }
+  },
+  getMinMaxOrdersDate: async (req, res) => {
+    try {
+      const minMaxOrdersDate = await ordersService.getMinMaxOrdersDate()
+      return res.status(200).json(minMaxOrdersDate)
+    } catch (error) {
+      return res.status(500).send('Something went wrong')
+    }
+  },
+  getMinMaxOrdersPrice: async (req, res) => {
+    try {
+      const minMaxOrdersPrice = await ordersService.getMinMaxOrdersPrice()
+      return res.status(200).json(minMaxOrdersPrice)
+    } catch (error) {
+      return res.status(500).send('Something went wrong')
     }
   },
   addOrder: async (req, res) => {

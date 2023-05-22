@@ -165,5 +165,13 @@ export default {
     } catch (error) {
       throw error
     }
+  },
+  getMastersAll: async () => {
+    try {
+      const masters = await mastersModel.getMastersAll()
+      return masters
+    } catch (error) {
+      throw error
+    }
   }
 }

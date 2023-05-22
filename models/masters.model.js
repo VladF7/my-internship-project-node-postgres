@@ -271,5 +271,31 @@ export default {
   getMasterByUserId: async (userId) => {
     const master = await Master.findOne({ where: { userId } })
     return master
+  },
+  getMastersAll: async () => {
+    const masters = await Master.findAll({
+      order: [['name', 'ASC']],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+            ),
+            'rating'
+          ]
+        ]
+      },
+      include: [
+        {
+          model: City,
+          as: 'cities'
+        },
+        {
+          attributes: ['isEmailActivated', 'email'],
+          model: User
+        }
+      ]
+    })
+    return masters
   }
 }
