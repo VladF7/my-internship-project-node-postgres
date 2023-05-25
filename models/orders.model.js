@@ -34,7 +34,7 @@ export default {
       MAX_DATE: filtersFields?.minMaxDate?.[1],
       MIN_MAX_PRICE: filtersFields?.minMaxPrice?.length
     }
-
+    console.log(filtersFields)
     if (filters.MASTERS) {
       where.masterId = filtersFields.masters
     }
@@ -62,6 +62,7 @@ export default {
         }
       }
     }
+    console.log(where)
     if (sortBy === sortByFields.NAME) {
       order[0] = [{ model: Customer }, 'name', sort]
     } else if (sortBy === sortByFields.EMAIL) {
