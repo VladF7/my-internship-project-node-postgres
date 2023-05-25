@@ -1,4 +1,4 @@
-import { formatISO, getDate, setDate } from 'date-fns'
+import { formatISO, setHours, setMinutes } from 'date-fns'
 import sequelize from '../db/database.js'
 
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
@@ -46,23 +46,12 @@ export default {
     }
     if (filters.MIN_DATE) {
       where.startTime = {
-        [Op.gte]: formatISO(new Date(filtersFields.minMaxDate[0]), { representation: 'date' })
+        [Op.gte]: formatISO(new Date(filtersFields.minMaxDate[0]))
       }
     }
     if (filters.MAX_DATE) {
       where.endTime = {
-        // [Op.lte]: format(
-        //   new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59)),
-        //   "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        // )
-        [Op.lt]: formatISO(
-          new Date(
-            setDate(filtersFields.minMaxDate[1], new Date(getDate(filtersFields.minMaxDate[1]) + 1))
-          ),
-          {
-            representation: 'date'
-          }
-        )
+        [Op.lte]: formatISO(new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59)))
       }
     }
     if (filters.MIN_MAX_PRICE) {
@@ -119,6 +108,7 @@ export default {
     startTime,
     endTime,
     price,
+    images,
     statusId
   ) => {
     const transaction = await sequelize.transaction()
@@ -134,6 +124,7 @@ export default {
           startTime,
           endTime,
           price,
+          images,
           statusId
         },
         { transaction }
@@ -142,7 +133,7 @@ export default {
       return order
     } catch (error) {
       await transaction.rollback()
-      throw error
+      return null
     }
   },
   createOrderAndUpdateCustomer: async (
@@ -154,6 +145,7 @@ export default {
     startTime,
     endTime,
     price,
+    images,
     statusId
   ) => {
     const transaction = await sequelize.transaction()
@@ -169,6 +161,7 @@ export default {
           startTime,
           endTime,
           price,
+          images,
           statusId
         },
         { transaction }
@@ -177,7 +170,7 @@ export default {
       return order
     } catch (error) {
       await transaction.rollback()
-      throw error
+      return null
     }
   },
 
@@ -185,9 +178,9 @@ export default {
     const order = await Order.findByPk(id)
     return order
   },
-  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status) => {
+  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status, images) => {
     const editedOrder = await Order.update(
-      { cityId, masterId, clockId, startTime, endTime, price, status },
+      { cityId, masterId, clockId, startTime, endTime, price, status, images },
       { where: { id } }
     )
 
