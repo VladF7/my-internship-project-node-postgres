@@ -1,4 +1,4 @@
-import { formatISO, setHours, setMinutes } from 'date-fns'
+import { formatISO, getMinutes, setHours, setMinutes } from 'date-fns'
 import sequelize from '../db/database.js'
 
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
@@ -44,14 +44,29 @@ export default {
     if (filters.STATUS) {
       where.status = filtersFields.status
     }
+    const timezoneOffsetMinDate = new Date(filtersFields.minMaxDate[1]).getTimezoneOffset()
+    const timezoneOffsetMaxDate = new Date(filtersFields.minMaxDate[1]).getTimezoneOffset()
+
     if (filters.MIN_DATE) {
       where.startTime = {
-        [Op.gte]: formatISO(new Date(filtersFields.minMaxDate[0]))
+        [Op.gte]: formatISO(
+          new Date(
+            setMinutes(
+              filtersFields.minMaxDate[0],
+              getMinutes(new Date(filtersFields.minMaxDate[0])) + timezoneOffsetMinDate
+            )
+          )
+        )
       }
     }
+
     if (filters.MAX_DATE) {
       where.endTime = {
-        [Op.lte]: formatISO(new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59)))
+        [Op.lte]: formatISO(
+          new Date(
+            setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59 + timezoneOffsetMaxDate)
+          )
+        )
       }
     }
     if (filters.MIN_MAX_PRICE) {
@@ -62,6 +77,8 @@ export default {
         }
       }
     }
+    console.log(timezoneOffsetMinDate, timezoneOffsetMaxDate)
+    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
     console.log(where)
     if (sortBy === sortByFields.NAME) {
       order[0] = [{ model: Customer }, 'name', sort]
