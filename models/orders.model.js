@@ -1,4 +1,4 @@
-import { formatISO, getMinutes, setHours, setMinutes } from 'date-fns'
+import { formatISO, getDate, getMinutes, setDate, setMinutes } from 'date-fns'
 import sequelize from '../db/database.js'
 
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
@@ -24,9 +24,6 @@ export const statusFilterOptions = ['Completed', 'Confirmed', 'Canceled', '']
 
 export default {
   getOrders: async (page, limit, sort, sortBy, filtersFields, timezoneOffset) => {
-    // const serverTimezoneOffset = new Date().getTimezoneOffset()
-    // const timezoneDifference = timezoneOffset - serverTimezoneOffset
-
     const order = []
     const where = {}
     const filters = {
@@ -49,12 +46,10 @@ export default {
 
     if (filters.MIN_DATE) {
       where.startTime = {
-        [Op.gte]: formatISO(
-          new Date(
-            setMinutes(
-              filtersFields.minMaxDate[0],
-              getMinutes(new Date(filtersFields.minMaxDate[0])) - timezoneOffset
-            )
+        [Op.gt]: formatISO(
+          setMinutes(
+            setDate(filtersFields.minMaxDate[0], getDate(filtersFields.minMaxDate[0]) - 1),
+            getMinutes(new Date(filtersFields.minMaxDate[0])) - timezoneOffset
           )
         )
       }
@@ -62,8 +57,11 @@ export default {
 
     if (filters.MAX_DATE) {
       where.endTime = {
-        [Op.lte]: formatISO(
-          new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59 - timezoneOffset))
+        [Op.lt]: formatISO(
+          setMinutes(
+            setDate(filtersFields.minMaxDate[1], getDate(filtersFields.minMaxDate[1]) + 1),
+            getMinutes(new Date(filtersFields.minMaxDate[1])) - timezoneOffset
+          )
         )
       }
     }
@@ -75,6 +73,11 @@ export default {
         }
       }
     }
+    console.log(new Date('2023-05-16 01:00:00+03'))
+
+    // console.log(new Date('2023-05-18 00:00:00+03'))
+    // console.log(new Date('2023-05-18 01:00:00+03'))
+
     console.log(timezoneOffset)
     console.log(where)
     if (sortBy === sortByFields.NAME) {
