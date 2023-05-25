@@ -1,4 +1,4 @@
-import { formatISO, setHours, setMinutes } from 'date-fns'
+import { formatISO, getDate, setDate } from 'date-fns'
 import sequelize from '../db/database.js'
 
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
@@ -46,12 +46,23 @@ export default {
     }
     if (filters.MIN_DATE) {
       where.startTime = {
-        [Op.gte]: formatISO(new Date(filtersFields.minMaxDate[0]))
+        [Op.gte]: formatISO(new Date(filtersFields.minMaxDate[0]), { representation: 'date' })
       }
     }
     if (filters.MAX_DATE) {
       where.endTime = {
-        [Op.lte]: formatISO(new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59)))
+        // [Op.lte]: format(
+        //   new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59)),
+        //   "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        // )
+        [Op.lt]: formatISO(
+          new Date(
+            setDate(filtersFields.minMaxDate[1], new Date(getDate(filtersFields.minMaxDate[1]) + 1))
+          ),
+          {
+            representation: 'date'
+          }
+        )
       }
     }
     if (filters.MIN_MAX_PRICE) {
