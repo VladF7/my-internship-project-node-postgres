@@ -9,7 +9,7 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 app.use(cors(corsOptions))
-app.use(express.json())
+app.use(express.json({ limit: '200mb' }))
 app.use('/api', routes)
 
 const start = async () => {
@@ -20,5 +20,4 @@ const start = async () => {
     console.log(error)
   }
 }
-
 start()

@@ -13,6 +13,7 @@ import {
 import sendMailService from '../services/mail.service.js'
 
 import {
+  CAN_NOT_UPLOAD_IMAGES,
   CITY_IS_NOT_EXIST,
   CLOCK_IS_NOT_EXIST,
   CUSTOMER_IS_NOT_EXIST,
@@ -26,6 +27,7 @@ import {
 } from '../errors/types.js'
 import { Statuses } from '../db/models/Order.js'
 import { Roles } from '../db/models/User.js'
+import cloudinary, { cloudinaryOptions } from '../cloudinaryConfig.js'
 
 export default {
   getOrders: async (page, limit, sort, sortBy, filtersFields) => {
@@ -69,7 +71,8 @@ export default {
     startTime,
     endTime,
     priceForHour,
-    price
+    price,
+    images
   ) => {
     try {
       const master = await mastersModel.getMasterById(masterId)
@@ -113,6 +116,17 @@ export default {
       if (price !== correctPrice) {
         throw new CustomError(INCORRECT_PRICE, 400, `Price ${price} is wrong`)
       }
+
+      const uploadedImages = await Promise.all(
+        images.map((image) => cloudinary.uploader.upload(image, cloudinaryOptions))
+      )
+      if (!uploadedImages) {
+        throw new CustomError(CAN_NOT_UPLOAD_IMAGES, 400, `Images can't be upload`)
+      }
+      const formatedUploadedImages = uploadedImages.map((image) => {
+        return { url: image.url, publicId: image.public_id }
+      })
+
       const customer = await customersModel.getCustomerByEmail(email)
       if (!customer) {
         const order = await ordersModel.createOrderAndCreateCustomer(
@@ -123,8 +137,15 @@ export default {
           email,
           startTime,
           endTime,
-          price
+          price,
+          formatedUploadedImages
         )
+        if (!order) {
+          await Promise.all(
+            formatedUploadedImages.map((image) => cloudinary.uploader.destroy(image.publicId))
+          )
+          throw new Error()
+        }
         await sendMailService.sendSuccessOrderMail(
           email,
           name,
@@ -145,8 +166,15 @@ export default {
           name,
           startTime,
           endTime,
-          price
+          price,
+          formatedUploadedImages
         )
+        if (!order) {
+          await Promise.all(
+            formatedUploadedImages.map((image) => cloudinary.uploader.destroy(image.publicId))
+          )
+          throw new Error()
+        }
         await sendMailService.sendSuccessOrderMail(
           email,
           name,
@@ -192,7 +220,18 @@ export default {
       throw error
     }
   },
-  editOrder: async (id, clockId, masterId, cityId, start, end, priceForHour, price, status) => {
+  editOrder: async (
+    id,
+    clockId,
+    masterId,
+    cityId,
+    start,
+    end,
+    priceForHour,
+    price,
+    status,
+    deletedImages
+  ) => {
     try {
       const order = await ordersModel.getOrderById(id)
       if (!order) {
@@ -214,6 +253,9 @@ export default {
       if (!correctStatus) {
         throw new CustomError(STATUS_IS_NOT_EXIST, 400, `Status ${status} for order is not exist`)
       }
+      const orderImages = order.images
+      const deleteFromCloudinary = orderImages.filter((image) => deletedImages.includes(image.url))
+      const newImages = orderImages.filter((image) => !deletedImages.includes(image.url))
 
       const startTime = getFormatDate(start)
       const endTime = getFormatDate(end)
@@ -226,8 +268,13 @@ export default {
         startTime,
         endTime,
         price,
-        status
+        status,
+        newImages
       )
+      await Promise.all(
+        deleteFromCloudinary.map((image) => cloudinary.uploader.destroy(image.publicId))
+      )
+
       return editedOrder
     } catch (error) {
       throw error
@@ -243,6 +290,10 @@ export default {
       if (!deletedOrder) {
         throw new Error()
       }
+      const images = order.images
+
+      await Promise.allSettled(images.map((image) => cloudinary.uploader.destroy(image.pubicId)))
+
       return id
     } catch (error) {
       throw error

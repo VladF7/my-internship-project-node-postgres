@@ -26,6 +26,10 @@ const Order = sequelize.define('order', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  images: {
+    type: Sequelize.ARRAY(Sequelize.JSONB),
+    defaultValue: []
+  },
   status: {
     type: Sequelize.ENUM(Statuses.Confirmed, Statuses.Completed, Statuses.Canceled),
     defaultValue: Statuses.Confirmed

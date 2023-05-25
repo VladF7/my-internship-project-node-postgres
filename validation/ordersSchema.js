@@ -15,7 +15,8 @@ export const addOrderSchema = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
   priceForHour: z.number().int().positive(),
-  price: z.number().int().positive()
+  price: z.number().int().positive(),
+  images: z.array(z.string()).max(5).optional()
 })
 export const getOrderEndTimeSchema = z.object({
   clockId: z
@@ -42,7 +43,8 @@ export const editOrderSchema = z.object({
   endTime: z.coerce.date(),
   priceForHour: z.number().int().positive(),
   price: z.number().int().positive(),
-  status: z.string().max(255).nonempty()
+  status: z.string().max(255).nonempty(),
+  deletedImages: z.array(z.string()).max(5).optional()
 })
 export const deleteOrderSchema = z.object({
   id: z

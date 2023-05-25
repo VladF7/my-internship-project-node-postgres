@@ -49,8 +49,19 @@ export default {
   addOrder: async (req, res) => {
     try {
       const body = req.body
-      const { masterId, cityId, clockId, name, email, startTime, endTime, priceForHour, price } =
-        addOrderSchema.parse(body)
+      const {
+        masterId,
+        cityId,
+        clockId,
+        name,
+        email,
+        startTime,
+        endTime,
+        priceForHour,
+        price,
+        images
+      } = addOrderSchema.parse(body)
+
       const newOrder = await ordersService.addOrder(
         masterId,
         cityId,
@@ -60,7 +71,8 @@ export default {
         startTime,
         endTime,
         priceForHour,
-        price
+        price,
+        images
       )
       return res.status(201).json(newOrder)
     } catch (error) {
@@ -119,11 +131,21 @@ export default {
     try {
       const body = req.body
       const params = req.params
-      const { id, clockId, masterId, cityId, startTime, endTime, priceForHour, price, status } =
-        editOrderSchema.parse({
-          ...body,
-          ...params
-        })
+      const {
+        id,
+        clockId,
+        masterId,
+        cityId,
+        startTime,
+        endTime,
+        priceForHour,
+        price,
+        status,
+        deletedImages
+      } = editOrderSchema.parse({
+        ...body,
+        ...params
+      })
       const editedOrder = await ordersService.editOrder(
         id,
         clockId,
@@ -133,7 +155,8 @@ export default {
         endTime,
         priceForHour,
         price,
-        status
+        status,
+        deletedImages
       )
       return res.status(200).json(editedOrder)
     } catch (error) {

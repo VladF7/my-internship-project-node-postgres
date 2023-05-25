@@ -14,7 +14,7 @@
     "migrate:up": "npx sequelize-cli db:migrate",
     "migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
     "migrate:up:user": "npx sequelize-cli db:migrate --name 20230413102829-add-userId-column-to-customers.js",
-    "migrate:undo:user": "npx sequelize-cli db:migrate:undo --name 20230413102722-add-userId-and-isActivated-column-to-masters.js",
+    "migrate:undo:user": "npx sequelize-cli db:migrate:undo --name 20230523142011-new-migration.js",
     "migrate:create": "npx sequelize-cli  migration:create    --name new-migration",
     "seed:create": "npx sequelize-cli seed:create --name new-seed",
     "seed:all": "npx sequelize-cli db:seed:all",
@@ -25,6 +25,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "cloudinary": "^1.37.0",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "dotenv": "^16.0.3",

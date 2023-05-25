@@ -107,6 +107,7 @@ export default {
     startTime,
     endTime,
     price,
+    images,
     statusId
   ) => {
     const transaction = await sequelize.transaction()
@@ -122,6 +123,7 @@ export default {
           startTime,
           endTime,
           price,
+          images,
           statusId
         },
         { transaction }
@@ -130,7 +132,7 @@ export default {
       return order
     } catch (error) {
       await transaction.rollback()
-      throw error
+      return null
     }
   },
   createOrderAndUpdateCustomer: async (
@@ -142,6 +144,7 @@ export default {
     startTime,
     endTime,
     price,
+    images,
     statusId
   ) => {
     const transaction = await sequelize.transaction()
@@ -157,6 +160,7 @@ export default {
           startTime,
           endTime,
           price,
+          images,
           statusId
         },
         { transaction }
@@ -165,7 +169,7 @@ export default {
       return order
     } catch (error) {
       await transaction.rollback()
-      throw error
+      return null
     }
   },
 
@@ -173,9 +177,9 @@ export default {
     const order = await Order.findByPk(id)
     return order
   },
-  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status) => {
+  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status, images) => {
     const editedOrder = await Order.update(
-      { cityId, masterId, clockId, startTime, endTime, price, status },
+      { cityId, masterId, clockId, startTime, endTime, price, status, images },
       { where: { id } }
     )
 
