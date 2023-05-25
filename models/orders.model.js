@@ -23,7 +23,7 @@ export const limitOptions = [10, 25, 50]
 export const statusFilterOptions = ['Completed', 'Confirmed', 'Canceled', '']
 
 export default {
-  getOrders: async (page, limit, sort, sortBy, filtersFields) => {
+  getOrders: async (page, limit, sort, sortBy, filtersFields, timezoneOffset) => {
     const order = []
     const where = {}
     const filters = {
@@ -34,7 +34,6 @@ export default {
       MAX_DATE: filtersFields?.minMaxDate?.[1],
       MIN_MAX_PRICE: filtersFields?.minMaxPrice?.length
     }
-    console.log(filtersFields)
     if (filters.MASTERS) {
       where.masterId = filtersFields.masters
     }
@@ -44,8 +43,6 @@ export default {
     if (filters.STATUS) {
       where.status = filtersFields.status
     }
-    const timezoneOffsetMinDate = new Date(filtersFields.minMaxDate[1]).getTimezoneOffset()
-    const timezoneOffsetMaxDate = new Date(filtersFields.minMaxDate[1]).getTimezoneOffset()
 
     if (filters.MIN_DATE) {
       where.startTime = {
@@ -53,7 +50,7 @@ export default {
           new Date(
             setMinutes(
               filtersFields.minMaxDate[0],
-              getMinutes(new Date(filtersFields.minMaxDate[0])) + timezoneOffsetMinDate
+              getMinutes(new Date(filtersFields.minMaxDate[0])) + timezoneOffset
             )
           )
         )
@@ -63,9 +60,7 @@ export default {
     if (filters.MAX_DATE) {
       where.endTime = {
         [Op.lte]: formatISO(
-          new Date(
-            setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59 + timezoneOffsetMaxDate)
-          )
+          new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59 + timezoneOffset))
         )
       }
     }
@@ -77,8 +72,7 @@ export default {
         }
       }
     }
-    console.log(timezoneOffsetMinDate, timezoneOffsetMaxDate)
-    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
+    console.log(timezoneOffset)
     console.log(where)
     if (sortBy === sortByFields.NAME) {
       order[0] = [{ model: Customer }, 'name', sort]

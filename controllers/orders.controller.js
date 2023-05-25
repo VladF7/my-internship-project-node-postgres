@@ -19,8 +19,18 @@ export default {
     try {
       const { filters } = req.query
       const decodedFilters = JSON.parse(decodeURIComponent(filters))
-      const { page, limit, sort, sortBy, filtersFields } = getOrdersSchema.parse(decodedFilters)
-      const orders = await ordersService.getOrders(page, limit, sort, sortBy, filtersFields)
+      console.log(decodedFilters)
+
+      const { page, limit, sort, sortBy, filtersFields, timezoneOffset } =
+        getOrdersSchema.parse(decodedFilters)
+      const orders = await ordersService.getOrders(
+        page,
+        limit,
+        sort,
+        sortBy,
+        filtersFields,
+        timezoneOffset
+      )
       return res.status(200).json(orders)
     } catch (error) {
       if (error instanceof ZodError) {
