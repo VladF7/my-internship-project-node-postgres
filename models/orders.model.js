@@ -24,6 +24,8 @@ export const statusFilterOptions = ['Completed', 'Confirmed', 'Canceled', '']
 
 export default {
   getOrders: async (page, limit, sort, sortBy, filtersFields, timezoneOffset) => {
+    const serverTimezoneOffset = new Date().getTimezoneOffset()
+    const differenceTimezoneOffset = timezoneOffset - serverTimezoneOffset
     const order = []
     const where = {}
     const filters = {
@@ -46,10 +48,10 @@ export default {
 
     if (filters.MIN_DATE) {
       where.startTime = {
-        [Op.gt]: formatISO(
+        [Op.gte]: formatISO(
           setMinutes(
-            setDate(filtersFields.minMaxDate[0], getDate(filtersFields.minMaxDate[0]) - 1),
-            getMinutes(new Date(filtersFields.minMaxDate[0])) - timezoneOffset
+            setDate(filtersFields.minMaxDate[0], getDate(filtersFields.minMaxDate[0])),
+            getMinutes(new Date(filtersFields.minMaxDate[0])) - differenceTimezoneOffset
           )
         )
       }
@@ -60,7 +62,7 @@ export default {
         [Op.lt]: formatISO(
           setMinutes(
             setDate(filtersFields.minMaxDate[1], getDate(filtersFields.minMaxDate[1]) + 1),
-            getMinutes(new Date(filtersFields.minMaxDate[1])) - timezoneOffset
+            getMinutes(new Date(filtersFields.minMaxDate[1])) - differenceTimezoneOffset
           )
         )
       }
@@ -73,13 +75,9 @@ export default {
         }
       }
     }
-    console.log(new Date('2023-05-16 01:00:00+03'))
 
-    // console.log(new Date('2023-05-18 00:00:00+03'))
-    // console.log(new Date('2023-05-18 01:00:00+03'))
-
-    console.log(timezoneOffset)
     console.log(where)
+
     if (sortBy === sortByFields.NAME) {
       order[0] = [{ model: Customer }, 'name', sort]
     } else if (sortBy === sortByFields.EMAIL) {
