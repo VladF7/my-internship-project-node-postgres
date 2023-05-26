@@ -1,4 +1,14 @@
-import { formatISO, getDate, getMinutes, setDate, setMinutes } from 'date-fns'
+import {
+  formatISO,
+  getDate,
+  getMinutes,
+  setDate,
+  setMinutes,
+  setMilliseconds,
+  setSeconds,
+  setHours,
+  getHours
+} from 'date-fns'
 import sequelize from '../db/database.js'
 
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
@@ -220,6 +230,20 @@ export default {
       },
       include: [Master, Clock, City],
       order: [['startTime', 'DESC']]
+    })
+    return orders
+  },
+  getOrdersThatStartInOneHour: async () => {
+    const orders = await Order.findAll({
+      where: {
+        startTime: setHours(setMilliseconds(setSeconds(new Date(), 0), 0), getHours(new Date()) + 1)
+      },
+      include: [
+        { model: Master, attributes: ['name', 'userId'] },
+        { model: Clock, attributes: ['size', 'timeToFix'] },
+        { model: City, attributes: ['name'] },
+        { model: Customer, attributes: ['name'] }
+      ]
     })
     return orders
   }

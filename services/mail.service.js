@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 import nodemailer from 'nodemailer'
 import { getDate, getTime } from '../date.js'
-import { mastersModel, citiesModel, clocksModel } from '../models/model.layer.js'
+import { mastersModel, citiesModel, clocksModel, usersModel } from '../models/model.layer.js'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -160,6 +160,46 @@ export default {
                   </font>
                 </div>
               `
+      })
+    } catch (error) {
+      throw error
+    }
+  },
+  sendMasterReminder: async (order) => {
+    try {
+      const customerName = order.customer.name
+      const masterName = order.master.name
+      const masterUserId = order.master.userId
+      const timeToFix = order.clock.timeToFix
+      const size = order.clock.size
+      const cityName = order.city.name
+      const date = getDate(order.startTime)
+      const startTime = getTime(order.startTime)
+      const masterEmail = await usersModel.getUserEmailById(masterUserId)
+
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: masterEmail,
+        subject: `${process.env.COMPANY_NAME}`,
+        text: '',
+        html: `
+                <div>
+                  <h1>Order begin after 1 hour </h1>
+                  <font color='black' size='3'>
+                    <div>
+                        <div>
+                            Hello, ${masterName}, your order, in the city of ${cityName} on ${date} begin after 1 hour.
+                        </div>
+                        <div>
+                            Start order time - ${startTime}, clock size - ${size}, time to fix - ${timeToFix} hour/s.
+                        </div>
+                        <div>
+                            The customer name is ${customerName}.
+                        </div>
+                    </div>
+                  </font>
+                </div>
+                `
       })
     } catch (error) {
       throw error
