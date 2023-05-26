@@ -76,8 +76,6 @@ export default {
       }
     }
 
-    console.log(where)
-
     if (sortBy === sortByFields.NAME) {
       order[0] = [{ model: Customer }, 'name', sort]
     } else if (sortBy === sortByFields.EMAIL) {
