@@ -1,4 +1,4 @@
-import { formatISO, setHours, setMinutes } from 'date-fns'
+import { formatISO, getDate, getMinutes, setDate, setMinutes } from 'date-fns'
 import sequelize from '../db/database.js'
 
 import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
@@ -23,7 +23,9 @@ export const limitOptions = [10, 25, 50]
 export const statusFilterOptions = ['Completed', 'Confirmed', 'Canceled', '']
 
 export default {
-  getOrders: async (page, limit, sort, sortBy, filtersFields) => {
+  getOrders: async (page, limit, sort, sortBy, filtersFields, timezoneOffset) => {
+    const serverTimezoneOffset = new Date().getTimezoneOffset()
+    const differenceTimezoneOffset = timezoneOffset - serverTimezoneOffset
     const order = []
     const where = {}
     const filters = {
@@ -34,7 +36,6 @@ export default {
       MAX_DATE: filtersFields?.minMaxDate?.[1],
       MIN_MAX_PRICE: filtersFields?.minMaxPrice?.length
     }
-
     if (filters.MASTERS) {
       where.masterId = filtersFields.masters
     }
@@ -44,14 +45,26 @@ export default {
     if (filters.STATUS) {
       where.status = filtersFields.status
     }
+
     if (filters.MIN_DATE) {
       where.startTime = {
-        [Op.gte]: formatISO(new Date(filtersFields.minMaxDate[0]))
+        [Op.gte]: formatISO(
+          setMinutes(
+            setDate(filtersFields.minMaxDate[0], getDate(filtersFields.minMaxDate[0])),
+            getMinutes(new Date(filtersFields.minMaxDate[0])) - differenceTimezoneOffset
+          )
+        )
       }
     }
+
     if (filters.MAX_DATE) {
       where.endTime = {
-        [Op.lte]: formatISO(new Date(setMinutes(setHours(filtersFields.minMaxDate[1], 23), 59)))
+        [Op.lt]: formatISO(
+          setMinutes(
+            setDate(filtersFields.minMaxDate[1], getDate(filtersFields.minMaxDate[1]) + 1),
+            getMinutes(new Date(filtersFields.minMaxDate[1])) - differenceTimezoneOffset
+          )
+        )
       }
     }
     if (filters.MIN_MAX_PRICE) {
@@ -62,6 +75,7 @@ export default {
         }
       }
     }
+
     if (sortBy === sortByFields.NAME) {
       order[0] = [{ model: Customer }, 'name', sort]
     } else if (sortBy === sortByFields.EMAIL) {
@@ -107,6 +121,7 @@ export default {
     startTime,
     endTime,
     price,
+    images,
     statusId
   ) => {
     const transaction = await sequelize.transaction()
@@ -122,6 +137,7 @@ export default {
           startTime,
           endTime,
           price,
+          images,
           statusId
         },
         { transaction }
@@ -130,7 +146,7 @@ export default {
       return order
     } catch (error) {
       await transaction.rollback()
-      throw error
+      return null
     }
   },
   createOrderAndUpdateCustomer: async (
@@ -142,6 +158,7 @@ export default {
     startTime,
     endTime,
     price,
+    images,
     statusId
   ) => {
     const transaction = await sequelize.transaction()
@@ -157,6 +174,7 @@ export default {
           startTime,
           endTime,
           price,
+          images,
           statusId
         },
         { transaction }
@@ -165,7 +183,7 @@ export default {
       return order
     } catch (error) {
       await transaction.rollback()
-      throw error
+      return null
     }
   },
 
@@ -173,9 +191,9 @@ export default {
     const order = await Order.findByPk(id)
     return order
   },
-  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status) => {
+  editOrder: async (id, cityId, masterId, clockId, startTime, endTime, price, status, images) => {
     const editedOrder = await Order.update(
-      { cityId, masterId, clockId, startTime, endTime, price, status },
+      { cityId, masterId, clockId, startTime, endTime, price, status, images },
       { where: { id } }
     )
 

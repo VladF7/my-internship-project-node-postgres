@@ -86,5 +86,6 @@ export const getOrdersSchema = z.object({
     status: z.nativeEnum(statusFilterOptions).optional(),
     minMaxDate: z.array(z.coerce.date().nullable()).optional(),
     minMaxPrice: z.array(z.number().int().positive()).optional()
-  })
+  }),
+  timezoneOffset: z.number().int()
 })
