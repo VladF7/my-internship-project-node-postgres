@@ -6,6 +6,10 @@ import {
   statusFilterOptions
 } from '../models/orders.model.js'
 
+const MAX_FILE_SIZE = 1000000
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png']
+const MAX_FILES_COUNT = 5
+
 export const addOrderSchema = z.object({
   masterId: z.number().int().positive(),
   clockId: z.number().int().positive(),
@@ -15,7 +19,33 @@ export const addOrderSchema = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
   priceForHour: z.number().int().positive(),
-  price: z.number().int().positive()
+  price: z.number().int().positive(),
+  images: z
+    .array(
+      z.string().superRefine((dataUrl, ctx) => {
+        const arr = dataUrl.split(',')
+        const mime = arr[0].match(/:(.*?);/)[1]
+        const data = arr[1]
+        if (!ACCEPTED_IMAGE_TYPES.includes(mime)) {
+          {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Only .jpeg and .png formats are supported.'
+            })
+          }
+        }
+        if (Buffer.byteLength(data, 'base64') > MAX_FILE_SIZE) {
+          {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Image size must not exceed 1 MB'
+            })
+          }
+        }
+      })
+    )
+    .max(MAX_FILES_COUNT)
+    .optional()
 })
 export const getOrderEndTimeSchema = z.object({
   clockId: z
@@ -42,7 +72,8 @@ export const editOrderSchema = z.object({
   endTime: z.coerce.date(),
   priceForHour: z.number().int().positive(),
   price: z.number().int().positive(),
-  status: z.string().max(255).nonempty()
+  status: z.string().max(255).nonempty(),
+  deletedImages: z.array(z.string()).max(5).optional()
 })
 export const deleteOrderSchema = z.object({
   id: z
