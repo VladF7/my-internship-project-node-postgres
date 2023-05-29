@@ -233,14 +233,16 @@ export default {
     })
     return orders
   },
-  getOrdersThatStartInOneHour: async (timezoneOffset) => {
-    const differenceTimezoneOffset = timezoneOffset - serverTimezoneOffset
+  getOrdersThatStartInOneHour: async (orderStartTime) => {
     const where = {
-      startTime: setHours(
-        setMilliseconds(setSeconds(new Date(), 0), 0),
-        getHours(new Date()) + 1 - differenceTimezoneOffset / 60
+      startTime: formatISO(
+        setHours(
+          setMilliseconds(setSeconds(new Date(orderStartTime), 0), 0),
+          getHours(new Date(orderStartTime)) + 1
+        )
       )
     }
+    console.log(where)
     const orders = await Order.findAll({
       where,
       include: [

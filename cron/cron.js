@@ -2,12 +2,17 @@ import cron from 'node-cron'
 import { ordersModel } from '../models/model.layer.js'
 import mailService from '../services/mail.service.js'
 
-const EUROPE_KIEV_TIMEZONE_OFFSET = -180
+const TIMEZONE = 'Europe/Kiev'
 
 const startCron = () => {
   try {
-    cron.schedule('0 1 * * *', async () => {
-      const orders = await ordersModel.getOrdersThatStartInOneHour(EUROPE_KIEV_TIMEZONE_OFFSET)
+    cron.schedule('*/10 * * * * *', async () => {
+      const orderStartTime = new Date().toLocaleString('en-US', {
+        hour12: false,
+        timeZone: TIMEZONE
+      })
+
+      const orders = await ordersModel.getOrdersThatStartInOneHour(orderStartTime)
       const allMails = orders.map((order) => mailService.sendMasterReminder(order))
       await Promise.allSettled(allMails)
     })
