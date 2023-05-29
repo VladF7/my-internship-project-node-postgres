@@ -4,7 +4,9 @@ import mailService from '../services/mail.service.js'
 
 const startCron = () => {
   try {
-    cron.schedule('0 1 * * *', async () => {
+    cron.schedule('*/30 * * * * *', async () => {
+      console.log('start cron')
+      console.log(new Date())
       const orders = await ordersModel.getOrdersThatStartInOneHour()
       const allMails = orders.map((order) => mailService.sendMasterReminder(order))
       await Promise.allSettled(allMails)

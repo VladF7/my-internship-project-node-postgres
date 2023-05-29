@@ -11,7 +11,7 @@ import {
 } from 'date-fns'
 import sequelize from '../db/database.js'
 
-import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
+import { City, Order, Master, Clock, Customer, User } from '../db/models/models.DALayer.js'
 import { Op } from 'sequelize'
 
 export const sortByFields = {
@@ -234,12 +234,20 @@ export default {
     return orders
   },
   getOrdersThatStartInOneHour: async () => {
+    console.log(setHours(setMilliseconds(setSeconds(new Date(), 0), 0), getHours(new Date()) + 1))
     const orders = await Order.findAll({
       where: {
         startTime: setHours(setMilliseconds(setSeconds(new Date(), 0), 0), getHours(new Date()) + 1)
       },
       include: [
-        { model: Master, attributes: ['name', 'userId'] },
+        {
+          model: Master,
+          attributes: ['name'],
+          include: {
+            model: User,
+            attributes: ['email']
+          }
+        },
         { model: Clock, attributes: ['size', 'timeToFix'] },
         { model: City, attributes: ['name'] },
         { model: Customer, attributes: ['name'] }

@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 import nodemailer from 'nodemailer'
 import { getDate, getTime } from '../date.js'
-import { mastersModel, citiesModel, clocksModel, usersModel } from '../models/model.layer.js'
+import { mastersModel, citiesModel, clocksModel } from '../models/model.layer.js'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -169,13 +169,12 @@ export default {
     try {
       const customerName = order.customer.name
       const masterName = order.master.name
-      const masterUserId = order.master.userId
       const timeToFix = order.clock.timeToFix
       const size = order.clock.size
       const cityName = order.city.name
+      const masterEmail = order.master.user.email
       const date = getDate(order.startTime)
       const startTime = getTime(order.startTime)
-      const masterEmail = await usersModel.getUserEmailById(masterUserId)
 
       await transporter.sendMail({
         from: process.env.SMTP_USER,
