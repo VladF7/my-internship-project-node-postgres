@@ -31,10 +31,10 @@ export const sortByFields = {
 export const sortOptions = ['asc', 'desc']
 export const limitOptions = [10, 25, 50]
 export const statusFilterOptions = ['Completed', 'Confirmed', 'Canceled', '']
+const serverTimezoneOffset = new Date().getTimezoneOffset()
 
 export default {
   getOrders: async (page, limit, sort, sortBy, filtersFields, timezoneOffset) => {
-    const serverTimezoneOffset = new Date().getTimezoneOffset()
     const differenceTimezoneOffset = timezoneOffset - serverTimezoneOffset
     const order = []
     const where = {}
@@ -233,12 +233,17 @@ export default {
     })
     return orders
   },
-  getOrdersThatStartInOneHour: async () => {
-    console.log(setHours(setMilliseconds(setSeconds(new Date(), 0), 0), getHours(new Date()) + 1))
+  getOrdersThatStartInOneHour: async (timezoneOffset) => {
+    const differenceTimezoneOffset = timezoneOffset - serverTimezoneOffset
+    const where = {
+      startTime: setHours(
+        setMilliseconds(setSeconds(new Date(), 0), 0),
+        getHours(new Date()) + 1 - differenceTimezoneOffset / 60
+      )
+    }
+    console.log(where)
     const orders = await Order.findAll({
-      where: {
-        startTime: setHours(setMilliseconds(setSeconds(new Date(), 0), 0), getHours(new Date()) + 1)
-      },
+      where,
       include: [
         {
           model: Master,
