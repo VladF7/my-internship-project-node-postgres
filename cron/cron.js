@@ -6,9 +6,7 @@ const EUROPE_KIEV_TIMEZONE_OFFSET = -180
 
 const startCron = () => {
   try {
-    cron.schedule('*/30 * * * * *', async () => {
-      console.log('start cron')
-      console.log(new Date())
+    cron.schedule('0 1 * * *', async () => {
       const orders = await ordersModel.getOrdersThatStartInOneHour(EUROPE_KIEV_TIMEZONE_OFFSET)
       const allMails = orders.map((order) => mailService.sendMasterReminder(order))
       await Promise.allSettled(allMails)

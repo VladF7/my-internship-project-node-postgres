@@ -241,7 +241,6 @@ export default {
         getHours(new Date()) + 1 - differenceTimezoneOffset / 60
       )
     }
-    console.log(where)
     const orders = await Order.findAll({
       where,
       include: [
