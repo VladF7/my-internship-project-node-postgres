@@ -242,7 +242,6 @@ export default {
         )
       )
     }
-    console.log(where)
     const orders = await Order.findAll({
       where,
       include: [

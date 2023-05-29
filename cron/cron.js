@@ -6,7 +6,7 @@ const TIMEZONE = 'Europe/Kiev'
 
 const startCron = () => {
   try {
-    cron.schedule('*/10 * * * * *', async () => {
+    cron.schedule('0 1 * * *', async () => {
       const orderStartTime = new Date().toLocaleString('en-US', {
         hour12: false,
         timeZone: TIMEZONE
