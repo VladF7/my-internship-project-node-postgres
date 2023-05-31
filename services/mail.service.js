@@ -164,5 +164,44 @@ export default {
     } catch (error) {
       throw error
     }
+  },
+  sendMasterReminder: async (order) => {
+    try {
+      const customerName = order.customer.name
+      const masterName = order.master.name
+      const timeToFix = order.clock.timeToFix
+      const size = order.clock.size
+      const cityName = order.city.name
+      const masterEmail = order.master.user.email
+      const date = getDate(order.startTime)
+      const startTime = getTime(order.startTime)
+
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: masterEmail,
+        subject: `${process.env.COMPANY_NAME}`,
+        text: '',
+        html: `
+                <div>
+                  <h1>Order begin after 1 hour </h1>
+                  <font color='black' size='3'>
+                    <div>
+                        <div>
+                            Hello, ${masterName}, your order, in the city of ${cityName} on ${date} begin after 1 hour.
+                        </div>
+                        <div>
+                            Start order time - ${startTime}, clock size - ${size}, time to fix - ${timeToFix} hour/s.
+                        </div>
+                        <div>
+                            The customer name is ${customerName}.
+                        </div>
+                    </div>
+                  </font>
+                </div>
+                `
+      })
+    } catch (error) {
+      throw error
+    }
   }
 }

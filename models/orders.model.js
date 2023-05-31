@@ -1,7 +1,17 @@
-import { formatISO, getDate, getMinutes, setDate, setMinutes } from 'date-fns'
+import {
+  formatISO,
+  getDate,
+  getMinutes,
+  setDate,
+  setMinutes,
+  setMilliseconds,
+  setSeconds,
+  setHours,
+  getHours
+} from 'date-fns'
 import sequelize from '../db/database.js'
 
-import { City, Order, Master, Clock, Customer } from '../db/models/models.DALayer.js'
+import { City, Order, Master, Clock, Customer, User } from '../db/models/models.DALayer.js'
 import { Op } from 'sequelize'
 
 export const sortByFields = {
@@ -21,10 +31,10 @@ export const sortByFields = {
 export const sortOptions = ['asc', 'desc']
 export const limitOptions = [10, 25, 50]
 export const statusFilterOptions = ['Completed', 'Confirmed', 'Canceled', '']
+const serverTimezoneOffset = new Date().getTimezoneOffset()
 
 export default {
   getOrders: async (page, limit, sort, sortBy, filtersFields, timezoneOffset) => {
-    const serverTimezoneOffset = new Date().getTimezoneOffset()
     const differenceTimezoneOffset = timezoneOffset - serverTimezoneOffset
     const order = []
     const where = {}
@@ -220,6 +230,33 @@ export default {
       },
       include: [Master, Clock, City],
       order: [['startTime', 'DESC']]
+    })
+    return orders
+  },
+  getOrdersThatStartInOneHour: async (orderStartTime) => {
+    const where = {
+      startTime: formatISO(
+        setHours(
+          setMilliseconds(setSeconds(new Date(orderStartTime), 0), 0),
+          getHours(new Date(orderStartTime)) + 1
+        )
+      )
+    }
+    const orders = await Order.findAll({
+      where,
+      include: [
+        {
+          model: Master,
+          attributes: ['name'],
+          include: {
+            model: User,
+            attributes: ['email']
+          }
+        },
+        { model: Clock, attributes: ['size', 'timeToFix'] },
+        { model: City, attributes: ['name'] },
+        { model: Customer, attributes: ['name'] }
+      ]
     })
     return orders
   }
