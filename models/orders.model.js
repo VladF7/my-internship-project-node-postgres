@@ -158,8 +158,7 @@ export default {
     startTime,
     endTime,
     price,
-    images,
-    statusId
+    images
   ) => {
     const transaction = await sequelize.transaction()
     try {
@@ -174,8 +173,7 @@ export default {
           startTime,
           endTime,
           price,
-          images,
-          statusId
+          images
         },
         { transaction }
       )

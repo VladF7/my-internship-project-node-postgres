@@ -6,7 +6,12 @@ import { Clock } from './Clock.js'
 import { Master } from './Master.js'
 import { Customer } from './Сustomer.js'
 
-export const Statuses = { Confirmed: 'Confirmed', Completed: 'Completed', Canceled: 'Canceled' }
+export const Statuses = {
+  Completed: 'Completed',
+  Canceled: 'Canceled',
+  AwaitPayment: 'Await Payment',
+  PaymentSuccess: 'Payment Success'
+}
 
 const Order = sequelize.define('order', {
   id: {
@@ -30,9 +35,17 @@ const Order = sequelize.define('order', {
     type: Sequelize.ARRAY(Sequelize.JSONB),
     defaultValue: []
   },
+  transactionId: {
+    type: Sequelize.STRING
+  },
   status: {
-    type: Sequelize.ENUM(Statuses.Confirmed, Statuses.Completed, Statuses.Canceled),
-    defaultValue: Statuses.Confirmed
+    type: Sequelize.ENUM(
+      Statuses.Completed,
+      Statuses.Canceled,
+      Statuses.AwaitPayment,
+      Statuses.PaymentSuccess
+    ),
+    defaultValue: Statuses.AwaitPayment
   },
   rating: {
     type: DataTypes.INTEGER

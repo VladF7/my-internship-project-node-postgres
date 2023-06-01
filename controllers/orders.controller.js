@@ -19,8 +19,6 @@ export default {
     try {
       const { filters } = req.query
       const decodedFilters = JSON.parse(decodeURIComponent(filters))
-      console.log(decodedFilters)
-
       const { page, limit, sort, sortBy, filtersFields, timezoneOffset } =
         getOrdersSchema.parse(decodedFilters)
       const orders = await ordersService.getOrders(
