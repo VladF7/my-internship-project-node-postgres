@@ -30,7 +30,7 @@ export const sortByFields = {
 
 export const sortOptions = ['asc', 'desc']
 export const limitOptions = [10, 25, 50]
-export const statusFilterOptions = ['Completed', 'Confirmed', 'Canceled', '']
+export const statusFilterOptions = ['Completed', 'Await Payment', 'Payment Success', 'Canceled', '']
 const serverTimezoneOffset = new Date().getTimezoneOffset()
 
 export default {
@@ -168,8 +168,7 @@ export default {
     startTime,
     endTime,
     price,
-    images,
-    statusId
+    images
   ) => {
     const transaction = await sequelize.transaction()
     try {
@@ -184,8 +183,7 @@ export default {
           startTime,
           endTime,
           price,
-          images,
-          statusId
+          images
         },
         { transaction }
       )
