@@ -84,6 +84,7 @@ export default {
       )
       return res.status(201).json(newOrder)
     } catch (error) {
+      console.log(error)
       if (error instanceof CustomError) {
         return res.status(error.status).send({
           error: error.code,
@@ -168,6 +169,7 @@ export default {
       )
       return res.status(200).json(editedOrder)
     } catch (error) {
+      console.log(error)
       if (error instanceof CustomError) {
         return res.status(error.status).send({
           error: error.code,
