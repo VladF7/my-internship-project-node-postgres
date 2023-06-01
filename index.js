@@ -4,6 +4,7 @@ import routes from './router/router.layer.js'
 import cors from 'cors'
 import corsOptions from './config/corsOption.js'
 import connectDB from './config/dbConfig.js'
+import startCron from './cron/cron.js'
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -11,10 +12,10 @@ const PORT = process.env.PORT || 5000
 app.use(cors(corsOptions))
 app.use(express.json({ limit: '200mb' }))
 app.use('/api', routes)
-
 const start = async () => {
   try {
     connectDB()
+    startCron()
     app.listen(PORT, () => console.log('Server started on PORT' + ' ' + PORT))
   } catch (error) {
     console.log(error)

@@ -131,7 +131,7 @@ export default {
         throw new CustomError(CAN_NOT_UPLOAD_IMAGES, 400, `Images can't be upload`)
       }
       const formatedUploadedImages = uploadedImages.map((image) => {
-        return { url: image.url, publicId: image.public_id }
+        return { url: image.url.replace('http://', 'https://'), publicId: image.public_id }
       })
 
       const customer = await customersModel.getCustomerByEmail(email)
