@@ -297,5 +297,25 @@ export default {
       ]
     })
     return masters
+  },
+  getMastersByName: async (name) => {
+    const masters = await Master.findAll({
+      where: {
+        name: {
+          [Op.iLike]: `%${name}%`
+        },
+        isActivated: true
+      },
+      order: [['name', 'ASC']],
+      attributes: ['id', 'name'],
+      include: [
+        {
+          attributes: ['isEmailActivated'],
+          model: User,
+          where: { isEmailActivated: true }
+        }
+      ]
+    })
+    return masters
   }
 }

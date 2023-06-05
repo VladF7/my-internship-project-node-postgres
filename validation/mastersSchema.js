@@ -70,3 +70,6 @@ export const getMastersSchema = z.object({
   sort: z.nativeEnum(sortOptions),
   sortBy: z.nativeEnum(Object.values(sortByFields))
 })
+export const getMastersByNameSchema = z.object({
+  name: z.string().min(0)
+})

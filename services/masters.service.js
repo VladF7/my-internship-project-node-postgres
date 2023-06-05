@@ -173,5 +173,13 @@ export default {
     } catch (error) {
       throw error
     }
+  },
+  getMastersByName: async (name) => {
+    try {
+      const masters = await mastersModel.getMastersByName(name)
+      return masters
+    } catch (error) {
+      throw error
+    }
   }
 }
