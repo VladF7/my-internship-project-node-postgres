@@ -7,6 +7,8 @@ import { Roles } from '../db/models/User.js'
 const router = Router()
 
 router.post('/login', usersController.login)
+router.post('/login/google', usersController.googleLogin)
+
 router.post('/master/registration', usersController.masterRegistration)
 router.post('/customer/registration', usersController.customerRegistration)
 router.post(

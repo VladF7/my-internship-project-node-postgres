@@ -13,9 +13,67 @@ import {
 import { Roles } from '../db/models/User.js'
 import { citiesModel, customersModel, usersModel, mastersModel } from '../models/model.layer.js'
 import { generate } from 'generate-password'
+import fetch from 'node-fetch'
 
 const generateAccessToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '24h' })
+}
+
+const generateTokenPayload = async (user) => {
+  if (user.role === Roles.Customer) {
+    if (!user.isEmailActivated) {
+      return {
+        message: 'This user is not confirm email',
+        redirect: true,
+        redirectTo: 'confirmEmail'
+      }
+    }
+    const customer = await customersModel.getCustomerByUserId(user.id)
+    return {
+      id: user.id,
+      customerId: customer.id,
+      name: customer.name,
+      email: user.email,
+      role: user.role,
+      isEmailActivated: user.isEmailActivated
+    }
+  }
+
+  if (user.role === Roles.Master) {
+    if (!user.isEmailActivated) {
+      return {
+        message: 'This user is not confirm email',
+        redirect: true,
+        redirectTo: 'confirmEmail'
+      }
+    }
+    const master = await mastersModel.getMasterByUserId(user.id)
+    if (!master.isActivated) {
+      return {
+        message: 'This user is not activated by admin',
+        redirect: true,
+        redirectTo: 'awaitApprove'
+      }
+    }
+    return {
+      id: user.id,
+      masterId: master.id,
+      name: master.name,
+      email: user.email,
+      role: user.role,
+      isActivated: master.isActivated,
+      isEmailActivated: user.isEmailActivated
+    }
+  }
+
+  if (user.role === Roles.Admin) {
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      isEmailActivated: user.isEmailActivated
+    }
+  }
 }
 
 export default {
@@ -30,60 +88,13 @@ export default {
       if (!validPassword) {
         throw new CustomError(INVALID_DATA, 400, `Wrong email or password`)
       }
-      let generateTokenPayload
-      if (user.role === Roles.Customer) {
-        const customer = await customersModel.getCustomerByUserId(user.id)
-        generateTokenPayload = {
-          id: user.id,
-          customerId: customer.id,
-          name: customer.name,
-          email: user.email,
-          role: user.role,
-          isEmailActivated: user.isEmailActivated
-        }
-        if (!user.isEmailActivated) {
-          return {
-            message: 'This user is not confirm email',
-            redirect: true,
-            redirectTo: 'confirmEmail'
-          }
-        }
+
+      const payload = await generateTokenPayload(user)
+      if (payload.redirect) {
+        return payload
       }
-      if (user.role === Roles.Master) {
-        const master = await mastersModel.getMasterByUserId(user.id)
-        generateTokenPayload = {
-          id: user.id,
-          masterId: master.id,
-          name: master.name,
-          email: user.email,
-          role: user.role,
-          isActivated: master.isActivated,
-          isEmailActivated: user.isEmailActivated
-        }
-        if (!user.isEmailActivated) {
-          return {
-            message: 'This user is not confirm email',
-            redirect: true,
-            redirectTo: 'confirmEmail'
-          }
-        }
-        if (!master.isActivated) {
-          return {
-            message: 'This user is not activated by admin',
-            redirect: true,
-            redirectTo: 'awaitApprove'
-          }
-        }
-      }
-      if (user.role === Roles.Admin) {
-        generateTokenPayload = {
-          id: user.id,
-          email: user.email,
-          role: user.role,
-          isEmailActivated: user.isEmailActivated
-        }
-      }
-      const token = generateAccessToken(generateTokenPayload)
+
+      const token = generateAccessToken(payload)
       const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
       return { token, user: userData }
     } catch (error) {
@@ -280,6 +291,43 @@ export default {
         `${process.env.API_URL}/api/confirmEmail/${activationLink}`
       )
       return newUserCustomer
+    } catch (error) {
+      throw error
+    }
+  },
+  googleLogin: async (accessToken) => {
+    try {
+      const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        method: 'get',
+        headers: { Authorization: `Bearer ${accessToken}` }
+      })
+      const userInfo = await response.json()
+
+      const email = userInfo.email
+      const name = userInfo.name
+
+      const user = await usersModel.getUserByEmail(email)
+      if (user) {
+        const payload = await generateTokenPayload(user)
+        const token = generateAccessToken(payload)
+        const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+        return { token, user: userData }
+      } else {
+        const password = null
+        const activationLink = null
+        const isEmailActivated = true
+        const newUser = await usersModel.createUserAndCreateCustomer(
+          name,
+          email,
+          password,
+          activationLink,
+          isEmailActivated
+        )
+        const payload = await generateTokenPayload(newUser)
+        const token = generateAccessToken(payload)
+        const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+        return { token, user: userData }
+      }
     } catch (error) {
       throw error
     }
