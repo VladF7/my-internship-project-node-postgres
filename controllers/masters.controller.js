@@ -9,7 +9,8 @@ import {
   deleteMasterSchema,
   resetPasswordSchema,
   activateMasterSchema,
-  getMastersSchema
+  getMastersSchema,
+  getMastersByNameSchema
 } from '../validation/mastersSchema.js'
 
 export default {
@@ -176,6 +177,20 @@ export default {
       return res.status(200).json(masters)
     } catch (error) {
       return res.status(500).send('Something went wrong')
+    }
+  },
+  getMastersByName: async (req, res) => {
+    try {
+      const query = req.query
+      const { name } = getMastersByNameSchema.parse(query)
+      const masters = await mastersService.getMastersByName(name)
+      return res.status(200).json(masters)
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
     }
   }
 }
