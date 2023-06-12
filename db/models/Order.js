@@ -49,6 +49,12 @@ const Order = sequelize.define('order', {
   },
   rating: {
     type: DataTypes.INTEGER
+  },
+  feedbackToken: {
+    type: DataTypes.STRING
+  },
+  comment: {
+    type: DataTypes.TEXT
   }
 })
 

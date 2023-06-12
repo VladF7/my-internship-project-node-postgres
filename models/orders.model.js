@@ -217,7 +217,7 @@ export default {
         masterId
       },
       include: [Customer, Clock, City],
-      order: [['startTime', 'DESC']]
+      order: [['id', 'DESC']]
     })
     return orders
   },
@@ -227,7 +227,7 @@ export default {
         customerId
       },
       include: [Master, Clock, City],
-      order: [['startTime', 'DESC']]
+      order: [['id', 'DESC']]
     })
     return orders
   },
@@ -257,5 +257,17 @@ export default {
       ]
     })
     return orders
+  },
+  completeOrder: async (id, status, feedbackToken) => {
+    const completedOrder = await Order.update({ status, feedbackToken }, { where: { id } })
+    return completedOrder
+  },
+  getOrderByFeedbackToken: async (feedbackToken) => {
+    const order = await Order.findOne({ where: { feedbackToken } })
+    return order
+  },
+  setFeedback: async (feedbackToken, rating, comment) => {
+    const orderWithFeedback = await Order.update({ rating, comment }, { where: { feedbackToken } })
+    return orderWithFeedback
   }
 }

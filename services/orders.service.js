@@ -28,6 +28,7 @@ import {
 import { Statuses } from '../db/models/Order.js'
 import { Roles } from '../db/models/User.js'
 import cloudinary, { cloudinaryOptions } from '../cloudinaryConfig.js'
+import { v4 } from 'uuid'
 
 export default {
   getOrders: async (page, limit, sort, sortBy, filtersFields, timezoneOffset) => {
@@ -312,22 +313,44 @@ export default {
       if (!order) {
         throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
       }
-      order.status = Statuses.Completed
-      await order.save()
-      return order.status
+
+      const customerId = order.customerId
+      const customer = await customersModel.getCustomerById(customerId)
+      if (!customer) {
+        throw new CustomError(
+          CUSTOMER_IS_NOT_EXIST,
+          400,
+          `Customer with id ${customerId} is not exist`
+        )
+      }
+      const feedbackToken = v4()
+      const status = Statuses.Completed
+      const completedOrder = await ordersModel.completeOrder(id, status, feedbackToken)
+
+      const email = customer.email
+      await sendMailService.sendFeedbackLink(
+        email,
+        `${process.env.CLIENT_URL}/user/feedback/${feedbackToken}`
+      )
+
+      return completedOrder
     } catch (error) {
       throw error
     }
   },
-  setRating: async (id, rating) => {
+  setFeedback: async (feedbackToken, rating, comment) => {
     try {
-      const order = await ordersModel.getOrderById(id)
+      const order = await ordersModel.getOrderByFeedbackToken(feedbackToken)
       if (!order) {
-        throw new CustomError(ORDER_IS_NOT_EXIST, 400, `Order with id ${id} is not exist`)
+        throw new CustomError(
+          ORDER_IS_NOT_EXIST,
+          400,
+          `Order with feedback token ${feedbackToken} is not exist`
+        )
       }
-      order.rating = rating
-      await order.save()
-      return order.rating
+      const feedback = await ordersModel.setFeedback(feedbackToken, rating, comment)
+
+      return feedback
     } catch (error) {
       throw error
     }
@@ -368,6 +391,25 @@ export default {
           endTime: getFormatDate(order.endTime)
         }
       })
+    } catch (error) {
+      throw error
+    }
+  },
+  getOrderByFeedbackToken: async (feedbackToken) => {
+    try {
+      const order = await ordersModel.getOrderByFeedbackToken(feedbackToken)
+      if (!order) {
+        throw new CustomError(
+          ORDER_IS_NOT_EXIST,
+          404,
+          `Order with feedback token ${feedbackToken} is not exist`
+        )
+      }
+      return {
+        ...order.dataValues,
+        startTime: getFormatDate(order.startTime),
+        endTime: getFormatDate(order.endTime)
+      }
     } catch (error) {
       throw error
     }

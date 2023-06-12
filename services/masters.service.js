@@ -92,7 +92,13 @@ export default {
         cityId,
         currentUserId
       )
-      return freeMasters
+      return freeMasters.map((master) => {
+        return {
+          ...master.dataValues,
+          ratingCount: master.orders.length,
+          orders: master.orders.slice(0, 5)
+        }
+      })
     } catch (error) {
       throw error
     }
