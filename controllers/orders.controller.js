@@ -7,11 +7,12 @@ import {
   editOrderSchema,
   getOrderEndTimeSchema,
   getOrderByIdSchema,
-  setRatingSchema,
   completeOrderSchema,
   getOrdersForMasterByIdSchema,
   getOrdersForCustomerByIdSchema,
-  getOrdersSchema
+  getOrdersSchema,
+  setFeedbackSchema,
+  feedbackTokenSchema
 } from '../validation/ordersSchema.js'
 
 export default {
@@ -218,13 +219,13 @@ export default {
       }
     }
   },
-  setRating: async (req, res) => {
+  setFeedback: async (req, res) => {
     try {
       const params = req.params
       const body = req.body
-      const { id, rating } = setRatingSchema.parse({ ...body, ...params })
-      const newRating = await ordersService.setRating(id, rating)
-      return res.status(200).json(newRating)
+      const { feedbackToken, rating, comment } = setFeedbackSchema.parse({ ...body, ...params })
+      const feedback = await ordersService.setFeedback(feedbackToken, rating, comment)
+      return res.status(200).json(feedback)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({
@@ -263,6 +264,25 @@ export default {
       const { customerId } = getOrdersForCustomerByIdSchema.parse(params)
       const orders = await ordersService.getOrdersForCustomerById(customerId)
       return res.status(200).json(orders)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  getOrderByFeedbackToken: async (req, res) => {
+    try {
+      const params = req.params
+      const { feedbackToken } = feedbackTokenSchema.parse(params)
+      const order = await ordersService.getOrderByFeedbackToken(feedbackToken)
+      return res.status(200).json(order)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({

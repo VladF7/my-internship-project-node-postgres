@@ -87,12 +87,10 @@ export const completeOrderSchema = z.object({
     .regex(/^[1-9]\d*$/)
     .transform(Number)
 })
-export const setRatingSchema = z.object({
-  id: z
-    .string()
-    .regex(/^[1-9]\d*$/)
-    .transform(Number),
-  rating: z.number().gte(1).lte(5).int().positive()
+export const setFeedbackSchema = z.object({
+  feedbackToken: z.string().uuid().nonempty(),
+  rating: z.number().gte(1).lte(5).int().positive(),
+  comment: z.string().max(256)
 })
 export const getOrdersForMasterByIdSchema = z.object({
   masterId: z
@@ -119,4 +117,7 @@ export const getOrdersSchema = z.object({
     minMaxPrice: z.array(z.number().int().positive()).optional()
   }),
   timezoneOffset: z.number().int()
+})
+export const feedbackTokenSchema = z.object({
+  feedbackToken: z.string().uuid().nonempty()
 })

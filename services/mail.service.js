@@ -203,5 +203,24 @@ export default {
     } catch (error) {
       throw error
     }
+  },
+  sendFeedbackLink: async (email, link) => {
+    try {
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: email,
+        subject: `Leave feedback about the order on the ${process.env.COMPANY_NAME}`,
+        text: '',
+        html: `
+                <div>
+                  <font color='black' size='3'>
+                  <a target="_blank" href=${link}>To leave a feedback about the order, follow the link</a>
+                  </font>
+                </div>
+              `
+      })
+    } catch (error) {
+      throw error
+    }
   }
 }

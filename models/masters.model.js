@@ -1,6 +1,6 @@
 import { Op } from 'sequelize'
 import sequelize from '../db/database.js'
-import { City, User, Order, Master, CityMaster } from '../db/models/models.DALayer.js'
+import { City, User, Order, Master, CityMaster, Customer } from '../db/models/models.DALayer.js'
 
 export const sortByFields = {
   ID: 'id',
@@ -133,6 +133,18 @@ export default {
           where: { id: cityId },
           model: City,
           attributes: ['id', 'name']
+        },
+        {
+          model: Order,
+          attributes: ['id', 'comment', 'rating'],
+          separate: true,
+          where: {
+            rating: {
+              [Op.ne]: null
+            }
+          },
+          include: [{ model: Customer, attributes: ['name'] }],
+          order: [['id', 'DESC']]
         }
       ],
       order: [['rating', 'ASC']]
