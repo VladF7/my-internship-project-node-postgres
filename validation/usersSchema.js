@@ -47,3 +47,6 @@ export const createUserCustomerSchema = z.object({
   name: z.string(255).nonempty(),
   email: z.string(255).email().nonempty()
 })
+export const googleLoginSchema = z.object({
+  accessToken: z.string().nonempty()
+})

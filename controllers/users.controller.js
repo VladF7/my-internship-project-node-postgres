@@ -5,6 +5,7 @@ import {
   createUserCustomerSchema,
   customerRegistrationSchema,
   getUserByEmailSchema,
+  googleLoginSchema,
   loginSchema,
   masterRegistrationSchema
 } from '../validation/usersSchema.js'
@@ -189,6 +190,25 @@ export default {
       const { email, name } = createUserCustomerSchema.parse(body)
       const newUserCustomer = await usersService.createUserCustomer(email, name)
       return res.status(200).json(newUserCustomer)
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.status).send({
+          error: error.code,
+          description: error.message
+        })
+      } else if (error instanceof ZodError) {
+        return res.status(400).send(error.issues)
+      } else {
+        return res.status(500).send('Something went wrong')
+      }
+    }
+  },
+  googleLogin: async (req, res) => {
+    try {
+      const body = req.body
+      const { accessToken } = googleLoginSchema.parse(body)
+      const userData = await usersService.googleLogin(accessToken)
+      return res.status(200).json(userData)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({
