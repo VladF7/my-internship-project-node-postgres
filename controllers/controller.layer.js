@@ -6,6 +6,7 @@ import ordersController from './orders.controller.js'
 import statusesController from './statuses.controller.js'
 import usersController from './users.controller.js'
 import paypalController from './paypal.controller.js'
+import statisticsController from './statistics.controller.js'
 
 export {
   citiesController,
@@ -15,5 +16,6 @@ export {
   ordersController,
   statusesController,
   usersController,
-  paypalController
+  paypalController,
+  statisticsController
 }

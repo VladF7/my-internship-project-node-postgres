@@ -6,6 +6,7 @@ import mastersModel from './masters.model.js'
 import ordersModel from './orders.model.js'
 import statusesModel from './statuses.model.js'
 import usersModel from './users.model.js'
+import statisticsModel from './statistics.model.js'
 
 export {
   citiesModel,
@@ -15,5 +16,6 @@ export {
   mastersModel,
   ordersModel,
   statusesModel,
-  usersModel
+  usersModel,
+  statisticsModel
 }
