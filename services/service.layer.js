@@ -6,6 +6,7 @@ import ordersService from './orders.service.js'
 import paypalService from './paypal.service.js'
 import statusesService from './statuses.service.js'
 import usersService from './users.service.js'
+import statisticsService from './statistics.service.js'
 
 export {
   citiesService,
@@ -15,5 +16,6 @@ export {
   ordersService,
   statusesService,
   usersService,
-  paypalService
+  paypalService,
+  statisticsService
 }

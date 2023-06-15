@@ -7,6 +7,7 @@ import usersRouter from './users.router.js'
 import clocksRouter from './clocks.router.js'
 import statusesRouter from './statuses.router.js'
 import paypalRouter from './paypal.router.js'
+import statisticsRouter from './statistics.router.js'
 
 const router = Router()
 
@@ -18,5 +19,6 @@ router.use('/customers', customersRouter)
 router.use('/orders', ordersRouter)
 router.use('/paypal', paypalRouter)
 router.use('/', usersRouter)
+router.use('/statistics', statisticsRouter)
 
 export default router

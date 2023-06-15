@@ -279,12 +279,23 @@ export default {
       const hashPassword = await bcrypt.hash(password, 3)
       const activationLink = v4()
 
-      const newUserCustomer = await usersModel.createUserAndCreateCustomer(
-        name,
-        email,
-        hashPassword,
-        activationLink
-      )
+      const customer = await customersModel.getCustomerByEmail(email)
+      let newUserCustomer
+      if (customer) {
+        newUserCustomer = await usersModel.createUserAndUpdateCustomer(
+          name,
+          email,
+          hashPassword,
+          activationLink
+        )
+      } else {
+        newUserCustomer = await usersModel.createUserAndCreateCustomer(
+          name,
+          email,
+          hashPassword,
+          activationLink
+        )
+      }
       await mailService.sendNewUserCustomerDataMail(
         email,
         password,
