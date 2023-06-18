@@ -115,7 +115,7 @@ export default {
         include: [
           [
             sequelize.literal(
-              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+              `COALESCE((SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id),0)`
             ),
             'rating'
           ]
@@ -196,7 +196,7 @@ export default {
         include: [
           [
             sequelize.literal(
-              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+              `COALESCE((SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id),0)`
             ),
             'rating'
           ]
@@ -291,7 +291,7 @@ export default {
         include: [
           [
             sequelize.literal(
-              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+              `COALESCE((SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id),0)`
             ),
             'rating'
           ]
