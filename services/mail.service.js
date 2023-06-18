@@ -204,17 +204,29 @@ export default {
       throw error
     }
   },
-  sendFeedbackLink: async (email, link) => {
+  sendCompletedOrderMessage: async (email, docPdf, link) => {
     try {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: email,
-        subject: `Leave feedback about the order on the ${process.env.COMPANY_NAME}`,
+        subject: `Your order on ${process.env.COMPANY_NAME} has been successfully completed`,
         text: '',
+        attachments: [
+          {
+            filename: `Check on payment-${new Date().getTime()}.pdf`,
+            content: docPdf
+          }
+        ],
         html: `
                 <div>
+                  <h2>Your order has been successfully completed </h2>
                   <font color='black' size='3'>
-                  <a target="_blank" href=${link}>To leave a feedback about the order, follow the link</a>
+                    <div>
+                      <a target="_blank" href=${link}>Please follow the link to leave feedback on your order.</a>
+                    </div>
+                    <div>
+                      <span>Check on payment:<span/>
+                    </div>   
                   </font>
                 </div>
               `

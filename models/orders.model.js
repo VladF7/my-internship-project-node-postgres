@@ -269,5 +269,23 @@ export default {
   setFeedback: async (feedbackToken, rating, comment) => {
     const orderWithFeedback = await Order.update({ rating, comment }, { where: { feedbackToken } })
     return orderWithFeedback
+  },
+  getOrderAndFullInfoById: async (id) => {
+    const order = await Order.findByPk(id, {
+      include: [
+        {
+          model: Master,
+          attributes: ['name'],
+          include: {
+            model: User,
+            attributes: ['email']
+          }
+        },
+        { model: Clock, attributes: ['size', 'timeToFix'] },
+        { model: City, attributes: ['name', 'priceForHour'] },
+        { model: Customer, attributes: ['name', 'email'] }
+      ]
+    })
+    return order
   }
 }
