@@ -104,7 +104,7 @@ export default {
     const orders = await Order.findAndCountAll({
       where,
       limit,
-      offset: page * limit,
+      offset: page * limit || 0,
       order,
       include: [City, Master, Customer, Clock]
     })

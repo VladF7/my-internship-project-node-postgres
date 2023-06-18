@@ -121,3 +121,15 @@ export const getOrdersSchema = z.object({
 export const feedbackTokenSchema = z.object({
   feedbackToken: z.string().uuid().nonempty()
 })
+export const getOrdersTableDataSchema = z.object({
+  sort: z.nativeEnum(sortOptions),
+  sortBy: z.nativeEnum(Object.values(sortByFields)),
+  filtersFields: z.object({
+    masters: z.array(z.number().int().positive()).optional(),
+    cities: z.array(z.number().int().positive()).optional(),
+    status: z.nativeEnum(statusFilterOptions).optional(),
+    minMaxDate: z.array(z.coerce.date().nullable()).optional(),
+    minMaxPrice: z.array(z.number().int().positive()).optional()
+  }),
+  timezoneOffset: z.number().int()
+})

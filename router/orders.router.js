@@ -5,6 +5,8 @@ import { Roles } from '../db/models/User.js'
 
 const router = Router()
 
+router.get('/table', checkAuthAndRole(Roles.Admin), ordersController.getOrdersTableData)
+
 router.get('/feedback/:feedbackToken', ordersController.getOrderByFeedbackToken)
 router.put('/feedback/:feedbackToken', ordersController.setFeedback)
 
