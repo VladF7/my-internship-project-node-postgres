@@ -147,7 +147,7 @@ export default {
           order: [['id', 'DESC']]
         }
       ],
-      order: [['rating', 'ASC']]
+      order: [['rating', 'DESC']]
     })
     return freeMasters
   },
@@ -209,7 +209,7 @@ export default {
           as: 'cities'
         }
       ],
-      order: [['rating', 'ASC']]
+      order: [['rating', 'DESC']]
     })
     return freeMastersForCurrentOrder
   },
