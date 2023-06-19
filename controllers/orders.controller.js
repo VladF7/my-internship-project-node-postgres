@@ -12,8 +12,7 @@ import {
   getOrdersForCustomerByIdSchema,
   getOrdersSchema,
   setFeedbackSchema,
-  feedbackTokenSchema,
-  getOrdersTableDataSchema
+  feedbackTokenSchema
 } from '../validation/ordersSchema.js'
 
 export default {
@@ -291,27 +290,6 @@ export default {
           description: error.message
         })
       } else if (error instanceof ZodError) {
-        return res.status(400).send(error.issues)
-      } else {
-        return res.status(500).send('Something went wrong')
-      }
-    }
-  },
-  getOrdersTableData: async (req, res) => {
-    try {
-      const { filters } = req.query
-      const decodedFilters = JSON.parse(decodeURIComponent(filters))
-      const { sort, sortBy, filtersFields, timezoneOffset } =
-        getOrdersTableDataSchema.parse(decodedFilters)
-      const tableData = await ordersService.getOrdersTableData(
-        sort,
-        sortBy,
-        filtersFields,
-        timezoneOffset
-      )
-      return res.status(200).json(tableData)
-    } catch (error) {
-      if (error instanceof ZodError) {
         return res.status(400).send(error.issues)
       } else {
         return res.status(500).send('Something went wrong')

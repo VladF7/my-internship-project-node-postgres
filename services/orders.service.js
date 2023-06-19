@@ -413,29 +413,5 @@ export default {
     } catch (error) {
       throw error
     }
-  },
-  getOrdersTableData: async (sort, sortBy, filtersFields, timezoneOffset) => {
-    try {
-      const page = null
-      const limit = null
-      const orders = await ordersModel.getOrders(
-        page,
-        limit,
-        sort,
-        sortBy,
-        filtersFields,
-        timezoneOffset
-      )
-      orders.rows = orders.rows.map((order) => {
-        return {
-          ...order.dataValues,
-          startTime: getFormatDate(order.startTime),
-          endTime: getFormatDate(order.endTime)
-        }
-      })
-      return orders.rows
-    } catch (error) {
-      throw error
-    }
   }
 }

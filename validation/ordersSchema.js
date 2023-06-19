@@ -1,10 +1,5 @@
 import { z } from 'zod'
-import {
-  limitOptions,
-  sortByFields,
-  sortOptions,
-  statusFilterOptions
-} from '../models/orders.model.js'
+import { sortByFields, sortOptions, statusFilterOptions } from '../models/orders.model.js'
 
 const MAX_FILE_SIZE = 1000000
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png']
@@ -106,7 +101,7 @@ export const getOrdersForCustomerByIdSchema = z.object({
 })
 export const getOrdersSchema = z.object({
   page: z.number().int().nonnegative().default(0),
-  limit: z.nativeEnum(limitOptions),
+  limit: z.number().int().positive().default(10),
   sort: z.nativeEnum(sortOptions),
   sortBy: z.nativeEnum(Object.values(sortByFields)),
   filtersFields: z.object({
@@ -120,16 +115,4 @@ export const getOrdersSchema = z.object({
 })
 export const feedbackTokenSchema = z.object({
   feedbackToken: z.string().uuid().nonempty()
-})
-export const getOrdersTableDataSchema = z.object({
-  sort: z.nativeEnum(sortOptions),
-  sortBy: z.nativeEnum(Object.values(sortByFields)),
-  filtersFields: z.object({
-    masters: z.array(z.number().int().positive()).optional(),
-    cities: z.array(z.number().int().positive()).optional(),
-    status: z.nativeEnum(statusFilterOptions).optional(),
-    minMaxDate: z.array(z.coerce.date().nullable()).optional(),
-    minMaxPrice: z.array(z.number().int().positive()).optional()
-  }),
-  timezoneOffset: z.number().int()
 })
