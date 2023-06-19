@@ -311,10 +311,11 @@ export default {
     return masters
   },
   getMastersByName: async (name) => {
+    const trimmedName = name.trim()
     const masters = await Master.findAll({
       where: {
         name: {
-          [Op.iLike]: `%${name}%`
+          [Op.iLike]: `%${trimmedName}%`
         },
         isActivated: true
       },
