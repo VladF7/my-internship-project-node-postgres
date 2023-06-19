@@ -29,7 +29,6 @@ export const sortByFields = {
 }
 
 export const sortOptions = ['asc', 'desc']
-export const limitOptions = [10, 25, 50]
 export const statusFilterOptions = ['Completed', 'Await Payment', 'Payment Success', 'Canceled', '']
 const serverTimezoneOffset = new Date().getTimezoneOffset()
 
@@ -104,7 +103,7 @@ export default {
     const orders = await Order.findAndCountAll({
       where,
       limit,
-      offset: page * limit,
+      offset: page * limit || 0,
       order,
       include: [City, Master, Customer, Clock]
     })
