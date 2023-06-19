@@ -1,7 +1,7 @@
 import pdfMake from 'pdfmake'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { getFormatDate } from '../date.js'
+import { getFormatDateTime } from '../date.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -50,8 +50,8 @@ const generateTableData = (order) => {
     ['Master email', order.master.user.email],
     ['Clock size', order.clock.size],
     ['Time to fix', order.clock.timeToFix],
-    ['Start order time', getFormatDate(order.startTime)],
-    ['End order time', getFormatDate(order.endTime)],
+    ['Start order time', getFormatDateTime(order.startTime)],
+    ['End order time', getFormatDateTime(order.endTime)],
     ['Price for hour', order.city.priceForHour],
     ['Total price', order.price]
   ]

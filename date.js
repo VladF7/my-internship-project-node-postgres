@@ -1,4 +1,6 @@
-export const getFormatDate = (d) => {
+import { format } from 'date-fns'
+
+export const getFormatDateTime = (d) => {
   let date = new Date(d)
   let dd = date.getDate()
   let MM = date.getMonth() + 1
@@ -9,16 +11,15 @@ export const getFormatDate = (d) => {
   if (hours < 10) hours = '0' + hours
   return (date = yyyy + '.' + MM + '.' + dd + ', ' + hours + ':' + '00')
 }
-export const getDate = (d) => {
-  let date = new Date(d)
-  let dd = date.getDate()
-  let mm = date.getMonth() + 1
-  let yyyy = date.getFullYear()
-  if (dd < 10) dd = '0' + dd
-  if (mm < 10) mm = '0' + mm
-  return (date = yyyy + '.' + mm + '.' + dd)
+export const getFormatDate = (d) => {
+  const currentDateTime = new Date(d)
+  currentDateTime.setHours(0, 0, 0, 0)
+  const year = format(currentDateTime, 'yyyy')
+  const month = format(currentDateTime, 'MM')
+  const day = format(currentDateTime, 'dd')
+  return year + '-' + month + '-' + day
 }
-export const getTime = (d) => {
+export const getFormatTime = (d) => {
   let date = new Date(d)
   let hours = date.getHours()
   if (hours < 10) hours = '0' + hours

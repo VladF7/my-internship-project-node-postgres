@@ -115,7 +115,7 @@ export default {
         include: [
           [
             sequelize.literal(
-              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+              `COALESCE((SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id),0)`
             ),
             'rating'
           ]
@@ -147,7 +147,7 @@ export default {
           order: [['id', 'DESC']]
         }
       ],
-      order: [['rating', 'ASC']]
+      order: [['rating', 'DESC']]
     })
     return freeMasters
   },
@@ -196,7 +196,7 @@ export default {
         include: [
           [
             sequelize.literal(
-              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+              `COALESCE((SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id),0)`
             ),
             'rating'
           ]
@@ -209,7 +209,7 @@ export default {
           as: 'cities'
         }
       ],
-      order: [['rating', 'ASC']]
+      order: [['rating', 'DESC']]
     })
     return freeMastersForCurrentOrder
   },
@@ -291,7 +291,7 @@ export default {
         include: [
           [
             sequelize.literal(
-              `(SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id)`
+              `COALESCE((SELECT ROUND (AVG(rating),1) FROM orders WHERE orders."masterId" = master.id),0)`
             ),
             'rating'
           ]
@@ -311,10 +311,11 @@ export default {
     return masters
   },
   getMastersByName: async (name) => {
+    const trimmedName = name.trim()
     const masters = await Master.findAll({
       where: {
         name: {
-          [Op.iLike]: `%${name}%`
+          [Op.iLike]: `%${trimmedName}%`
         },
         isActivated: true
       },

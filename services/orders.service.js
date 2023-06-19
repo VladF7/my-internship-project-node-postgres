@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import { getFormatDate } from '../date.js'
+import { getFormatDateTime, getFormatDate } from '../date.js'
 import CustomError from '../errors/customError.js'
 import {
   mastersModel,
@@ -45,8 +45,8 @@ export default {
       orders.rows = orders.rows.map((order) => {
         return {
           ...order.dataValues,
-          startTime: getFormatDate(order.startTime),
-          endTime: getFormatDate(order.endTime)
+          startTime: getFormatDateTime(order.startTime),
+          endTime: getFormatDateTime(order.endTime)
         }
       })
       return orders
@@ -208,7 +208,7 @@ export default {
       const timeToFix = clock.timeToFix
       let endTime = new Date(startTime)
       endTime = endTime.setHours(endTime.getHours() + timeToFix)
-      endTime = getFormatDate(endTime)
+      endTime = getFormatDateTime(endTime)
       return endTime
     } catch (error) {
       throw error
@@ -222,8 +222,8 @@ export default {
       }
       return {
         ...order.dataValues,
-        startTime: getFormatDate(order.startTime),
-        endTime: getFormatDate(order.endTime)
+        startTime: getFormatDateTime(order.startTime),
+        endTime: getFormatDateTime(order.endTime)
       }
     } catch (error) {
       throw error
@@ -266,8 +266,8 @@ export default {
       const deleteFromCloudinary = orderImages.filter((image) => deletedImages.includes(image.url))
       const newImages = orderImages.filter((image) => !deletedImages.includes(image.url))
 
-      const startTime = getFormatDate(start)
-      const endTime = getFormatDate(end)
+      const startTime = getFormatDateTime(start)
+      const endTime = getFormatDateTime(end)
 
       const editedOrder = await ordersModel.editOrder(
         id,
@@ -366,8 +366,8 @@ export default {
       return orders.map((order) => {
         return {
           ...order.dataValues,
-          startTime: getFormatDate(order.startTime),
-          endTime: getFormatDate(order.endTime)
+          startTime: getFormatDateTime(order.startTime),
+          endTime: getFormatDateTime(order.endTime)
         }
       })
     } catch (error) {
@@ -388,8 +388,8 @@ export default {
       return orders.map((order) => {
         return {
           ...order.dataValues,
-          startTime: getFormatDate(order.startTime),
-          endTime: getFormatDate(order.endTime)
+          startTime: getFormatDateTime(order.startTime),
+          endTime: getFormatDateTime(order.endTime)
         }
       })
     } catch (error) {
@@ -408,8 +408,8 @@ export default {
       }
       return {
         ...order.dataValues,
-        startTime: getFormatDate(order.startTime),
-        endTime: getFormatDate(order.endTime)
+        startTime: getFormatDateTime(order.startTime),
+        endTime: getFormatDateTime(order.endTime)
       }
     } catch (error) {
       throw error

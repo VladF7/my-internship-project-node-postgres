@@ -1,6 +1,7 @@
-import { format, getDate, setDate } from 'date-fns'
+import { getDate, setDate } from 'date-fns'
 import sequelize from '../db/database.js'
 import { Statuses } from '../db/models/Order.js'
+import { getFormatDate } from '../date.js'
 
 export const statisticsSortByFields = {
   ID: 'id',
@@ -26,19 +27,15 @@ export default {
     let query = `
         SELECT DATE("startTime" AT TIME ZONE :timeZone) AS "date", COUNT("id") AS "orderCount"
         FROM "orders"
-        WHERE "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
+        WHERE "startTime" >= :startDate AND "startTime" < :endDate 
     `
     const replacements = { timeZone }
-    replacements.startDate = format(new Date(filtersFields.minMaxDate[0]), 'yyyy-MM-dd', {
-      timeZone
-    })
-    replacements.endDate = format(
+    replacements.startDate = getFormatDate(new Date(filtersFields.minMaxDate[0]))
+    replacements.endDate = getFormatDate(
       setDate(
         new Date(filtersFields.minMaxDate[1]),
         getDate(new Date(filtersFields.minMaxDate[1])) + 1
-      ),
-      'yyyy-MM-dd',
-      { timeZone }
+      )
     )
 
     if (filters.CITIES) {
@@ -63,17 +60,13 @@ export default {
         SELECT COUNT(o.id) AS "orderCount", c.name AS "cityName"
         FROM orders o
         INNER JOIN cities c ON o."cityId" = c.id
-        WHERE "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
+        WHERE "startTime" >= :startDate AND "startTime" < :endDate 
         GROUP BY c.id, c.name
     `
     const replacements = { timeZone }
-    replacements.startDate = format(new Date(minMaxDate[0]), 'yyyy-MM-dd', {
-      timeZone
-    })
-    replacements.endDate = format(
-      setDate(new Date(minMaxDate[1]), getDate(new Date(minMaxDate[1])) + 1),
-      'yyyy-MM-dd',
-      { timeZone }
+    replacements.startDate = getFormatDate(new Date(minMaxDate[0]))
+    replacements.endDate = getFormatDate(
+      setDate(new Date(minMaxDate[1]), getDate(new Date(minMaxDate[1])) + 1)
     )
 
     const orders = await sequelize.query(query, {
@@ -88,14 +81,14 @@ export default {
         SELECT m.id
         FROM masters m
         LEFT JOIN orders o ON o."masterId" = m.id
-        WHERE "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
+        WHERE "startTime" >= :startDate AND "startTime" < :endDate 
         GROUP BY m.id
         ORDER BY COUNT(o.id) DESC
         LIMIT 3
       ), other_masters AS (
         SELECT COUNT(*) AS "orderCount"
         FROM orders o
-        WHERE "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
+        WHERE "startTime" >= :startDate AND "startTime" < :endDate 
         AND o."masterId" NOT IN (SELECT id FROM top_masters) 
       )
       SELECT 
@@ -104,20 +97,16 @@ export default {
           ELSE 'OtherMasters'
         END AS "masterName",
         CASE
-          WHEN m.id IN (SELECT id FROM top_masters) THEN (SELECT COUNT(*) FROM orders WHERE "masterId" = m.id AND "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate )
+          WHEN m.id IN (SELECT id FROM top_masters) THEN (SELECT COUNT(*) FROM orders WHERE "masterId" = m.id AND "startTime" >= :startDate AND "startTime"  < :endDate )
           ELSE (SELECT "orderCount" FROM other_masters)
         END AS "orderCount"
       FROM masters m
       GROUP BY "masterName", "orderCount"
   `
     const replacements = { timeZone }
-    replacements.startDate = format(new Date(minMaxDate[0]), 'yyyy-MM-dd', {
-      timeZone
-    })
-    replacements.endDate = format(
-      setDate(new Date(minMaxDate[1]), getDate(new Date(minMaxDate[1])) + 1),
-      'yyyy-MM-dd',
-      { timeZone }
+    replacements.startDate = getFormatDate(new Date(minMaxDate[0]))
+    replacements.endDate = getFormatDate(
+      setDate(new Date(minMaxDate[1]), getDate(new Date(minMaxDate[1])) + 1)
     )
 
     const orders = await sequelize.query(query, {

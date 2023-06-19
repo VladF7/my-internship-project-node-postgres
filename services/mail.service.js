@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 import nodemailer from 'nodemailer'
-import { getDate, getTime } from '../date.js'
 import { mastersModel, citiesModel, clocksModel } from '../models/model.layer.js'
+import { getFormatDate, getFormatTime } from '../date.js'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -25,9 +25,9 @@ export default {
       const size = clock.size
       const cityName = city.name
 
-      const date = getDate(start)
-      const startTime = getTime(start)
-      const endTime = getTime(end)
+      const date = getFormatDate(start)
+      const startTime = getFormatTime(start)
+      const endTime = getFormatTime(end)
 
       await transporter.sendMail({
         from: process.env.SMTP_USER,
@@ -173,8 +173,8 @@ export default {
       const size = order.clock.size
       const cityName = order.city.name
       const masterEmail = order.master.user.email
-      const date = getDate(order.startTime)
-      const startTime = getTime(order.startTime)
+      const date = getFormatDate(order.startTime)
+      const startTime = getFormatTime(order.startTime)
 
       await transporter.sendMail({
         from: process.env.SMTP_USER,
