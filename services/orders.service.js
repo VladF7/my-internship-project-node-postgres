@@ -322,19 +322,24 @@ export default {
           `Customer with id ${order.customerId} is not exist`
         )
       }
-      const feedbackToken = v4()
-      const status = Statuses.Completed
-      const completedOrder = await ordersModel.completeOrder(id, status, feedbackToken)
+      let feedbackToken
 
+      if (order.status !== Statuses.Completed) {
+        feedbackToken = v4()
+        const status = Statuses.Completed
+        await ordersModel.completeOrder(id, status, feedbackToken)
+      } else {
+        feedbackToken = order.feedbackToken
+      }
       const docPdf = await generatePdf(order)
-
+      const masterName = order.master.name
       await sendMailService.sendCompletedOrderMessage(
         email,
+        masterName,
         docPdf,
         `${process.env.CLIENT_URL}/user/feedback/${feedbackToken}`
       )
-
-      return completedOrder
+      return order
     } catch (error) {
       throw error
     }

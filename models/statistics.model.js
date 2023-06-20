@@ -27,7 +27,7 @@ export default {
     let query = `
         SELECT DATE("startTime" AT TIME ZONE :timeZone) AS "date", COUNT("id") AS "orderCount"
         FROM "orders"
-        WHERE "startTime" >= :startDate AND "startTime" < :endDate 
+        WHERE "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
     `
     const replacements = { timeZone }
     replacements.startDate = getFormatDate(new Date(filtersFields.minMaxDate[0]))
@@ -60,7 +60,7 @@ export default {
         SELECT COUNT(o.id) AS "orderCount", c.name AS "cityName"
         FROM orders o
         INNER JOIN cities c ON o."cityId" = c.id
-        WHERE "startTime" >= :startDate AND "startTime" < :endDate 
+        WHERE "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
         GROUP BY c.id, c.name
     `
     const replacements = { timeZone }
@@ -88,7 +88,7 @@ export default {
       ), other_masters AS (
         SELECT COUNT(*) AS "orderCount"
         FROM orders o
-        WHERE "startTime" >= :startDate AND "startTime" < :endDate 
+        WHERE "startTime" AT AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
         AND o."masterId" NOT IN (SELECT id FROM top_masters) 
       )
       SELECT 
@@ -97,7 +97,7 @@ export default {
           ELSE 'OtherMasters'
         END AS "masterName",
         CASE
-          WHEN m.id IN (SELECT id FROM top_masters) THEN (SELECT COUNT(*) FROM orders WHERE "masterId" = m.id AND "startTime" >= :startDate AND "startTime"  < :endDate )
+          WHEN m.id IN (SELECT id FROM top_masters) THEN (SELECT COUNT(*) FROM orders WHERE "masterId" = m.id AND "startTime" AT TIME ZONE :timeZone  >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate )
           ELSE (SELECT "orderCount" FROM other_masters)
         END AS "orderCount"
       FROM masters m

@@ -204,7 +204,7 @@ export default {
       throw error
     }
   },
-  sendCompletedOrderMessage: async (email, docPdf, link) => {
+  sendCompletedOrderMessage: async (email, name, docPdf, link) => {
     try {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
@@ -219,7 +219,7 @@ export default {
         ],
         html: `
                 <div>
-                  <h2>Your order has been successfully completed </h2>
+                  <h2>Your order has been successfully completed by master ${name} </h2>
                   <font color='black' size='3'>
                     <div>
                       <a target="_blank" href=${link}>Please follow the link to leave feedback on your order.</a>
