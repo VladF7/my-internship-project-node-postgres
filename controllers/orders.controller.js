@@ -204,8 +204,8 @@ export default {
     try {
       const params = req.params
       const { id } = completeOrderSchema.parse(params)
-      const changedStatus = await ordersService.completeOrder(id)
-      return res.status(200).json(changedStatus)
+      const order = await ordersService.completeOrder(id)
+      return res.status(200).json(order)
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.status).send({
