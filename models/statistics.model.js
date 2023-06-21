@@ -81,14 +81,14 @@ export default {
         SELECT m.id
         FROM masters m
         LEFT JOIN orders o ON o."masterId" = m.id
-        WHERE "startTime" >= :startDate AND "startTime" < :endDate 
+        WHERE "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
         GROUP BY m.id
         ORDER BY COUNT(o.id) DESC
         LIMIT 3
       ), other_masters AS (
         SELECT COUNT(*) AS "orderCount"
         FROM orders o
-        WHERE "startTime" AT AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
+        WHERE "startTime" AT TIME ZONE :timeZone >= :startDate AND "startTime" AT TIME ZONE :timeZone < :endDate 
         AND o."masterId" NOT IN (SELECT id FROM top_masters) 
       )
       SELECT 
